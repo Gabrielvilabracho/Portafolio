@@ -147,7 +147,11 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
           <div
             ref={langRef}
             className="relative flex items-stretch h-full"
-            style={{ borderLeft: `1px solid ${borderColor}`, transition: 'border-color 0.3s' }}
+            style={{
+              marginLeft: '12px',
+              borderLeft: `1px solid ${borderColor}`,
+              transition: 'border-color 0.3s',
+            }}
           >
             <button
               type="button"
@@ -164,8 +168,8 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
               }}
             >
               <svg
-                width="16"
-                height="16"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -176,7 +180,6 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
                 <ellipse cx="12" cy="12" rx="4" ry="9" />
                 <path d="M3 12h18" />
               </svg>
-              {currentLocale}
             </button>
             {langOpen && (
               <nav
@@ -195,17 +198,17 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
                     <a
                       key={locale}
                       href={localizePath(currentPath, locale)}
+                      aria-label={LOCALE_LABELS[locale]}
                       aria-current={isCurrent ? 'true' : undefined}
                       onMouseEnter={() => setHoveredItem(`lang-${locale}`)}
                       onMouseLeave={() => setHoveredItem(null)}
-                      className="flex items-center justify-between gap-6 px-8 py-3 text-xs font-medium uppercase tracking-wider whitespace-nowrap"
+                      className="flex items-center justify-center px-8 py-3 text-xs font-medium uppercase tracking-wider"
                       style={{
                         color: isCurrent || isHovered ? 'var(--brand-orange-500)' : textColor,
                         transition: 'color 0.3s',
                       }}
                     >
-                      {LOCALE_LABELS[locale]}
-                      <span aria-hidden="true">{locale}</span>
+                      {locale}
                     </a>
                   );
                 })}
