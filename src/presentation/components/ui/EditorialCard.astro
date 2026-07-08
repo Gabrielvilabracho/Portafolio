@@ -1,0 +1,58 @@
+---
+/**
+ * Editorial grid card: label top-left, large centered mark,
+ * meta bullets, and an action link bottom-right. Fully clickable.
+ */
+export interface Props {
+  label: string;
+  mark: string;
+  meta: { color: 'orange' | 'grey'; text: string }[];
+  href: string;
+  action?: string;
+  disabled?: boolean;
+  pattern?: boolean;
+}
+const { label, mark, meta, href, action = 'View case', disabled = false, pattern = false } = Astro.props;
+const Tag = disabled ? 'div' : 'a';
+---
+<Tag
+  href={disabled ? undefined : href}
+  data-pattern={pattern ? 'plus' : undefined}
+  class="group relative flex flex-col justify-between border-brand-grey-200 dark:border-brand-grey-700 transition-colors"
+  class:list={[disabled ? 'cursor-default' : 'hover:bg-white dark:hover:bg-brand-grey-850']}
+  style="min-height: 34em; padding: var(--brand-scale-900);"
+>
+  <p class="uppercase text-sm font-medium" style="max-width: 12em; letter-spacing: 0.02em;">
+    {label}
+  </p>
+
+  <div class="flex flex-col items-center gap-4">
+    <span
+      class="font-normal"
+      class:list={[disabled ? 'opacity-40' : '']}
+      style="font-size: clamp(3.5rem, 6vw, 5.5rem); letter-spacing: -0.03em; line-height: 1;"
+    >
+      {mark}
+    </span>
+
+    <ul class="flex flex-col gap-1 self-center" style="list-style: none; padding: 0; margin: 0;">
+      {meta.map((item) => (
+        <li class="flex items-center gap-2 text-xs uppercase tracking-wider leading-none" style="color: var(--brand-grey-500);">
+          <span
+            class="inline-block shrink-0"
+            style={`width: 0.85em; height: 0.85em; background-color: ${item.color === 'orange' ? 'var(--brand-orange-500)' : 'var(--brand-grey-400)'};`}
+          ></span>
+          {item.text}
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <span
+    class="self-end text-xs uppercase tracking-wider transition-colors"
+    class:list={[disabled ? '' : 'group-hover:text-brand-orange-500']}
+    style="color: var(--brand-grey-400);"
+  >
+    {disabled ? 'Coming soon' : action}
+  </span>
+</Tag>

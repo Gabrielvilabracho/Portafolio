@@ -1,0 +1,70 @@
+---
+/**
+ * Study cases section: heading block + 2x2 grid of editorial cards.
+ */
+import type { Project } from '../../../domain/entities/project';
+import EditorialCard from '../ui/EditorialCard.astro';
+
+export interface Props {
+  cases: Project[];
+}
+const { cases } = Astro.props;
+---
+
+<!-- Band 1: cross pattern inside container -->
+<div class="container">
+  <div
+    class="relative overflow-hidden border-l border-r border-b border-brand-grey-200"
+    style="min-height: 20vh;"
+  >
+    <img
+      src="/imagenes/cross-background.svg"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full pointer-events-none"
+      style="max-width: none; opacity: 0.5;"
+    />
+  </div>
+</div>
+
+<!-- Band 2: heading + grid -->
+<section id="cases" class="container">
+  <div class="section-pad no-v-pad border-t border-brand-grey-200 dark:border-brand-grey-700">
+
+    <div class="flex flex-col gap-4 border-b border-brand-grey-200 dark:border-brand-grey-700" style="padding: var(--brand-scale-1100) var(--brand-scale-900);">
+      <p class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+        <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+        Study Cases
+      </p>
+      <h2 class="uppercase font-normal" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; max-width: 18em;">
+        How the work gets done — discipline by discipline.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2">
+      {cases.map((item, index) => (
+        <div
+          class="border-brand-grey-200 dark:border-brand-grey-700"
+          class:list={[
+            index % 2 === 0 ? 'md:border-r' : '',
+            index < 2 ? 'border-b' : '',
+          ]}
+        >
+          <EditorialCard
+            pattern
+            label={item.title}
+            mark={item.mark ?? '—'}
+            meta={[
+              { color: 'orange', text: item.discipline ?? '' },
+              { color: 'grey', text: item.focus ?? '' },
+            ]}
+            href={`/work/${item.slug}`}
+            action="View case"
+            disabled={item.comingSoon}
+          />
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>

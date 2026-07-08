@@ -1,11 +1,27 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../presentation/layouts/BaseLayout.astro';
+import { getProjectsUseCase } from '../utils/di';
+import HeroCrosses from '../presentation/components/sections/HeroCrosses.astro';
+import SectionsGrid from '../presentation/components/sections/SectionsGrid.astro';
+import ProjectsGrid from '../presentation/components/sections/ProjectsGrid.astro';
+import CasesGrid from '../presentation/components/sections/CasesGrid.astro';
+import Logbook from '../presentation/components/sections/Logbook.astro';
+import ContactCta from '../presentation/components/sections/ContactCta.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allProjects = await getProjectsUseCase.execute();
+const projects = allProjects.filter((project) => project.type === 'project');
+const studyCases = allProjects
+  .filter((project) => project.type === 'case')
+  .sort((a, b) => (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER));
 ---
-
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout
+  title="Gabriel Vilabracho — AI Engineer"
+  description="AI Engineer applying artificial intelligence to help companies improve performance and reduce operating time."
+>
+  <HeroCrosses />
+  <SectionsGrid />
+  <ProjectsGrid projects={projects} />
+  <CasesGrid cases={studyCases} />
+  <Logbook />
+  <ContactCta />
+</BaseLayout>

@@ -1,0 +1,143 @@
+---
+export interface Step {
+  number: string;
+  title: string;
+  description: string;
+}
+
+export interface Props {
+  label?: string;
+  title: string;
+  subtitle?: string;
+  steps: Step[];
+}
+
+const { label = 'Process', title, subtitle, steps } = Astro.props;
+const [s1, s2, s3, s4] = steps;
+---
+
+<section class="bg-dark-surface" data-navbar-theme="dark">
+  <div class="container">
+    <div class="border-l border-r border-t border-brand-grey-700">
+
+      {/* Desktop: 3-column flat grid, 2 explicit rows */}
+      <div
+        class="hidden lg:grid"
+        style="grid-template-columns: 2fr 1fr 1fr;"
+      >
+
+        {/* Row 1 — Col 1: text */}
+        <div
+          class="border-r border-b border-brand-grey-700 flex flex-col justify-between"
+          style="min-height: 420px; padding: var(--brand-scale-800) var(--brand-scale-1000) var(--brand-scale-1000);"
+        >
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            {label}
+          </span>
+          <div class="flex flex-col gap-4">
+            <h2
+              class="font-normal uppercase"
+              style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; color: #ffffff; max-width: 14ch;"
+            >
+              {title}
+            </h2>
+            {subtitle && (
+              <p class="text-sm" style="color: var(--brand-grey-400); max-width: 38ch;">{subtitle}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Row 1 — Col 2: step 01 */}
+        <div
+          class="border-r border-b border-brand-grey-700 p-8 flex flex-col justify-between"
+          style="min-height: 600px;"
+        >
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            {s1.number}
+          </span>
+          <div class="flex flex-col gap-2">
+            <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{s1.title}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{s1.description}</p>
+          </div>
+        </div>
+
+        {/* Row 1 — Col 3: step 02 */}
+        <div
+          class="border-b border-brand-grey-700 p-8 flex flex-col justify-between"
+          style="min-height: 600px;"
+        >
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            {s2.number}
+          </span>
+          <div class="flex flex-col gap-2">
+            <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{s2.title}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{s2.description}</p>
+          </div>
+        </div>
+
+        {/* Row 2 — Col 1: cross pattern */}
+        <div
+          class="border-r border-brand-grey-700"
+          style="min-height: 420px; background-image: url('/imagenes/cross-background.svg'); background-size: cover; background-repeat: no-repeat;"
+        />
+
+        {/* Row 2 — Col 2: step 03 */}
+        <div
+          class="border-r border-brand-grey-700 p-8 flex flex-col justify-between"
+          style="min-height: 600px;"
+        >
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            {s3.number}
+          </span>
+          <div class="flex flex-col gap-2">
+            <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{s3.title}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{s3.description}</p>
+          </div>
+        </div>
+
+        {/* Row 2 — Col 3: step 04 */}
+        <div
+          class="p-8 flex flex-col justify-between"
+          style="min-height: 420px;"
+        >
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            {s4.number}
+          </span>
+          <div class="flex flex-col gap-2">
+            <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{s4.title}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{s4.description}</p>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Mobile: stacked */}
+      <div class="lg:hidden flex flex-col">
+        <div class="p-8 flex flex-col gap-6 border-b border-brand-grey-700">
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            {label}
+          </span>
+          <h2 class="text-2xl font-normal uppercase" style="line-height: 1.1; letter-spacing: -0.02em; color: #ffffff;">{title}</h2>
+          {subtitle && <p class="text-sm" style="color: var(--brand-grey-400);">{subtitle}</p>}
+        </div>
+        {steps.map((step) => (
+          <div class="p-8 flex flex-col gap-6 border-b border-brand-grey-700">
+            <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+              <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+              {step.number}
+            </span>
+            <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{step.title}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{step.description}</p>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</section>

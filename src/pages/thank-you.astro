@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../presentation/layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Message sent — Gabriel Vilabracho"
+  description="Your message has been received. I'll get back to you within a day."
+  bodyClass="!bg-brand-grey-800 page-contact"
+>
+  <div
+    data-navbar-theme="dark"
+    aria-hidden="true"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: var(--layout-nav-height); pointer-events: none; z-index: -1;"
+  ></div>
+
+  <div
+    class="container"
+    style="min-height: calc(100vh - var(--layout-nav-height)); display: flex; flex-direction: column;"
+  >
+    <div
+      style="
+        flex: 1;
+        display: flex;
+        align-items: center;
+        border-left: 1px solid var(--brand-grey-700);
+        border-right: 1px solid var(--brand-grey-700);
+      "
+    >
+      <div
+        class="flex flex-col gap-8"
+        style="padding: var(--brand-scale-1200) var(--brand-scale-1000); max-width: 36em;"
+      >
+        <p class="bracket-badge" style="color: var(--brand-grey-500);">
+          <span>Message received</span>
+        </p>
+
+        <h1
+          class="uppercase font-normal text-white"
+          style="font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -0.03em; line-height: 1;"
+        >
+          Talk soon.
+        </h1>
+
+        <p style="color: var(--brand-grey-400); font-size: var(--type-paragraph-lg-size); max-width: 28em;">
+          Your message is on its way. I'll get back to you within a day.
+        </p>
+
+        <a
+          href="/"
+          class="inline-flex items-center gap-3 uppercase text-sm tracking-widest font-medium"
+          style="color: var(--brand-orange-500); width: fit-content;"
+        >
+          <span aria-hidden="true">←</span>
+          Back to portfolio
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .page-contact footer .section-pad {
+    border-color: var(--brand-grey-700);
+  }
+  .page-contact footer p {
+    color: var(--brand-grey-600);
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+export interface Section {
+  number: string;
+  title: string;
+  phrase: string;
+  href: string;
+}
+
+export interface Props {
+  sections?: Section[];
+}
+
+const defaultSections: Section[] = [
+  {
+    number: '01',
+    title: 'Projects',
+    phrase: 'Selected work in AI, data, and automation.',
+    href: '#projects',
+  },
+  {
+    number: '02',
+    title: 'Study Cases',
+    phrase: 'Deep dives into real problems and how they were solved.',
+    href: '#cases',
+  },
+  {
+    number: '03',
+    title: 'Logbook',
+    phrase: 'A voyage journal — from navy radar operator to AI engineer.',
+    href: '#logbook',
+  },
+  {
+    number: '04',
+    title: 'Coming Soon',
+    phrase: 'New experiments are underway.',
+    href: '#contact',
+  },
+];
+
+const { sections = defaultSections } = Astro.props;
+---
+<div class="container">
+  <div class="section-pad no-v-pad border-brand-grey-200 dark:border-brand-grey-700">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      {sections.map((section, index) => (
+        <a
+          href={section.href}
+          data-portrait-trigger
+          class="group flex flex-col gap-4 border-brand-grey-200 dark:border-brand-grey-700 transition-colors hover:bg-brand-grey-100 dark:hover:bg-brand-grey-850"
+          class:list={[
+            index < 3 ? 'lg:border-r' : '',
+            index % 2 === 0 ? 'md:max-lg:border-r' : '',
+            index < 2 ? 'md:max-lg:border-b' : '',
+            index < 3 ? 'max-md:border-b' : '',
+          ]}
+          style="padding: var(--brand-scale-1000) var(--brand-scale-900); min-height: 14em;"
+        >
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            {section.number}
+          </span>
+
+          <span
+            class="uppercase font-normal group-hover:text-brand-orange-500 transition-colors"
+            style="font-size: clamp(1.25rem, 1.8vw, 1.625rem); letter-spacing: -0.01em;"
+          >
+            {section.title}
+          </span>
+
+          <span class="text-sm" style="color: var(--brand-grey-500);">
+            {section.phrase}
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</div>

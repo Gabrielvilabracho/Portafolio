@@ -1,0 +1,60 @@
+---
+export interface Row {
+  tag: string;
+  title: string;
+  description: string;
+}
+
+export interface Props {
+  heading: string;
+  rows: Row[];
+}
+
+const { heading, rows } = Astro.props;
+---
+
+<section class="bg-dark-surface" data-navbar-theme="dark">
+  <div class="container">
+    <div class="border-l border-r border-t border-brand-grey-700">
+
+      {/* Heading */}
+      <div class="border-b border-brand-grey-700" style="padding: var(--brand-scale-1100) var(--brand-scale-900);">
+        <h2
+          class="font-normal uppercase"
+          style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; color: #ffffff; max-width: 22ch;"
+        >
+          {heading}
+        </h2>
+      </div>
+
+      {/* Rows */}
+      {rows.map((row) => (
+        <div class="grid grid-cols-1 lg:grid-cols-2 border-b border-brand-grey-700">
+
+          {/* Left: tag + title */}
+          <div class="flex flex-col gap-3 lg:border-r border-brand-grey-700" style="padding: var(--brand-scale-900);">
+            <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+              <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+              {row.tag}
+            </span>
+            <h3
+              class="font-bold uppercase leading-tight"
+              style="font-size: clamp(1.1rem, 1.8vw, 1.5rem); color: #ffffff;"
+            >
+              {row.title}
+            </h3>
+          </div>
+
+          {/* Right: description */}
+          <div class="flex items-center" style="padding: var(--brand-scale-900);">
+            <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400); max-width: 52ch;">
+              {row.description}
+            </p>
+          </div>
+
+        </div>
+      ))}
+
+    </div>
+  </div>
+</section>

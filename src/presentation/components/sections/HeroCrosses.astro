@@ -1,0 +1,129 @@
+---
+/**
+ * Hero in two stacked bands:
+ * 1. Dark visual band — cross pattern contained within the page margins.
+ * 2. Light band — bracket label left, GVB wordmark right.
+ */
+---
+<section class="bg-white">
+  <div class="container">
+    <div
+      class="relative overflow-hidden border-l border-r border-b border-brand-grey-200"
+      style="min-height: 20vh;"
+    >
+      <img
+        src="/imagenes/cross-background.svg"
+        alt=""
+        class="absolute inset-0 w-full h-full"
+       style="max-width: none; opacity: 0.5; transform: scale(0.9);"
+      />
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div
+    class="section-pad bg-dark-surface border-brand-grey-200 dark:border-brand-grey-700 flex flex-wrap items-start justify-between gap-8 relative overflow-hidden"
+    data-navbar-theme="dark"
+  >
+    <img
+      src="/imagenes/cross-background.svg"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full pointer-events-none"
+      style="max-width: none; opacity: 0.15; transform: scale(0.9);"
+    />
+    <div class="relative z-10 flex flex-col items-start gap-4">
+      <span class="marker-reveal" data-portrait-trigger>
+        <img
+          src="/imagenes/gabriel-vila-bracho-transparent.svg"
+          alt="Gabriel Vilabracho"
+          style="height: clamp(21rem, 18vw, 12rem); width: auto;"
+        />
+      </span>
+
+      <span class="marker-reveal marker-reveal--delayed" style="margin-left: 5rem;">
+        <p class="bracket-badge" style="color: #f5f5f0;">
+          <span>AI Engineering · Portfolio</span>
+        </p>
+      </span>
+    </div>
+
+    <span class="relative z-10 marker-reveal marker-reveal--delayed">
+      <img
+        id="hero-portrait"
+        src="/imagenes/gabriel-portrait-dark.svg"
+        alt="Gabriel Vilabracho portrait"
+        style="height: clamp(21rem, 18vw, 12rem); width: auto;"
+      />
+    </span>
+  </div>
+</div>
+
+<style>
+  /*
+   * Highlight marker reveal (sstr.tech style): the orange bar starts fully
+   * painted over the content and collapses upward, revealing what's beneath.
+   */
+  .marker-reveal {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  .marker-reveal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-color: #fe5b2a;
+    transform: scaleY(1);
+    transform-origin: center top;
+    animation: marker-collapse 0.78s cubic-bezier(0.65, 0, 0.35, 1) 0.2s forwards;
+  }
+
+  .marker-reveal--delayed::before {
+    animation-delay: 0.35s;
+  }
+
+  @keyframes marker-collapse {
+    to {
+      transform: scaleY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marker-reveal::before {
+      display: none;
+    }
+  }
+
+  #hero-portrait {
+    transform-origin: bottom center;
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+</style>
+
+<script>
+  const portrait = document.getElementById('hero-portrait');
+  const triggers = document.querySelectorAll('[data-portrait-trigger]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (portrait && !reducedMotion.matches) {
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('mouseenter', () => {
+        const portraitRect = portrait.getBoundingClientRect();
+        const triggerRect = trigger.getBoundingClientRect();
+        const portraitCenter = portraitRect.left + portraitRect.width / 2;
+        const triggerCenter = triggerRect.left + triggerRect.width / 2;
+        // Tilt toward the hovered element, as if turning to look at it
+        const direction = triggerCenter < portraitCenter ? -1 : 1;
+        portrait.style.transform = `rotate(${direction * 5}deg)`;
+      });
+      trigger.addEventListener('mouseleave', () => {
+        portrait.style.transform = 'rotate(0deg)';
+      });
+    });
+  }
+</script>

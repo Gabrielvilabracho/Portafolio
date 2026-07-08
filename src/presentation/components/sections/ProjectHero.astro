@@ -1,0 +1,46 @@
+---
+export interface Props {
+  label: string;
+  title: string;
+  description: string;
+}
+
+const { label, title, description } = Astro.props;
+---
+
+<!-- Band 1: cross pattern inside container -->
+<div class="container">
+  <div
+    class="relative overflow-hidden border-l border-r border-b border-brand-grey-200"
+    style="min-height: 20vh;"
+  >
+    <img
+      src="/imagenes/cross-background.svg"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full pointer-events-none"
+      style="max-width: none; opacity: 0.5;"
+    />
+  </div>
+</div>
+
+<!-- Band 2: content, full width of container -->
+<div class="container">
+  <div class="section-pad flex flex-col gap-1">
+    <div style="max-width: 52em; padding-left: var(--brand-scale-1100);" class="flex flex-col">
+
+      <p class="bracket-badge" style="color: var(--brand-grey-600); margin-bottom: var(--brand-scale-300);">
+        <span>{label}</span>
+      </p>
+
+      <h1 class="font-normal uppercase" style="font-size: clamp(3rem, 6vw, 4rem); letter-spacing: -0.03em; line-height: 1.0; color: #000000; margin-bottom: var(--brand-scale-300);">
+        {title}
+      </h1>
+
+      <p style="color: var(--brand-grey-600); font-size: var(--type-paragraph-lg-size); line-height: 1.6;">
+        {description}
+      </p>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+---
+/**
+ * Logbook section: interactive deployment map + navy career journal.
+ */
+import LogbookController from './LogbookController.tsx';
+---
+<section id="logbook" class="bg-dark-surface" data-navbar-theme="dark">
+  <div class="container">
+    <div class="border-l border-r border-brand-grey-700">
+
+      <LogbookController client:only="react" />
+
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  /* Hover tooltip rendered by the globe */
+  .logbook-globe-tooltip {
+    background: #18191b;
+    color: #ffffff;
+    border: 1px solid #7dd3fc;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.35em 0.6em;
+    white-space: nowrap;
+  }
+</style>

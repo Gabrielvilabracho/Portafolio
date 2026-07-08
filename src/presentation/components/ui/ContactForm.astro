@@ -1,0 +1,98 @@
+---
+/**
+ * Contact form posting to FormSubmit (no backend required).
+ * NOTE: the first submission triggers a confirmation email from
+ * formsubmit.co — it must be confirmed once to activate delivery.
+ */
+---
+<form
+  action="https://formsubmit.co/gvilabracho@gmail.com"
+  method="POST"
+  class="flex flex-col gap-8"
+>
+  <input type="hidden" name="_subject" value="New contact from portfolio" />
+  <input type="hidden" name="_next" value="https://gabrielvilabracho.com/thank-you" />
+  <input type="hidden" name="_captcha" value="true" />
+  <input type="text" name="_honey" style="display: none;" tabindex="-1" autocomplete="off" />
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+    <input class="form-field-dark" type="text" name="first_name" placeholder="First name" required />
+    <input class="form-field-dark" type="text" name="last_name" placeholder="Last name" required />
+    <input class="form-field-dark" type="email" name="email" placeholder="Email" required />
+    <input class="form-field-dark" type="tel" name="phone" placeholder="Phone" />
+  </div>
+
+  <textarea class="form-field-dark" name="message" placeholder="Message" rows="2" required></textarea>
+
+  <div class="flex items-center gap-8">
+    <button type="submit" class="btn-cta">
+      <span aria-hidden="true">↳</span>
+      Contact me
+    </button>
+
+    <!-- Social icons -->
+    <div class="flex items-center gap-3">
+      <!-- Email -->
+      <a
+        href="mailto:gvilabracho@gmail.com"
+        class="social-icon-link-form"
+        aria-label="Email"
+      >
+        <img src="/envelope.svg" alt="Email" width="20" height="20" class="social-icon-img" />
+      </a>
+
+      <!-- LinkedIn -->
+      <a
+        href="https://www.linkedin.com/in/gabriel-vila-bracho"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-icon-link-form"
+        aria-label="LinkedIn"
+      >
+        <img src="/linkedin.svg" alt="LinkedIn" width="20" height="20" class="social-icon-img" />
+      </a>
+
+      <!-- Telegram -->
+      <a
+        href="https://t.me/gabvila"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-icon-link-form"
+        aria-label="Telegram"
+      >
+        <img src="/telegram.svg" alt="Telegram" width="20" height="20" class="social-icon-img" />
+      </a>
+    </div>
+  </div>
+</form>
+
+<style>
+  .social-icon-link-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75em;
+    height: 2.75em;
+    border: 1px solid var(--brand-grey-700);
+    clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+    color: var(--brand-grey-400);
+    transition: color 0.2s, border-color 0.2s;
+    position: relative;
+    z-index: 0;
+  }
+
+  .social-icon-link-form:hover {
+    color: var(--brand-orange-500);
+    border-color: var(--brand-orange-500);
+    z-index: 1;
+  }
+
+  .social-icon-link-form .social-icon-img {
+    filter: invert(1) brightness(0.7) contrast(1.2);
+    transition: filter 0.2s;
+  }
+
+  .social-icon-link-form:hover .social-icon-img {
+    filter: invert(44%) sepia(98%) saturate(1200%) hue-rotate(345deg) brightness(100%) contrast(100%);
+  }
+</style>

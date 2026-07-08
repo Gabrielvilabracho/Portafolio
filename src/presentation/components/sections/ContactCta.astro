@@ -1,0 +1,45 @@
+---
+/**
+ * Dark contact CTA: portrait left, heading + form right.
+ * Drop a portrait at /imagenes/portrait.jpg to fill the photo slot.
+ */
+import ContactForm from '../ui/ContactForm.astro';
+---
+<section id="contact" class="bg-dark-surface" data-navbar-theme="dark">
+  <div class="container">
+    <div class="border-l border-r border-t border-brand-grey-700 grid grid-cols-1 lg:grid-cols-2">
+
+      <div class="flex items-center justify-center border-brand-grey-700 lg:border-r" style="padding: var(--brand-scale-1100);">
+        <div
+          class="w-full flex items-center justify-center overflow-hidden"
+          style="max-width: 24em; aspect-ratio: 4 / 5; background-color: var(--brand-grey-200); border-radius: 4px;"
+        >
+          <img
+            src="/imagenes/portrait.jpg"
+            alt="Gabriel Vilabracho"
+            class="w-full h-full object-cover"
+            onerror="this.style.display='none'; this.parentElement.classList.add('crosses-pattern-light');"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col justify-center gap-8" style="padding: var(--brand-scale-1100) var(--brand-scale-1000);">
+        <p class="bracket-badge" style="color: var(--brand-grey-400);">
+          <span>I reply within a day</span>
+        </p>
+
+        <h2 class="uppercase font-normal text-white" style="font-size: clamp(1.75rem, 3vw, 2.5rem); letter-spacing: -0.02em; line-height: 1.1;">
+          Let's put AI to work on your operation.
+        </h2>
+
+        <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400); max-width: 32em;">
+          Tell me about your data, your bottlenecks, and your goals — I'll come
+          back with a concrete first step.
+        </p>
+
+        <ContactForm />
+      </div>
+
+    </div>
+  </div>
+</section>

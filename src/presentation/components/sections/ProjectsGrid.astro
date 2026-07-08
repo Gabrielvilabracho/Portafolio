@@ -1,0 +1,53 @@
+---
+/**
+ * Projects section: heading block + 2x2 grid of editorial cards.
+ */
+import type { Project } from '../../../domain/entities/project';
+import EditorialCard from '../ui/EditorialCard.astro';
+
+export interface Props {
+  projects: Project[];
+}
+const { projects } = Astro.props;
+---
+<section id="projects">
+  <div class="container">
+  <div class="section-pad no-v-pad border-brand-grey-200 dark:border-brand-grey-700">
+
+    <div class="flex flex-col gap-4 border-b border-brand-grey-200 dark:border-brand-grey-700" style="padding: var(--brand-scale-1100) var(--brand-scale-900);">
+      <p class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+        <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+        Projects
+      </p>
+      <h2 class="uppercase font-normal" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; max-width: 18em;">
+        Selected work — AI applied to real operations.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2">
+      {projects.slice(0, 4).map((project, index) => (
+        <div
+          class="border-brand-grey-200 dark:border-brand-grey-700"
+          class:list={[
+            index % 2 === 0 ? 'md:border-r' : '',
+            index < 2 ? 'border-b' : '',
+          ]}
+        >
+          <EditorialCard
+            pattern
+            label={project.title}
+            mark={`P-0${index + 1}`}
+            meta={[
+              { color: 'orange', text: String(project.year) },
+              { color: 'grey', text: project.technologies.slice(0, 3).join(' + ') || 'Stack TBD' },
+            ]}
+            href={`/work/${project.slug}`}
+            action="View project"
+          />
+        </div>
+      ))}
+    </div>
+
+  </div>
+  </div>
+</section>
