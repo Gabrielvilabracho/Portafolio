@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import { DEFAULT_LOCALE, LOCALES, localizePath, type Locale } from '../../../utils/i18n';
 
-export default function Navbar() {
+export interface NavbarProps {
+  currentLocale?: Locale;
+  currentPath?: string;
+}
+
+export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '/' }: NavbarProps) {
   const [blurAmount, setBlurAmount] = useState(0);
   const [bgOpacity, setBgOpacity] = useState(0);
   const [isDark, setIsDark] = useState(false);
@@ -88,7 +94,7 @@ export default function Navbar() {
 
         <div className="flex items-stretch h-full">
           <a
-            href="/"
+            href={localizePath('/', currentLocale)}
             className="inline-flex items-center justify-center px-8 h-full"
             style={{ borderLeft: `1px solid ${borderColor}`, transition: 'border-color 0.3s' }}
           >
@@ -109,8 +115,34 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-stretch h-full">
+          <nav
+            aria-label="Language"
+            className="flex items-center gap-5 px-8 h-full"
+            style={{ borderLeft: `1px solid ${borderColor}`, transition: 'border-color 0.3s' }}
+          >
+            {LOCALES.map((locale) => {
+              const isCurrent = locale === currentLocale;
+              const isHovered = hoveredItem === `lang-${locale}`;
+              return (
+                <a
+                  key={locale}
+                  href={localizePath(currentPath, locale)}
+                  aria-current={isCurrent ? 'true' : undefined}
+                  onMouseEnter={() => setHoveredItem(`lang-${locale}`)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  className="text-xs font-medium uppercase tracking-wider"
+                  style={{
+                    color: isCurrent || isHovered ? 'var(--brand-orange-500)' : textColor,
+                    transition: 'color 0.3s',
+                  }}
+                >
+                  {locale}
+                </a>
+              );
+            })}
+          </nav>
           <a
-            href="/contact"
+            href={localizePath('/contact', currentLocale)}
             onMouseEnter={() => setHoveredItem('contact')}
             onMouseLeave={() => setHoveredItem(null)}
             className="flex items-center justify-center px-8 h-full text-sm font-medium uppercase tracking-wider"

@@ -2,13 +2,16 @@
 /**
  * Projects section: heading block + 2x2 grid of editorial cards.
  */
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import type { Project } from '../../../domain/entities/project';
 import EditorialCard from '../ui/EditorialCard.astro';
+import { DEFAULT_LOCALE } from '../../../utils/i18n';
 
 export interface Props {
   projects: Project[];
 }
 const { projects } = Astro.props;
+const currentLocale = Astro.currentLocale ?? DEFAULT_LOCALE;
 ---
 <section id="projects">
   <div class="container">
@@ -41,7 +44,7 @@ const { projects } = Astro.props;
               { color: 'orange', text: String(project.year) },
               { color: 'grey', text: project.technologies.slice(0, 3).join(' + ') || 'Stack TBD' },
             ]}
-            href={`/work/${project.slug}`}
+            href={getRelativeLocaleUrl(currentLocale, `/work/${project.slug}`)}
             action="View project"
           />
         </div>

@@ -2,13 +2,16 @@
 /**
  * Study cases section: heading block + 2x2 grid of editorial cards.
  */
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import type { Project } from '../../../domain/entities/project';
 import EditorialCard from '../ui/EditorialCard.astro';
+import { DEFAULT_LOCALE } from '../../../utils/i18n';
 
 export interface Props {
   cases: Project[];
 }
 const { cases } = Astro.props;
+const currentLocale = Astro.currentLocale ?? DEFAULT_LOCALE;
 ---
 
 <!-- Band 1: cross pattern inside container -->
@@ -58,7 +61,7 @@ const { cases } = Astro.props;
               { color: 'orange', text: item.discipline ?? '' },
               { color: 'grey', text: item.focus ?? '' },
             ]}
-            href={`/work/${item.slug}`}
+            href={getRelativeLocaleUrl(currentLocale, `/work/${item.slug}`)}
             action="View case"
             disabled={item.comingSoon}
           />

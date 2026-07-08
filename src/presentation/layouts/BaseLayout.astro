@@ -1,7 +1,9 @@
 ---
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
 import '../../styles/globals.css';
 import Navbar from '../components/ui/Navbar.tsx';
 import Footer from '../components/ui/Footer.astro';
+import { DEFAULT_LOCALE, LOCALES, stripLocalePrefix, type Locale } from '../../utils/i18n';
 
 export interface Props {
   title: string;
@@ -9,18 +11,25 @@ export interface Props {
   bodyClass?: string;
 }
 const { title, description, bodyClass = '' } = Astro.props;
+
+const currentLocale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const basePath = stripLocalePrefix(Astro.url.pathname);
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang={currentLocale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {LOCALES.map((locale) => (
+      <link rel="alternate" hreflang={locale} href={getAbsoluteLocaleUrl(locale, basePath)} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl(DEFAULT_LOCALE, basePath)} />
   </head>
   <body class={`bg-white dark:bg-[#0c0c0c] text-gray-900 dark:text-gray-100 ${bodyClass}`}>
-    <Navbar client:load />
+    <Navbar client:load currentLocale={currentLocale} currentPath={Astro.url.pathname} />
 
     <div style="padding-top: var(--layout-nav-height);">
       <main>
