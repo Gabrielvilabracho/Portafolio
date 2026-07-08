@@ -6,12 +6,11 @@ import SectionsGrid from '../../presentation/components/sections/SectionsGrid.as
 import ProcessGrid from '../../presentation/components/sections/ProcessGrid.astro';
 import FeatureRows from '../../presentation/components/sections/FeatureRows.astro';
 import { getProjectsUseCase, getProjectBySlugUseCase } from '../../utils/di';
+import { routableProjects } from '../../application/use-cases/routableProjects';
 
 export async function getStaticPaths() {
   const projects = await getProjectsUseCase.execute();
-  return projects
-    .filter((project) => !project.comingSoon)
-    .map((project) => ({ params: { slug: project.slug } }));
+  return routableProjects(projects).map((project) => ({ params: { slug: project.slug } }));
 }
 
 const { slug } = Astro.params;
