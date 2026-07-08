@@ -61,8 +61,10 @@ module.exports = {
     },
   },
   plugins: [],
-  darkMode: 'class',
-  corePlugins: {
-    container: false,
-  },
+  // Tailwind v4 notes:
+  // - `darkMode: 'class'` is replaced by the `@custom-variant dark` rule in
+  //   src/styles/globals.css (v3-exact `:is(.dark *)` selector).
+  // - `corePlugins: { container: false }` is not supported in v4; the built-in
+  //   `container` utility is overridden via `@utility container` in
+  //   src/styles/globals.css to keep the fluid full-width behavior.
 };

@@ -1,7 +1,24 @@
-/* Import Tailwind base, components, utilities */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4 entry point, with the legacy JS config kept as source of truth
+   for the brand palette and the em-based spacing scale. */
+@import 'tailwindcss';
+@config '../../tailwind.config.cjs';
+
+/* Class-based dark mode (v3 `darkMode: 'class'` parity): `dark:` utilities
+   apply to descendants of an element carrying the `.dark` class (body.dark). */
+@custom-variant dark (&:is(.dark *));
+
+/* Override Tailwind's built-in `container` utility (v3 had it disabled via
+   `corePlugins`). The site uses a fluid full-width container with em-based
+   side padding and NO responsive max-width breakpoints. */
+@utility container {
+  width: 100%;
+  /* Neutralize the built-in responsive max-width steps that Tailwind v4
+     still emits for `container`; this declaration is emitted after them
+     in the same cascade layer, so it wins at every breakpoint. */
+  max-width: none;
+  padding-left: var(--brand-scale-1100);
+  padding-right: var(--brand-scale-1100);
+}
 
 /* ============================================
    1. Tokens de diseño (Design Tokens)
