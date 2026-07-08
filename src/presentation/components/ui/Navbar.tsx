@@ -6,13 +6,42 @@ export interface NavbarProps {
   currentPath?: string;
 }
 
+const LOCALE_LABELS: Record<Locale, string> = {
+  en: 'English',
+  es: 'Español',
+  pt: 'Português',
+  ru: 'Русский',
+};
+
 export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '/' }: NavbarProps) {
   const [blurAmount, setBlurAmount] = useState(0);
   const [bgOpacity, setBgOpacity] = useState(0);
   const [isDark, setIsDark] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [langOpen, setLangOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
   const intersectingDark = useRef(new Set<Element>());
+
+  useEffect(() => {
+    if (!langOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (langRef.current && !langRef.current.contains(event.target as Node)) {
+        setLangOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setLangOpen(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [langOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -115,32 +144,74 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
         </div>
 
         <div className="flex items-stretch h-full">
-          <nav
-            aria-label="Language"
-            className="flex items-center gap-5 px-8 h-full"
+          <div
+            ref={langRef}
+            className="relative flex items-stretch h-full"
             style={{ borderLeft: `1px solid ${borderColor}`, transition: 'border-color 0.3s' }}
           >
-            {LOCALES.map((locale) => {
-              const isCurrent = locale === currentLocale;
-              const isHovered = hoveredItem === `lang-${locale}`;
-              return (
-                <a
-                  key={locale}
-                  href={localizePath(currentPath, locale)}
-                  aria-current={isCurrent ? 'true' : undefined}
-                  onMouseEnter={() => setHoveredItem(`lang-${locale}`)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                  className="text-xs font-medium uppercase tracking-wider"
-                  style={{
-                    color: isCurrent || isHovered ? 'var(--brand-orange-500)' : textColor,
-                    transition: 'color 0.3s',
-                  }}
-                >
-                  {locale}
-                </a>
-              );
-            })}
-          </nav>
+            <button
+              type="button"
+              aria-label="Change language"
+              aria-haspopup="true"
+              aria-expanded={langOpen}
+              onClick={() => setLangOpen((open) => !open)}
+              onMouseEnter={() => setHoveredItem('lang')}
+              onMouseLeave={() => setHoveredItem(null)}
+              className="flex items-center gap-2 px-8 h-full text-xs font-medium uppercase tracking-wider cursor-pointer bg-transparent border-0"
+              style={{
+                color: langOpen || hoveredItem === 'lang' ? 'var(--brand-orange-500)' : textColor,
+                transition: 'color 0.3s',
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <ellipse cx="12" cy="12" rx="4" ry="9" />
+                <path d="M3 12h18" />
+              </svg>
+              {currentLocale}
+            </button>
+            {langOpen && (
+              <nav
+                aria-label="Language"
+                className="absolute top-full right-0 min-w-full"
+                style={{
+                  backgroundColor: isDark ? 'var(--brand-grey-900)' : '#ffffff',
+                  border: `1px solid ${borderColor}`,
+                  borderTop: 'none',
+                }}
+              >
+                {LOCALES.map((locale) => {
+                  const isCurrent = locale === currentLocale;
+                  const isHovered = hoveredItem === `lang-${locale}`;
+                  return (
+                    <a
+                      key={locale}
+                      href={localizePath(currentPath, locale)}
+                      aria-current={isCurrent ? 'true' : undefined}
+                      onMouseEnter={() => setHoveredItem(`lang-${locale}`)}
+                      onMouseLeave={() => setHoveredItem(null)}
+                      className="flex items-center justify-between gap-6 px-8 py-3 text-xs font-medium uppercase tracking-wider whitespace-nowrap"
+                      style={{
+                        color: isCurrent || isHovered ? 'var(--brand-orange-500)' : textColor,
+                        transition: 'color 0.3s',
+                      }}
+                    >
+                      {LOCALE_LABELS[locale]}
+                      <span aria-hidden="true">{locale}</span>
+                    </a>
+                  );
+                })}
+              </nav>
+            )}
+          </div>
           <a
             href={localizePath('/contact', currentLocale)}
             onMouseEnter={() => setHoveredItem('contact')}
