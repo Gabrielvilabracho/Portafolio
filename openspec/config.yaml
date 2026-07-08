@@ -1,0 +1,36 @@
+schema: spec-driven
+project: portafolio
+
+context: |
+  Tech stack: none detected yet; the repository currently contains only SDD scaffolding.
+  Architecture: not defined yet; portfolio implementation has not started.
+  Testing: no test runner, coverage tool, linter, type checker, or formatter detected.
+  Style: undetermined; this will be decided in the briefing/exploration phase.
+
+testing:
+  strict_tdd: false
+  test_runner: none
+  test_layers: []
+  coverage: none
+  linter: none
+  type_checker: none
+  formatter: none
+  test_command: ""
+  coverage_command: ""
+
+rules:
+  proposal:
+    - Include rollback notes for risky changes.
+  specs:
+    - Use RFC 2119 keywords for requirements.
+    - Write scenarios in Given/When/Then form.
+  design:
+    - Capture rationale for major UI and architecture decisions.
+  tasks:
+    - Group work by phase and keep tasks small enough to complete in one session.
+  apply:
+    - Follow existing code patterns once the stack is established.
+  verify:
+    - Match test scope to the available tooling.
+  archive:
+    - Preserve change history in archive folders.

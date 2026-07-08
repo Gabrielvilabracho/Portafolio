@@ -1,0 +1,127 @@
+# Personal Portfolio Website - Domain Specifications
+
+## Overview
+This project implements a personal portfolio website for Gabriel Vilabracho, showcasing his expertise as a senior software architect and frontend/product engineer. The site prioritizes credibility, taste, and clarity over generic resume conventions.
+
+## Technology Stack
+- **Framework**: Astro (content-first)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: React islands (for navbar, etc.)
+- **Animation**: CSS Transforms/Opacity, GSAP (minimal)
+- **Deployment**: Static export, Vercel/Cloudflare Pages
+
+## Target Users
+- Recruiters and hiring managers seeking credibility signals
+- Tech talent scouters looking for senior-level expertise
+- Potential collaborators and consultants
+
+## Core Requirements
+
+### 1. Navigation & Information Architecture
+- **Fixed sticky navbar** (React component) with scroll-based transparency
+- **Semantic HTML5 structure** with proper heading hierarchy
+- **Clear visual hierarchy** using typography and spacing
+- **Mobile-responsive** navigation ( Hamburger menu for mobile )
+
+### 2. Content Structure
+- **Projects section**: Showcase technical work with live demos where possible
+- **About section**: Professional background, expertise areas
+- **Contact section**: Professional contact methods
+- **CV/Resume**: Downloadable PDF
+- **Blog/Articles**: Technical writing (future extensibility)
+
+### 3. Visual Design
+- **Editorial technical portfolio aesthetic**: strong typography, disciplined grid
+- **Textured/tinted neutral palette** with one committed accent
+- **Restrained motion** - transform/opacity only
+- **Accessibility-first**: semantic headings, visible focus states, 4.5:1 contrast, keyboard navigation
+
+### 4. Performance & Technical
+- **Fast loading** with code splitting
+- **Image optimization**: Next-gen formats (WebP), responsive images
+- **Bundle optimization**: Tree-shaking, lazy loading for React islands
+- **SEO optimization**: OpenGraph, structured data
+- **Mobile-first**: No desktop-first approach
+
+### 5. Technical Architecture
+```
+Layout:
+src/
+├── presentation/
+│   ├── components/
+│   │   └── ui/
+│   │       ├── Navbar.tsx (React with client:load)
+│   │       └── ...
+│   └── layouts/
+│       └── BaseLayout.astro
+├── pages/
+│   ├── index.astro
+│   ├── work/  (projects showcase)
+│   ├── about.astro
+│   └── contact.astro
+└── styles/
+    ├── globals.css
+    └── utilities/ (component utilities)
+```
+
+## Accessibility Requirements
+- **Semantic HTML5** for all content
+- **Visible focus states** with high contrast
+- **4.5:1 color contrast** ratio for text
+- **Keyboard navigation** support
+- **prefers-reduced-motion** support
+- **Screen reader** compatibility
+
+## Performance Goals
+- **First Contentful Paint (FCP)**: < 1.5s
+- **Largest Contentful Paint (LCP)**: < 2.5s
+- **Cumulative Layout Shift (CLS)**: < 0.1
+- **Total Blocking Time (TBT)**: < 150ms
+- **Time to Interactive (TTI)**: < 3.0s
+
+## Testing Strategy
+- **Unit tests** for React components (if needed)
+- **E2E tests** for critical user flows
+- **Accessibility audits** using axe-core
+- **Performance budgets** and monitoring
+- **Cross-browser testing** (Chrome, Firefox, Safari, Edge)
+
+## Content Sources
+- **GitHub**: Personal projects repositories
+- **LinkedIn**: Professional experience
+- **Blog**: Technical articles (if exists)
+- **PDF**: Downloadable CV/Resume
+
+## Future Extensibility
+- **Content collections** (Astro 2.0)
+- **API integration**: GitHub API for projects
+- **CMS integration**: Sanity or similar
+- **Internationalization**: Multi-language support
+- **Analytics integration**: Next.js Analytics, Google Analytics
+
+## Deliverables
+1. **Clean, semantic HTML structure** with proper SEO
+2. **Responsive design** (mobile-first approach)
+3. **Interactive React components** with smooth animations
+4. **Fast performance** with optimization
+5. **Accessible implementation** following WCAG 2.1 AA
+6. **Cross-browser compatibility**
+7. **Content management system** for easy updates
+8. **Deployment configuration** for production
+
+## Technical Constraints
+- **No external dependencies** unless absolutely necessary
+- **Minimal JavaScript** usage (only for interactivity)
+- **Component isolation** (Astro islands)
+- **CSS-in-JS avoidance** (use Tailwind CSS)
+- **Static site generation** preferred over server-side rendering
+- **Performance budgets** for critical resources
+
+## Success Metrics
+- **Page load time**: < 2 seconds on mobile
+- **Core Web Vitals**: All pass (LCP < 2.5s, CLS < 0.1)
+- **Accessibility score**: > 90% in axe reports
+- **SEO score**: > 80% in Lighthouse reports
+- **User engagement**: > 60% page completion rate
+- **SEO rankings**: Appropriate rankings for "developer portfolio", "software architect portfolio", etc.
