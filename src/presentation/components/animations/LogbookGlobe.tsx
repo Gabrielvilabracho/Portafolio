@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Globe, { type GlobeMethods } from 'react-globe.gl';
 import * as THREE from 'three';
+import { logbookEntries } from '../sections/logbookEntries';
 
 const oceanMaterial = new THREE.MeshPhongMaterial({ color: '#0c0c0c' });
 
@@ -10,7 +11,7 @@ interface Port {
   lng: number;
 }
 
-const ports: Port[] = [
+export const ports: Port[] = [
   { label: 'Puerto La Cruz · Venezuela', lat: 10.21, lng: -64.63 },
   { label: 'Lanzarote · Canary Islands', lat: 29.05, lng: -13.6 },
   { label: 'Galicia · Spain', lat: 43.48, lng: -8.23 },
@@ -32,13 +33,7 @@ const ports: Port[] = [
   { label: 'Victoria · Seychelles', lat: -4.62, lng: 55.45 },
 ];
 
-// Route stop labels per entry (index matches LogbookController entry index)
-const ROUTE_LABELS: string[][] = [
-  [], // Entry 1: all ports lit, no route
-  ['Cádiz · Spain', 'Casablanca · Morocco', 'Lanzarote · Canary Islands', 'Lisbon · Portugal', 'Galicia · Spain', 'Den Helder · Netherlands'],
-  ['Cádiz · Spain', 'Mallorca · Spain', 'Catania · Sicily', 'Crete · Greece'],
-  ['Cádiz · Spain', 'Catania · Sicily', 'Suez Canal · Egypt', 'Djibouti City · Djibouti', 'Muscat · Oman', 'Dar es Salaam · Tanzania', 'Victoria · Seychelles', 'Mombasa · Kenya', 'Mogadishu · Somalia', 'Shalala · Oman'],
-];
+export const ROUTE_LABELS = logbookEntries.map((entry) => entry.routeLabels);
 
 // Design-system tokens (see src/styles/globals.css)
 const ORANGE = '#fe5b2a'; // --brand-orange-500

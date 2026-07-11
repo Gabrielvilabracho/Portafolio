@@ -1,5 +1,6 @@
 import { Component, useState, type ReactNode } from 'react';
 import LogbookGlobe from '../animations/LogbookGlobe.tsx';
+import { logbookEntries } from './logbookEntries';
 
 /**
  * WebGL can fail (GPU process disabled, headless browsers, old hardware).
@@ -34,40 +35,7 @@ class GlobeErrorBoundary extends Component<{ children: ReactNode }, { failed: bo
   }
 }
 
-const entries = [
-  {
-    tag: 'Entry 01 — Enlisted',
-    text: `I began my career in the Navy, trained as a Tactical Systems Operator specialized in radar. My job was to read the picture no one else could see: contacts, bearings, and speeds emerging from noise on a screen — and turn them into decisions in real time.
-
-But more than the technical skill, what I want to convey is what it means to truly understand and describe the reality of the world we live in. That experience shaped my humanitarian values and sharpened my critical view of how the hidden realities of our society actually work. It was a turning point — a reality everyone should witness, if only to learn to appreciate, respect, and look after one another a little more.`,
-  },
-  {
-    tag: 'Entry 02 — Participation in SNMG / SNMCMG · NATO',
-    text: `Integration into NATO's Standing Naval Forces — the core of the Alliance's permanent maritime presence, ready to respond to crises and military exercises. Both forces operate under Allied Maritime Command (MARCOM).
-
-SNMG — frigates, destroyers, and logistic support ships providing continuous escort and defense capability, deployed in Northern European and Atlantic waters or the Mediterranean depending on the group.
-
-SNMCMG — minehunters and command ships dedicated to keeping shipping lanes safe by searching for, detecting, and neutralizing sea mines, including both modern devices and historical ordnance from the World Wars.`,
-  },
-  {
-    tag: 'Entry 03 — Operation Sea Guardian · NATO',
-    text: `NATO maritime mission focused on maritime situational awareness, counter-terrorism deterrence, and regional security capacity-building. Its aim is not direct humanitarian rescue, but ensuring maritime security through surveillance and countering arms trafficking and terrorist networks.
-
-Humanitarian assistance and rescue — as a military force, there is an international legal obligation to assist any vessel in distress or shipwrecked persons detected within the area of operations.
-
-Aegean Sea precedent — NATO previously deployed a dedicated support and reconnaissance mission to curb illicit trafficking of people, in cooperation with Greece, Turkey, and the European Union.`,
-  },
-  {
-    tag: 'Entry 04 — Operation Atalanta · EU NAVFOR Somalia',
-    text: `EU naval operation deployed in the Indian Ocean, the Red Sea, and the Gulf of Aden, off the coast of Somalia, under the Common Security and Defence Policy (CSDP). The EU's first naval mission, launched in 2008 in response to the rise of Somali piracy.
-
-Counter-piracy — deterrence, prevention, and suppression of acts of piracy and armed robbery off the Somali coast.
-
-Protection of vulnerable shipping — escorting World Food Programme (WFP) vessels and AMISOM/AUSSOM shipments, along with other especially exposed maritime traffic.
-
-Maritime surveillance and security — monitoring illegal fishing and illicit activities in the region (arms and drug trafficking), in coordination with EU NAVFOR, CMF, and formerly NATO.`,
-  },
-];
+export const entries = logbookEntries;
 
 export default function LogbookController() {
   const [current, setCurrent] = useState(0);
@@ -115,6 +83,7 @@ export default function LogbookController() {
                 cursor: 'pointer',
                 transition: 'background 0.2s, border-color 0.2s',
                 flexShrink: 0,
+
               }}
             />
           ))}
@@ -133,7 +102,7 @@ export default function LogbookController() {
           <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--brand-orange-500)' }}>
             {entry.tag}
           </p>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--brand-grey-300)', whiteSpace: 'pre-line' }}>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--brand-grey-100)', whiteSpace: 'pre-line' }}>
             {entry.text}
           </p>
         </div>
