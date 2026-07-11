@@ -15,7 +15,7 @@
         src="/imagenes/cross-background.svg"
         alt=""
         class="absolute inset-0 w-full h-full"
-       style="max-width: none; opacity: 0.5; transform: scale(0.9);"
+       style="max-width: none; opacity: 0.5; transform: scale(1);"
       />
     </div>
   </div>
@@ -34,7 +34,7 @@
       style="max-width: none; opacity: 0.15; transform: scale(0.9);"
     />
     <div class="relative z-10 flex flex-col items-start gap-4">
-      <span class="marker-reveal" data-portrait-trigger>
+      <span class="marker-reveal">
         <img
           src="/imagenes/gabriel-vila-bracho-transparent.svg"
           alt="Gabriel Vilabracho"
@@ -49,14 +49,6 @@
       </span>
     </div>
 
-    <span class="relative z-10 marker-reveal marker-reveal--delayed">
-      <img
-        id="hero-portrait"
-        src="/imagenes/gabriel-portrait-dark.svg"
-        alt="Gabriel Vilabracho portrait"
-        style="height: clamp(21rem, 18vw, 12rem); width: auto;"
-      />
-    </span>
   </div>
 </div>
 
@@ -98,32 +90,4 @@
       display: none;
     }
   }
-
-  #hero-portrait {
-    transform-origin: bottom center;
-    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
 </style>
-
-<script>
-  const portrait = document.getElementById('hero-portrait');
-  const triggers = document.querySelectorAll('[data-portrait-trigger]');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  if (portrait && !reducedMotion.matches) {
-    triggers.forEach((trigger) => {
-      trigger.addEventListener('mouseenter', () => {
-        const portraitRect = portrait.getBoundingClientRect();
-        const triggerRect = trigger.getBoundingClientRect();
-        const portraitCenter = portraitRect.left + portraitRect.width / 2;
-        const triggerCenter = triggerRect.left + triggerRect.width / 2;
-        // Tilt toward the hovered element, as if turning to look at it
-        const direction = triggerCenter < portraitCenter ? -1 : 1;
-        portrait.style.transform = `rotate(${direction * 5}deg)`;
-      });
-      trigger.addEventListener('mouseleave', () => {
-        portrait.style.transform = 'rotate(0deg)';
-      });
-    });
-  }
-</script>
