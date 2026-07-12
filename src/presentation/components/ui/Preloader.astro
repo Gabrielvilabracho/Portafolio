@@ -1,0 +1,130 @@
+---
+import type { Locale } from '../../../utils/i18n';
+
+export interface Props {
+  currentLocale: Locale;
+}
+
+const { currentLocale } = Astro.props;
+
+const READY_LABEL: Record<Locale, string> = {
+  en: 'Ready',
+  es: 'Listo',
+  pt: 'Pronto',
+  ru: 'Готово',
+};
+
+const readyLabel = READY_LABEL[currentLocale] ?? READY_LABEL.en;
+---
+
+<noscript>
+  <style>
+    #preloader {
+      display: none !important;
+    }
+  </style>
+</noscript>
+
+<div id="preloader" class="crosses-pattern" data-preloader data-ready-label={readyLabel} aria-hidden="true">
+  <span class="preloader__counter bracket-badge">
+    <span data-preloader-counter>00</span>
+  </span>
+</div>
+
+<style>
+  #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--mapped-surface-dark);
+    transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+    will-change: transform;
+  }
+
+  #preloader.is-leaving {
+    transform: translateY(-100%);
+  }
+
+  #preloader.is-done {
+    display: none;
+  }
+
+  .preloader__counter {
+    color: var(--brand-orange-500);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--type-h4-size);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #preloader {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // With ClientRouter enabled this module runs only once per browser tab,
+  // but the preloader element is re-inserted on every client-side visit to
+  // the homepage — so init must re-run on astro:page-load and re-query the
+  // current element each time.
+  const SESSION_KEY = 'gvb-preloader-seen';
+
+  const initPreloader = () => {
+    const preloader = document.querySelector<HTMLDivElement>('[data-preloader]');
+    if (!preloader || preloader.dataset.init) return;
+    preloader.dataset.init = '1';
+
+    const alreadySeen = sessionStorage.getItem(SESSION_KEY);
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const finish = () => {
+      preloader.classList.add('is-done');
+      document.documentElement.style.overflow = '';
+      sessionStorage.setItem(SESSION_KEY, '1');
+      document.dispatchEvent(new Event('preloader-done'));
+    };
+
+    if (alreadySeen || prefersReduced) {
+      finish();
+    } else {
+      document.documentElement.style.overflow = 'hidden';
+
+      const counterEl = preloader.querySelector<HTMLSpanElement>('[data-preloader-counter]');
+      const readyLabel = preloader.getAttribute('data-ready-label') ?? 'Ready';
+      const DURATION = 1600;
+      let start: number | null = null;
+
+      const tick = (timestamp: number) => {
+        if (start === null) start = timestamp;
+        const progress = Math.min(1, (timestamp - start) / DURATION);
+        const value = Math.round(progress * 100);
+        if (counterEl) counterEl.textContent = String(value).padStart(2, '0');
+
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+          return;
+        }
+
+        if (counterEl) counterEl.textContent = readyLabel;
+        preloader.classList.add('is-leaving');
+
+        let settled = false;
+        const onLeaveEnd = () => {
+          if (settled) return;
+          settled = true;
+          finish();
+        };
+        preloader.addEventListener('transitionend', onLeaveEnd, { once: true });
+        setTimeout(onLeaveEnd, 1200);
+      };
+
+      requestAnimationFrame(tick);
+    }
+  };
+
+  initPreloader();
+  document.addEventListener('astro:page-load', initPreloader);
+</script>

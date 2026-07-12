@@ -1,8 +1,11 @@
 ---
 import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import { ClientRouter } from 'astro:transitions';
 import '../../styles/globals.css';
 import Navbar from '../components/ui/Navbar.tsx';
 import Footer from '../components/ui/Footer.astro';
+import Preloader from '../components/ui/Preloader.astro';
+import PageTransition from '../components/ui/PageTransition.astro';
 import { DEFAULT_LOCALE, LOCALES, stripLocalePrefix, type Locale } from '../../utils/i18n';
 
 export interface Props {
@@ -27,8 +30,21 @@ const basePath = stripLocalePrefix(Astro.url.pathname);
       <link rel="alternate" hreflang={locale} href={getAbsoluteLocaleUrl(locale, basePath)} />
     ))}
     <link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl(DEFAULT_LOCALE, basePath)} />
+    <ClientRouter />
   </head>
   <body class={`bg-white dark:bg-[#0c0c0c] text-gray-900 dark:text-gray-100 ${bodyClass}`}>
+    <noscript>
+      <style>
+        .marker-reveal::before {
+          display: none;
+        }
+      </style>
+    </noscript>
+
+    <PageTransition />
+
+    {basePath === '/' && <Preloader currentLocale={currentLocale} />}
+
     <Navbar client:load currentLocale={currentLocale} currentPath={Astro.url.pathname} />
 
     <div style="padding-top: var(--layout-nav-height);">
@@ -58,6 +74,12 @@ const basePath = stripLocalePrefix(Astro.url.pathname);
         };
         requestAnimationFrame(raf);
 
+        // On client-side navigation Lenis keeps lerping toward the previous
+        // page's scroll position — snap it to the top of the new page.
+        document.addEventListener('astro:after-swap', () => {
+          lenis.scrollTo(0, { immediate: true });
+        });
+
         // Smooth-scroll same-page anchor links, offset by the fixed navbar
         document.addEventListener('click', (event) => {
           const link = (event.target as HTMLElement).closest('a');
@@ -74,6 +96,41 @@ const basePath = stripLocalePrefix(Astro.url.pathname);
           lenis.scrollTo(target as HTMLElement, { offset: -navHeight });
         });
       }
+    </script>
+
+    <script>
+      // Reveal coordinator: arms .marker-reveal animations (paused by
+      // default in globals.css) once nothing covers the page. Waits for the
+      // page-transition curtain and/or the homepage preloader to finish so
+      // reveals never play hidden behind an overlay. Re-runs on every
+      // client-side navigation.
+      const onceEvent = (name: string, timeoutMs: number) =>
+        new Promise<void>((resolve) => {
+          document.addEventListener(name, () => resolve(), { once: true });
+          setTimeout(resolve, timeoutMs);
+        });
+
+      const initMarkerReveal = async () => {
+        const pending = Array.from(
+          document.querySelectorAll<HTMLElement>('.marker-reveal:not(.is-armed)')
+        );
+        if (!pending.length) return;
+
+        const curtain = document.querySelector('#page-transition');
+        if (curtain?.classList.contains('is-active')) {
+          await onceEvent('page-transition-done', 4000);
+        }
+
+        const preloader = document.querySelector('[data-preloader]');
+        if (preloader && !preloader.classList.contains('is-done')) {
+          await onceEvent('preloader-done', 8000);
+        }
+
+        pending.forEach((el) => el.classList.add('is-armed'));
+      };
+
+      initMarkerReveal();
+      document.addEventListener('astro:page-load', () => initMarkerReveal());
     </script>
   </body>
 </html>

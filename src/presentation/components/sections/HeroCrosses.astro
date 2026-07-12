@@ -52,42 +52,6 @@
   </div>
 </div>
 
-<style>
-  /*
-   * Highlight marker reveal (sstr.tech style): the orange bar starts fully
-   * painted over the content and collapses upward, revealing what's beneath.
-   */
-  .marker-reveal {
-    position: relative;
-    display: inline-block;
-    overflow: hidden;
-  }
+<!-- .marker-reveal styling and arming live in globals.css and the reveal
+     coordinator script in BaseLayout.astro. -->
 
-  .marker-reveal::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background-color: #fe5b2a;
-    transform: scaleY(1);
-    transform-origin: center top;
-    animation: marker-collapse 0.78s cubic-bezier(0.65, 0, 0.35, 1) 0.2s forwards;
-  }
-
-  .marker-reveal--delayed::before {
-    animation-delay: 0.35s;
-  }
-
-  @keyframes marker-collapse {
-    to {
-      transform: scaleY(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .marker-reveal::before {
-      display: none;
-    }
-  }
-</style>

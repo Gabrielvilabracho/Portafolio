@@ -411,6 +411,46 @@
     to { clip-path: inset(0 0 0 0); }
   }
 
+  /* Highlight marker reveal (sstr.tech style): the orange bar starts fully
+     painted over the content and collapses upward, revealing what's beneath.
+     Starts paused: the reveal coordinator in BaseLayout.astro adds .is-armed
+     once nothing covers the page (homepage preloader, page-transition
+     curtain), so the animation never plays hidden behind an overlay. */
+  .marker-reveal {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
+  .marker-reveal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-color: var(--brand-orange-500);
+    transform: scaleY(1);
+    transform-origin: center top;
+    animation: marker-collapse 0.6s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards;
+    animation-play-state: paused;
+  }
+  .marker-reveal.is-armed::before {
+    animation-play-state: running;
+  }
+  .marker-reveal--delayed::before {
+    animation-delay: 0.3s;
+  }
+  .marker-reveal--delayed-2::before {
+    animation-delay: 0.45s;
+  }
+  @keyframes marker-collapse {
+    to { transform: scaleY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marker-reveal::before {
+      display: none;
+    }
+  }
+
   /* Video de fondo */
   .bg-video {
     position: relative;

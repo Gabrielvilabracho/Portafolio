@@ -1,0 +1,142 @@
+---
+---
+
+<div
+  id="page-transition"
+  class="crosses-pattern"
+  transition:persist="page-curtain"
+  aria-hidden="true"
+>
+  <span class="page-transition__label" data-page-label></span>
+</div>
+
+<style>
+  #page-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--mapped-surface-dark);
+    transform: translateY(100%);
+    transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  #page-transition.is-active {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  #page-transition.is-leaving {
+    transform: translateY(-100%);
+  }
+
+  .page-transition__label {
+    display: inline-flex;
+    gap: 0.4em;
+    color: #f5f5f0;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: var(--brand-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .page-transition__label::before {
+    content: '[';
+  }
+
+  .page-transition__label::after {
+    content: ']';
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #page-transition {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Curtain page transition: on internal navigation the dark crosses panel
+  // slides up from the bottom, holds covering the viewport (showing the
+  // destination page's label) while the next page loads, then continues
+  // sliding up to reveal it. The element uses transition:persist so it
+  // survives the DOM swap mid-animation.
+  const COVER_MS = 900;
+  const HOLD_MS = 250;
+  const LEAVE_FALLBACK_MS = 1200;
+
+  const getOverlay = () => document.querySelector<HTMLDivElement>('#page-transition');
+  const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let leaving = false;
+  let leaveTimeout: ReturnType<typeof setTimeout> | undefined;
+
+  document.addEventListener('astro:before-preparation', (event) => {
+    const overlay = getOverlay();
+    if (!overlay || prefersReduced()) return;
+
+    // Cancel a pending leave cleanup if the user navigates again mid-reveal.
+    leaving = false;
+    if (leaveTimeout) clearTimeout(leaveTimeout);
+
+    const evt = event as Event & { to?: URL; loader?: () => Promise<void> };
+
+    // The destination document isn't fetched yet at before-preparation time,
+    // so derive the label from the destination URL instead of its <title>.
+    const label = overlay.querySelector<HTMLSpanElement>('[data-page-label]');
+    if (label) {
+      const path = (evt.to?.pathname ?? '')
+        .replace(/^\/(es|pt|ru)(?=\/|$)/, '')
+        .replace(/\/$/, '');
+      const lastSegment = path.split('/').pop() ?? '';
+      label.textContent = lastSegment ? lastSegment.replace(/-/g, ' ') : 'Home';
+    }
+
+    overlay.classList.remove('is-leaving');
+    overlay.classList.add('is-active');
+
+    // Delay the swap until the curtain fully covers the viewport (plus a
+    // short hold so the label is readable), in parallel with the fetch.
+    const originalLoader = evt.loader;
+    const covered = new Promise<void>((resolve) => setTimeout(resolve, COVER_MS + HOLD_MS));
+    if (originalLoader) {
+      evt.loader = async () => {
+        await Promise.all([originalLoader(), covered]);
+      };
+    }
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    const overlay = getOverlay();
+    // Cold load (or reduced motion): the curtain never activated — nothing to do.
+    if (!overlay || !overlay.classList.contains('is-active')) return;
+
+    leaving = true;
+    overlay.classList.add('is-leaving');
+
+    const finish = () => {
+      if (!leaving) return;
+      leaving = false;
+      // Reset to the bottom without animating back down across the screen.
+      overlay.style.transition = 'none';
+      overlay.classList.remove('is-active', 'is-leaving');
+      void overlay.offsetHeight;
+      overlay.style.transition = '';
+      document.dispatchEvent(new Event('page-transition-done'));
+    };
+
+    overlay.addEventListener(
+      'transitionend',
+      (e) => {
+        if (e.target === overlay) finish();
+      },
+      { once: true }
+    );
+    leaveTimeout = setTimeout(finish, LEAVE_FALLBACK_MS);
+  });
+</script>
