@@ -1,0 +1,116 @@
+---
+import type { Project } from '../../../domain/entities/project';
+import ProjectHero from './ProjectHero.astro';
+import SectionsGrid, { type Section } from './SectionsGrid.astro';
+import ProcessGrid from './ProcessGrid.astro';
+import FeatureRows from './FeatureRows.astro';
+import WorkflowGrid from './WorkflowGrid.astro';
+import ProblemSection from './ProblemSection.astro';
+import TechnicalFoundation from './TechnicalFoundation.astro';
+
+export interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const heroLabel = `${project.discipline ?? 'Project'} · ${project.year}`;
+type NavigableSection = Omit<Section, 'number'>;
+const availableSections = [
+  project.context && { title: 'Problem', phrase: 'The challenge this project was built to solve.', href: '#problem' },
+  project.workflow && { title: 'Workflow', phrase: project.workflow.navigationPhrase ?? 'The steps that move the work forward.', href: '#workflow' },
+  project.featureRows?.sectionId && { title: project.featureRows.navigationLabel ?? 'Capabilities', phrase: project.featureRows.navigationPhrase ?? 'The key parts of the solution.', href: `#${project.featureRows.sectionId}` },
+  project.technologies.length > 0 && { title: 'Stack', phrase: 'Technologies and tools used to build it.', href: '#stack' },
+].filter((section): section is NavigableSection => Boolean(section));
+const sections = availableSections.map((section, index) => ({
+  ...section,
+  number: String(index + 1).padStart(2, '0'),
+}));
+
+---
+
+<ProjectHero
+  label={heroLabel}
+  title={project.title}
+  description={project.overview ?? project.description}
+/>
+
+{sections.length > 0 && <SectionsGrid sections={sections} />}
+
+{project.workflow ? (
+  <WorkflowGrid
+    problem={project.context}
+    title={project.workflow.title}
+    subtitle={project.workflow.subtitle}
+    steps={project.workflow.steps}
+  />
+) : (
+  <>
+    {project.context && (
+      <section class="bg-dark-surface" data-navbar-theme="dark" aria-labelledby="problem-heading">
+        <div class="container">
+          <div class="border-l border-r border-b border-brand-grey-700" style="padding: var(--brand-scale-900);">
+            <ProblemSection problem={project.context} maxWidth="52ch" />
+          </div>
+        </div>
+      </section>
+    )}
+    <ProcessGrid
+      label="Process"
+      title="Full cycle — from problem to deployed solution."
+      subtitle="Four steps that take a challenge from diagnosis to production."
+      steps={[
+        { number: '01', title: 'Problem', description: 'Understanding the root cause and constraints before writing a single line of code.' },
+        { number: '02', title: 'Approach', description: 'Designing the architecture, choosing the right tools, and validating the strategy.' },
+        { number: '03', title: 'Stack', description: 'Building with the technologies best suited for the problem, not the trendiest ones.' },
+        { number: '04', title: 'Result', description: 'Measurable outcomes — performance, reliability, and real business impact.' },
+      ]}
+    />
+  </>
+)}
+
+<FeatureRows
+  heading={project.featureRows?.heading ?? 'We build systems where complexity is the real challenge.'}
+  sectionId={project.featureRows?.sectionId}
+  rows={project.featureRows?.rows ?? [
+    { tag: 'Layer 01', title: 'Problem Definition', description: 'Understanding the root cause before writing a single line of code. Constraints, stakeholders, and failure modes mapped first.' },
+    { tag: 'Layer 02', title: 'Architecture Decision', description: 'Choosing the right structure for the problem — not the trendiest stack. Every trade-off documented and justified.' },
+    { tag: 'Layer 03', title: 'Implementation', description: 'Building iteratively with real feedback loops. No big-bang releases — each increment validated against the original problem.' },
+    { tag: 'Layer 04', title: 'Result & Impact', description: 'Measurable outcomes tied to the business goal. Performance, reliability, and adoption tracked from day one.' },
+  ]}
+/>
+
+{project.image && (
+  <section class="container">
+    <div class="border-b border-brand-grey-200 dark:border-brand-grey-700 overflow-hidden" style="max-height: 480px;">
+      <img src={project.image} alt={project.title} class="w-full object-cover" style="max-height: 480px;" />
+    </div>
+  </section>
+)}
+
+{project.technologies.length > 0 && <TechnicalFoundation technologies={project.technologies} presentation={project.technologyPresentation} />}
+
+{project.links && project.links.length > 0 && (
+  <section class="container">
+    <div class="section-pad border-b border-brand-grey-200 dark:border-brand-grey-700">
+      <div class="grid grid-cols-1 lg:grid-cols-[12rem_1fr] gap-8 lg:gap-16">
+        <div>
+          <p class="text-xs uppercase tracking-widest" style="color: var(--brand-grey-400);">{project.linksLabel ?? '02 — Live'}</p>
+        </div>
+        <div class="flex flex-col gap-3">
+          {project.links.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-between border-b border-brand-grey-200 dark:border-brand-grey-700 py-4 text-sm uppercase tracking-wider transition-colors group hover:text-brand-orange-500"
+              style="max-width: 32em;"
+            >
+              <span>{link.label}</span>
+              <span class="transition-transform group-hover:translate-x-1">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+)}

@@ -8,12 +8,13 @@ export interface Row {
 export interface Props {
   heading: string;
   rows: Row[];
+  sectionId?: string;
 }
 
-const { heading, rows } = Astro.props;
+const { heading, rows, sectionId } = Astro.props;
 ---
 
-<section class="bg-dark-surface" data-navbar-theme="dark">
+<section id={sectionId} class="bg-dark-surface" data-navbar-theme="dark">
   <div class="container">
     <div class="border-l border-r border-t border-brand-grey-700">
 
