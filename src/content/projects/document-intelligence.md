@@ -1,63 +1,86 @@
 ---
-title: Document Intelligence Pipeline
+title: Document Intelligence Platform
 type: project
 year: 2026
-discipline: AI Engineering
-focus: LLMs + Automation
-description: LLM-powered pipeline that extracts, classifies, and summarizes business documents at scale.
+discipline: AI Systems
+focus: Document Intelligence
+description: EU-ready document intelligence for financial operations.
 
 overview: |
-  An end-to-end pipeline that ingests unstructured business documents — contracts, invoices, reports — and transforms them into structured, searchable data using large language models. Processes thousands of documents daily with 94% extraction accuracy.
+  Documents become trusted, actionable operational data through AI-assisted extraction, deterministic validation, human review, and auditable delivery.
 
 context: |
-  Finance and operations teams were spending 4–6 hours per day manually reviewing and extracting information from incoming documents. The process was error-prone, non-scalable, and created a bottleneck that delayed downstream decision-making by 24–48 hours.
+  Financial teams require explainable, validated, and safe data for operations — not raw PDF text extraction that cannot be traced, checked, or trusted downstream.
 
-approach: |
-  Designed a three-stage pipeline: ingestion and OCR normalization, LLM-based extraction and classification using Claude API, and human-in-the-loop review for low-confidence results. Outputs are stored in PostgreSQL for full-text search and downstream analytics.
+workflow:
+  title: A controlled workflow from source document to trusted delivery.
+  subtitle: AI accelerates understanding while deterministic rules, human judgment, and audit evidence control what moves into operations.
+  navigationPhrase: The controlled path from source document to delivery.
+  steps:
+    - title: Ingest
+      description: Capture documents and preserve their source context for traceability.
+    - title: Understand
+      description: Classify content and extract structured fields with AI assistance.
+    - title: Validate
+      description: Apply deterministic rules and profile-specific checks to every result.
+    - title: Review
+      description: Route uncertain or high-risk cases to reviewers with their evidence.
+    - title: Deliver
+      description: Release only approved, auditable data to downstream operations.
 
-differentiator: |
-  Instead of fine-tuning a model, we used structured prompting with confidence scoring. Each extraction returns a score — results below the threshold go to human review, the rest auto-commit. This hybrid approach achieves high accuracy without the cost and fragility of fine-tuning.
+featureRows:
+  heading: A common platform core with bounded local intelligence.
+  navigationLabel: Platform Core
+  navigationPhrase: The platform capabilities that shape the solution.
+  sectionId: platform-scope
+  rows:
+    - tag: Layer 01
+      title: Vertical Intelligence
+      description: Country and industry profiles bound tax validation, identifiers, retention, export formats, and local compliance constraints across EU markets.
+    - tag: Layer 02
+      title: Trust by Design
+      description: Every extracted field retains source evidence; deterministic validation and review govern uncertain or high-risk cases; approved-only delivery remains auditable.
 
-architecture:
-  description: |
-    Documents enter via S3 webhook → OCR normalization → LLM extraction (Claude API) → confidence router → PostgreSQL. Low-confidence results fork to a review queue served by a lightweight internal UI.
+technologyPresentation: editorial-nine
 
 technologies:
-  - name: TypeScript
-    role: Core pipeline orchestration
-    category: language
-  - name: Claude API
-    role: Document extraction and classification
-    category: ai
-  - name: PostgreSQL
-    role: Structured output storage and search
-    category: data
-  - name: AWS S3
-    role: Document ingestion
-    category: infrastructure
-  - name: Node.js
-    role: API layer
+  - name: Next.js
+    role: Operations and review interface
     category: framework
-
-metrics:
-  - label: Documents processed daily
-    value: "10,000+"
-  - label: Manual hours saved per week
-    value: "120h"
-  - label: Extraction accuracy
-    value: "94%"
-  - label: Review queue reduction
-    value: "78%"
-    delta: vs. previous process
-
-lessons: |
-  The main challenge was handling document variance — the same invoice from different vendors has wildly different layouts. We solved this with adaptive prompting that describes the document structure before asking for extractions. The second big lesson: confidence thresholds need to be calibrated per document type, not globally.
-
-future: |
-  Next steps include expanding to multi-language documents, adding a real-time streaming mode for high-priority documents, and building an analytics layer on top of extracted data for trend detection.
-
-links:
-  - label: GitHub Repository
-    url: https://github.com/gabrielvilabracho/document-intelligence
-    type: github
+    logo: /imagenes/technologies/nextjs.svg
+    invertInDarkMode: true
+  - name: Go
+    role: Core services and deterministic validation
+    category: language
+    logo: /imagenes/technologies/go.svg
+  - name: PostgreSQL
+    role: Operational data and audit records
+    category: data
+    logo: /imagenes/technologies/postgresql.svg
+  - name: Temporal
+    role: Durable workflow orchestration
+    category: infrastructure
+    logo: /imagenes/technologies/temporal.svg
+    invertInDarkMode: true
+  - name: Python
+    role: document-processing workers and AI integration
+    category: ai
+    logo: /imagenes/technologies/python.svg
+  - name: Tesseract OCR
+    role: text recognition with source evidence
+    category: ai
+    logo: /imagenes/technologies/tesseract.svg
+  - name: MinIO
+    role: S3-compatible document and artifact storage
+    category: infrastructure
+    logo: /imagenes/technologies/minio.svg
+  - name: Qdrant
+    role: vector search and retrieval
+    category: data
+    logo: /imagenes/technologies/qdrant.svg
+  - name: OpenTelemetry
+    role: workflow traceability and operational insight
+    category: infrastructure
+    logo: /imagenes/technologies/opentelemetry.svg
+    invertInDarkMode: true
 ---

@@ -1,0 +1,81 @@
+---
+import ProblemSection from './ProblemSection.astro';
+export interface WorkflowStep {
+  title: string;
+  description: string;
+}
+
+export interface Props {
+  problem?: string;
+  title: string;
+  subtitle?: string;
+  steps: WorkflowStep[];
+}
+
+const { problem, title, subtitle, steps } = Astro.props;
+const stepGridColumns = steps.length <= 1
+  ? 'md:grid-cols-1'
+  : steps.length === 2
+    ? 'md:grid-cols-2'
+    : steps.length === 3
+      ? 'md:grid-cols-3'
+	: steps.length === 4
+	  ? 'md:grid-cols-2 lg:grid-cols-4'
+		: steps.length === 5
+		  ? 'md:grid-cols-2 lg:grid-cols-6 xl:grid-cols-5'
+		  : 'md:grid-cols-2 lg:grid-cols-3';
+
+const stepColumnSpan = (index: number) => {
+  if (steps.length !== 5) return undefined;
+
+	if (index === 4) return 'md:col-span-2 lg:col-span-3 xl:col-span-1';
+	if (index === 3) return 'lg:col-span-3 xl:col-span-1';
+	return 'lg:col-span-2 xl:col-span-1';
+};
+---
+
+<section id="workflow" class="bg-dark-surface" data-navbar-theme="dark" aria-labelledby="workflow-heading">
+  <div class="container">
+    <div class="border-l border-r border-t border-brand-grey-700">
+      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] border-b border-brand-grey-700">
+        {problem && (
+          <div class="lg:border-r border-brand-grey-700" style="padding: var(--brand-scale-900);">
+            <ProblemSection problem={problem} />
+          </div>
+        )}
+
+        <div class="flex flex-col gap-4" class:list={[!problem && 'lg:col-span-2']} style="padding: var(--brand-scale-900);">
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            Workflow
+          </span>
+          <h2 id="workflow-heading" class="font-normal uppercase" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; color: #ffffff; max-width: 18ch;">
+            {title}
+          </h2>
+          {subtitle && <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400); max-width: 52ch;">{subtitle}</p>}
+        </div>
+      </div>
+
+      <div class:list={['grid grid-cols-1 gap-px bg-brand-grey-700', stepGridColumns]}>
+		{steps.map((step, index) => (
+		  <div
+			class:list={[
+			  'flex flex-col justify-between gap-12 bg-dark-surface',
+			  stepColumnSpan(index),
+			]}
+			style="min-height: 18rem; padding: var(--brand-scale-800);"
+		  >
+            <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+              <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <div class="flex flex-col gap-2">
+              <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{step.title}</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

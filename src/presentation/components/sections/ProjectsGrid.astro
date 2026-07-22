@@ -42,7 +42,7 @@ const currentLocale = Astro.currentLocale ?? DEFAULT_LOCALE;
             mark={`P-0${index + 1}`}
             meta={[
               { color: 'orange', text: String(project.year) },
-              { color: 'grey', text: project.technologies.slice(0, 3).join(' + ') || 'Stack TBD' },
+              { color: 'grey', text: project.technologies.slice(0, 3).map((technology) => technology.name).join(' + ') || 'Stack TBD' },
             ]}
             href={getRelativeLocaleUrl(currentLocale, `/work/${project.slug}`)}
             action="View project"

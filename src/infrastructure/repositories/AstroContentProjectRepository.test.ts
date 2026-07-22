@@ -47,8 +47,21 @@ describe('AstroContentProjectRepository', () => {
           mark: 'A1',
           order: 2,
           comingSoon: true,
+          overview: 'A richer overview.',
+          context: 'A specific project problem.',
+          workflow: {
+            title: 'Trusted workflow',
+            subtitle: 'Controlled delivery.',
+            steps: [{ title: 'Ingest', description: 'Capture the source.' }],
+          },
+          featureRows: {
+            heading: 'Trust controls',
+            sectionId: 'trust',
+            rows: [{ tag: 'Layer 01', title: 'Evidence', description: 'Keep source evidence.' }],
+          },
+          linksLabel: '02 — Explore',
           technologies: [
-            { name: 'TypeScript', role: 'language', category: 'language' },
+            { name: 'TypeScript', role: 'language', category: 'language', logo: '/imagenes/technologies/typescript.svg', logoLabel: 'TypeScript logo', invertInDarkMode: true },
             { name: 'LangGraph', category: 'ai' },
           ],
           links: [{ label: 'Demo', url: 'https://example.com', type: 'demo' }],
@@ -64,26 +77,42 @@ describe('AstroContentProjectRepository', () => {
         type: 'case',
         description: 'An agent that answers support tickets.',
         image: '/imagenes/agent.png',
-        technologies: ['TypeScript', 'LangGraph'],
+        technologies: [
+          { name: 'TypeScript', role: 'language', category: 'language', logo: '/imagenes/technologies/typescript.svg', logoLabel: 'TypeScript logo', invertInDarkMode: true },
+          { name: 'LangGraph', category: 'ai' },
+        ],
         discipline: 'AI Engineering',
         focus: 'Automation',
         mark: 'A1',
         order: 2,
         comingSoon: true,
         links: [{ label: 'Demo', url: 'https://example.com', type: 'demo' }],
+        overview: 'A richer overview.',
+        context: 'A specific project problem.',
+        workflow: {
+          title: 'Trusted workflow',
+          subtitle: 'Controlled delivery.',
+          steps: [{ title: 'Ingest', description: 'Capture the source.' }],
+        },
+        featureRows: {
+          heading: 'Trust controls',
+          sectionId: 'trust',
+          rows: [{ tag: 'Layer 01', title: 'Evidence', description: 'Keep source evidence.' }],
+        },
+        linksLabel: '02 — Explore',
         year: 2025,
         slug: 'ai-support-agent',
       });
     });
 
-    it('flattens technology objects to their name strings', async () => {
+    it('preserves technology metadata for detailed project rendering', async () => {
       mockedGetCollection.mockResolvedValue([
         makeEntry('tech-project', {
           title: 'Tech Project',
           year: 2024,
           description: 'Tech mapping check.',
           technologies: [
-            { name: 'Astro', category: 'framework' },
+            { name: 'Astro', category: 'framework', logo: '/imagenes/technologies/astro.svg', logoLabel: 'Astro logo', invertInDarkMode: true },
             { name: 'Postgres', category: 'data' },
           ],
         }),
@@ -92,7 +121,30 @@ describe('AstroContentProjectRepository', () => {
       const repository = new AstroContentProjectRepository();
       const [project] = await repository.getAll();
 
-      expect(project?.technologies).toEqual(['Astro', 'Postgres']);
+      expect(project?.technologies).toEqual([
+        { name: 'Astro', category: 'framework', logo: '/imagenes/technologies/astro.svg', logoLabel: 'Astro logo', invertInDarkMode: true },
+        { name: 'Postgres', category: 'data' },
+      ]);
+    });
+
+    it('preserves the editorial-nine technology presentation metadata', async () => {
+      mockedGetCollection.mockResolvedValue([
+        makeEntry('editorial-nine-project', {
+          title: 'Editorial Project',
+          year: 2024,
+          description: 'Editorial technology mapping check.',
+          technologyPresentation: 'editorial-nine',
+          technologies: Array.from({ length: 9 }, (_, index) => ({
+            name: `Technology ${index + 1}`,
+            category: 'other' as const,
+          })),
+        }),
+      ]);
+
+      const repository = new AstroContentProjectRepository();
+      const [project] = await repository.getAll();
+
+      expect(project?.technologyPresentation).toBe('editorial-nine');
     });
 
     it('maps missing optional fields to undefined and missing technologies to an empty array', async () => {

@@ -1,10 +1,7 @@
 ---
 import BaseLayout from '../../presentation/layouts/BaseLayout.astro';
 import ContactCta from '../../presentation/components/sections/ContactCta.astro';
-import ProjectHero from '../../presentation/components/sections/ProjectHero.astro';
-import SectionsGrid from '../../presentation/components/sections/SectionsGrid.astro';
-import ProcessGrid from '../../presentation/components/sections/ProcessGrid.astro';
-import FeatureRows from '../../presentation/components/sections/FeatureRows.astro';
+import ProjectOverview from '../../presentation/components/sections/ProjectOverview.astro';
 import { getProjectsUseCase, getProjectBySlugUseCase } from '../../utils/di';
 import { routableProjects } from '../../application/use-cases/routableProjects';
 
@@ -20,101 +17,11 @@ if (!project) {
   throw new Error(`Project not found: ${slug}`);
 }
 
-const heroLabel = `${project.discipline ?? 'Project'} · ${project.year}`;
 ---
 
 <BaseLayout title={`${project.title} — Gabriel Vilabracho`} description={project.description}>
 
-  <ProjectHero
-    label={heroLabel}
-    title={project.title}
-    description={project.description}
-  />
-
-  <SectionsGrid sections={[
-    { number: '01', title: 'Problem',  phrase: 'The challenge this project was built to solve.',       href: '#problem'  },
-    { number: '02', title: 'Approach', phrase: 'The strategy and decisions behind the solution.',      href: '#approach' },
-    { number: '03', title: 'Stack',    phrase: 'Technologies and tools used to build it.',             href: '#stack'    },
-    { number: '04', title: 'Result',   phrase: 'Outcomes and impact delivered.',                       href: '#result'   },
-  ]} />
-
-  <ProcessGrid
-    label="Process"
-    title="Full cycle — from problem to deployed solution."
-    subtitle="Four steps that take a challenge from diagnosis to production."
-    steps={[
-      { number: '01', title: 'Problem',  description: 'Understanding the root cause and constraints before writing a single line of code.' },
-      { number: '02', title: 'Approach', description: 'Designing the architecture, choosing the right tools, and validating the strategy.' },
-      { number: '03', title: 'Stack',    description: 'Building with the technologies best suited for the problem, not the trendiest ones.' },
-      { number: '04', title: 'Result',   description: 'Measurable outcomes — performance, reliability, and real business impact.' },
-    ]}
-  />
-
-  <FeatureRows
-    heading="We build systems where complexity is the real challenge."
-    rows={[
-      { tag: 'Layer 01', title: 'Problem Definition',     description: 'Understanding the root cause before writing a single line of code. Constraints, stakeholders, and failure modes mapped first.' },
-      { tag: 'Layer 02', title: 'Architecture Decision',  description: 'Choosing the right structure for the problem — not the trendiest stack. Every trade-off documented and justified.' },
-      { tag: 'Layer 03', title: 'Implementation',         description: 'Building iteratively with real feedback loops. No big-bang releases — each increment validated against the original problem.' },
-      { tag: 'Layer 04', title: 'Result & Impact',        description: 'Measurable outcomes tied to the business goal. Performance, reliability, and adoption tracked from day one.' },
-    ]}
-  />
-
-  {/* Cover image */}
-  {project.image && (
-    <section class="container">
-      <div class="border-b border-brand-grey-200 dark:border-brand-grey-700 overflow-hidden" style="max-height: 480px;">
-        <img src={project.image} alt={project.title} class="w-full object-cover" style="max-height: 480px;" />
-      </div>
-    </section>
-  )}
-
-  {/* 01 — Stack */}
-  {project.technologies.length > 0 && (
-    <section class="container">
-      <div class="section-pad border-b border-brand-grey-200 dark:border-brand-grey-700">
-        <div class="grid grid-cols-1 lg:grid-cols-[12rem_1fr] gap-8 lg:gap-16">
-          <div>
-            <p class="text-xs uppercase tracking-widest" style="color: var(--brand-grey-400);">01 — Stack</p>
-          </div>
-          <div class="flex flex-wrap gap-3">
-            {project.technologies.map((tech) => (
-              <div class="border border-brand-grey-200 dark:border-brand-grey-700 px-4 py-2 text-sm">
-                {tech}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )}
-
-  {/* Live links */}
-  {project.links && project.links.length > 0 && (
-    <section class="container">
-      <div class="section-pad border-b border-brand-grey-200 dark:border-brand-grey-700">
-        <div class="grid grid-cols-1 lg:grid-cols-[12rem_1fr] gap-8 lg:gap-16">
-          <div>
-            <p class="text-xs uppercase tracking-widest" style="color: var(--brand-grey-400);">02 — Live</p>
-          </div>
-          <div class="flex flex-col gap-3">
-            {project.links.map((link) => (
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center justify-between border-b border-brand-grey-200 dark:border-brand-grey-700 py-4 text-sm uppercase tracking-wider transition-colors group hover:text-brand-orange-500"
-                style="max-width: 32em;"
-              >
-                <span>{link.label}</span>
-                <span class="transition-transform group-hover:translate-x-1">→</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )}
+  <ProjectOverview project={project} />
 
   <ContactCta />
 

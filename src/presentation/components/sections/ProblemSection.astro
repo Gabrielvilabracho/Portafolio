@@ -1,0 +1,17 @@
+---
+export interface Props {
+  problem: string;
+  class?: string;
+  maxWidth?: string;
+}
+
+const { problem, class: className, maxWidth = '42ch' } = Astro.props;
+---
+
+<div id="problem" class:list={['flex flex-col gap-5', className]}>
+  <h2 id="problem-heading" class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+    <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+    Problem
+  </h2>
+  <p class="text-sm leading-relaxed" style={`color: var(--brand-grey-400); max-width: ${maxWidth};`}>{problem}</p>
+</div>

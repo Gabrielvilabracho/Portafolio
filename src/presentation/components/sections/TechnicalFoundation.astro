@@ -1,0 +1,93 @@
+---
+import { TECHNOLOGY_PRESENTATION, type ProjectTechnology, type TechnologyPresentation } from '../../../domain/entities/project';
+
+export interface Props {
+  technologies: ProjectTechnology[];
+  presentation?: TechnologyPresentation;
+}
+
+const { technologies, presentation } = Astro.props;
+const isEditorialNine = presentation === TECHNOLOGY_PRESENTATION.EDITORIAL_NINE && technologies.length === 9;
+
+// The approved nine-item editorial composition uses six compact cells before its three-cell final row.
+// This is display policy for editorial-nine mode, never a project technology-count invariant.
+const EDITORIAL_NINE_TECHNOLOGY_GRID = {
+  compactCellCount: 6,
+} as const;
+
+const desktopCellSpanClasses: Record<number, string> = {
+  1: 'lg:col-span-12',
+  2: 'lg:col-span-6',
+  3: 'lg:col-span-4',
+} as const;
+
+const technologyRowSizes = (count: number) => {
+  if (count === 1) return [1];
+  if (count % 3 === 1) return [...Array((count - 4) / 3).fill(3), 2, 2];
+  return [...Array(Math.floor(count / 3)).fill(3), ...(count % 3 === 2 ? [2] : [])];
+};
+
+const technologyRowSize = (index: number, count: number) => {
+  let entriesSeen = 0;
+
+  for (const size of technologyRowSizes(count)) {
+    entriesSeen += size;
+    if (index < entriesSeen) return size;
+  }
+
+  return 3;
+};
+
+const technologyCellClasses = (index: number, count: number) => {
+  if (isEditorialNine) return [index < EDITORIAL_NINE_TECHNOLOGY_GRID.compactCellCount ? 'lg:col-span-3' : 'lg:col-span-4'];
+
+  const rowSize = technologyRowSize(index, count);
+  return [desktopCellSpanClasses[rowSize]];
+};
+---
+
+<section id="stack" class="container" aria-labelledby="technical-foundation-heading">
+  <div class="section-pad no-v-pad border-brand-grey-200 dark:border-brand-grey-700">
+    {!isEditorialNine && (
+      <div class="flex flex-col gap-4 border-b border-brand-grey-200 dark:border-brand-grey-700" style="padding: var(--brand-scale-1100) var(--brand-scale-900);">
+        <p class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+          <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+          Technical foundation
+        </p>
+        <h2 id="technical-foundation-heading" class="font-normal uppercase" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; max-width: 18ch;">
+          The technologies and tools that power this project.
+        </h2>
+      </div>
+    )}
+
+    <div class:list={['grid grid-cols-1 gap-px bg-brand-grey-200 dark:bg-brand-grey-700 lg:grid-cols-12', isEditorialNine ? 'md:grid-cols-3' : 'md:grid-cols-2']}>
+      {isEditorialNine && (
+        <div data-technical-foundation-intro class="flex flex-col gap-4 bg-white dark:bg-dark-surface md:col-span-3 lg:col-span-6" style="min-height: 10.5rem; padding: var(--brand-scale-800);">
+          <h2 id="technical-foundation-heading" class="flex items-center gap-2 text-xs font-normal uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            Technical foundation
+          </h2>
+          <p class="text-sm leading-relaxed" style="color: var(--brand-grey-500); max-width: 30ch;">The technologies and tools that power this project.</p>
+        </div>
+      )}
+      {technologies.map((technology, index) => (
+        <div data-technology-cell class:list={['flex flex-col justify-between gap-8 bg-white dark:bg-dark-surface', technologyCellClasses(index, technologies.length)]} style="min-height: 10.5rem; padding: var(--brand-scale-800);">
+          <div class="flex items-start justify-between gap-6">
+            <span data-technology-marker class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+              <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+              {technology.name}
+            </span>
+            {technology.logo && (
+              <img
+                src={technology.logo}
+                alt={technology.logoLabel ?? ''}
+                class:list={['h-10 w-10 shrink-0 object-contain object-right', technology.invertInDarkMode && 'dark:invert']}
+              />
+            )}
+          </div>
+          <div>{technology.role && <p data-technology-role class="text-sm leading-relaxed" style="color: var(--brand-grey-500); max-width: 30ch;">{technology.role}</p>}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -38,21 +38,23 @@ const defaultSections: Section[] = [
 ];
 
 const { sections = defaultSections } = Astro.props;
+const tabletColumns = sections.length <= 1 ? 'md:grid-cols-1' : 'md:grid-cols-2';
+const desktopColumns = sections.length <= 1
+  ? 'lg:grid-cols-1'
+  : sections.length === 2
+    ? 'lg:grid-cols-2'
+    : sections.length === 3
+      ? 'lg:grid-cols-3'
+      : 'lg:grid-cols-4';
 ---
 <div class="container">
   <div class="section-pad no-v-pad border-brand-grey-200 dark:border-brand-grey-700">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-      {sections.map((section, index) => (
+    <div class:list={['grid grid-cols-1 gap-px bg-brand-grey-200 dark:bg-brand-grey-700', tabletColumns, desktopColumns]}>
+      {sections.map((section) => (
         <a
           href={section.href}
           data-portrait-trigger
-          class="group flex flex-col gap-4 border-brand-grey-200 dark:border-brand-grey-700 transition-colors hover:bg-brand-grey-100 dark:hover:bg-brand-grey-850"
-          class:list={[
-            index < 3 ? 'lg:border-r' : '',
-            index % 2 === 0 ? 'md:max-lg:border-r' : '',
-            index < 2 ? 'md:max-lg:border-b' : '',
-            index < 3 ? 'max-md:border-b' : '',
-          ]}
+          class="group flex flex-col gap-4 bg-white transition-colors hover:bg-brand-grey-100 dark:bg-dark-surface dark:hover:bg-brand-grey-850"
           style="padding: var(--brand-scale-1000) var(--brand-scale-900); min-height: 14em;"
         >
           <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
