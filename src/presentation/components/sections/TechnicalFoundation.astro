@@ -7,13 +7,18 @@ export interface Props {
 }
 
 const { technologies, presentation } = Astro.props;
-const isEditorialNine = presentation === TECHNOLOGY_PRESENTATION.EDITORIAL_NINE && technologies.length === 9;
 
-// The approved nine-item editorial composition uses six compact cells before its three-cell final row.
-// This is display policy for editorial-nine mode, never a project technology-count invariant.
-const EDITORIAL_NINE_TECHNOLOGY_GRID = {
-  compactCellCount: 6,
+// This display policy is specific to the twelve-item editorial composition, never a project technology-count invariant.
+const EDITORIAL_TWELVE_TECHNOLOGY_GRID = {
+  technologyCount: 12,
+  upperTechnologyCount: 6,
+  upperDesktopSpanClass: 'lg:col-span-3',
+  lowerDesktopSpanClass: 'lg:col-span-2',
+  introDesktopPlacementClasses: 'lg:col-span-3 lg:row-span-2',
 } as const;
+
+const isEditorialTwelve = presentation === TECHNOLOGY_PRESENTATION.EDITORIAL_TWELVE
+  && technologies.length === EDITORIAL_TWELVE_TECHNOLOGY_GRID.technologyCount;
 
 const desktopCellSpanClasses: Record<number, string> = {
   1: 'lg:col-span-12',
@@ -39,7 +44,11 @@ const technologyRowSize = (index: number, count: number) => {
 };
 
 const technologyCellClasses = (index: number, count: number) => {
-  if (isEditorialNine) return [index < EDITORIAL_NINE_TECHNOLOGY_GRID.compactCellCount ? 'lg:col-span-3' : 'lg:col-span-4'];
+  if (isEditorialTwelve) return [
+    index < EDITORIAL_TWELVE_TECHNOLOGY_GRID.upperTechnologyCount
+      ? EDITORIAL_TWELVE_TECHNOLOGY_GRID.upperDesktopSpanClass
+      : EDITORIAL_TWELVE_TECHNOLOGY_GRID.lowerDesktopSpanClass,
+  ];
 
   const rowSize = technologyRowSize(index, count);
   return [desktopCellSpanClasses[rowSize]];
@@ -48,7 +57,7 @@ const technologyCellClasses = (index: number, count: number) => {
 
 <section id="stack" class="container" aria-labelledby="technical-foundation-heading">
   <div class="section-pad no-v-pad border-brand-grey-200 dark:border-brand-grey-700">
-    {!isEditorialNine && (
+    {!isEditorialTwelve && (
       <div class="flex flex-col gap-4 border-b border-brand-grey-200 dark:border-brand-grey-700" style="padding: var(--brand-scale-1100) var(--brand-scale-900);">
         <p class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
           <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
@@ -60,20 +69,22 @@ const technologyCellClasses = (index: number, count: number) => {
       </div>
     )}
 
-    <div class:list={['grid grid-cols-1 gap-px bg-brand-grey-200 dark:bg-brand-grey-700 lg:grid-cols-12', isEditorialNine ? 'md:grid-cols-3' : 'md:grid-cols-2']}>
-      {isEditorialNine && (
-        <div data-technical-foundation-intro class="flex flex-col gap-4 bg-white dark:bg-dark-surface md:col-span-3 lg:col-span-6" style="min-height: 10.5rem; padding: var(--brand-scale-800);">
-          <h2 id="technical-foundation-heading" class="flex items-center gap-2 text-xs font-normal uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+    <div class:list={['grid grid-cols-1 gap-px bg-brand-grey-200 dark:bg-brand-grey-700 lg:grid-cols-12', isEditorialTwelve ? 'md:grid-cols-3' : 'md:grid-cols-2']}>
+      {isEditorialTwelve && (
+        <div data-technical-foundation-intro class:list={['flex flex-col gap-4 bg-white md:col-span-3', EDITORIAL_TWELVE_TECHNOLOGY_GRID.introDesktopPlacementClasses]} style="min-height: 10.5rem; padding: var(--brand-scale-800);">
+          <p class="flex items-center gap-2 text-xs font-normal uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
             <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
             Technical foundation
+          </p>
+          <h2 id="technical-foundation-heading" class="font-normal uppercase" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--brand-grey-900); max-width: 22ch;">
+            The technologies and tools that power this project.
           </h2>
-          <p class="text-sm leading-relaxed" style="color: var(--brand-grey-500); max-width: 30ch;">The technologies and tools that power this project.</p>
         </div>
       )}
       {technologies.map((technology, index) => (
         <div data-technology-cell class:list={['flex flex-col justify-between gap-8 bg-white dark:bg-dark-surface', technologyCellClasses(index, technologies.length)]} style="min-height: 10.5rem; padding: var(--brand-scale-800);">
-          <div class="flex items-start justify-between gap-6">
-            <span data-technology-marker class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+          <div class="flex min-w-0 items-start justify-between gap-6">
+            <span data-technology-marker class="flex min-w-0 items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400); overflow-wrap: anywhere;">
               <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
               {technology.name}
             </span>

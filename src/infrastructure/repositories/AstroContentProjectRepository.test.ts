@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vitest';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { TECHNOLOGY_PRESENTATION } from '../../domain/entities/project';
 import { AstroContentProjectRepository } from './AstroContentProjectRepository';
 
 vi.mock('astro:content', () => ({
@@ -60,6 +61,7 @@ describe('AstroContentProjectRepository', () => {
             rows: [{ tag: 'Layer 01', title: 'Evidence', description: 'Keep source evidence.' }],
           },
           linksLabel: '02 — Explore',
+          technologyPresentation: TECHNOLOGY_PRESENTATION.EDITORIAL_TWELVE,
           technologies: [
             { name: 'TypeScript', role: 'language', category: 'language', logo: '/imagenes/technologies/typescript.svg', logoLabel: 'TypeScript logo', invertInDarkMode: true },
             { name: 'LangGraph', category: 'ai' },
@@ -100,6 +102,7 @@ describe('AstroContentProjectRepository', () => {
           rows: [{ tag: 'Layer 01', title: 'Evidence', description: 'Keep source evidence.' }],
         },
         linksLabel: '02 — Explore',
+        technologyPresentation: TECHNOLOGY_PRESENTATION.EDITORIAL_TWELVE,
         year: 2025,
         slug: 'ai-support-agent',
       });
@@ -125,26 +128,6 @@ describe('AstroContentProjectRepository', () => {
         { name: 'Astro', category: 'framework', logo: '/imagenes/technologies/astro.svg', logoLabel: 'Astro logo', invertInDarkMode: true },
         { name: 'Postgres', category: 'data' },
       ]);
-    });
-
-    it('preserves the editorial-nine technology presentation metadata', async () => {
-      mockedGetCollection.mockResolvedValue([
-        makeEntry('editorial-nine-project', {
-          title: 'Editorial Project',
-          year: 2024,
-          description: 'Editorial technology mapping check.',
-          technologyPresentation: 'editorial-nine',
-          technologies: Array.from({ length: 9 }, (_, index) => ({
-            name: `Technology ${index + 1}`,
-            category: 'other' as const,
-          })),
-        }),
-      ]);
-
-      const repository = new AstroContentProjectRepository();
-      const [project] = await repository.getAll();
-
-      expect(project?.technologyPresentation).toBe('editorial-nine');
     });
 
     it('maps missing optional fields to undefined and missing technologies to an empty array', async () => {

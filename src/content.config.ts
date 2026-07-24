@@ -27,6 +27,10 @@ const technology = z.object({
 const workflowStep = z.object({
   title: z.string(),
   description: z.string(),
+  artwork: z.object({
+    src: z.string(),
+    className: z.string(),
+  }).optional(),
 });
 
 const workflow = z.object({
@@ -68,7 +72,7 @@ export const projectSchema = z.object({
   workflow: workflow.optional(),
   featureRows: featureRows.optional(),
   linksLabel: z.string().optional(),
-  technologyPresentation: z.literal(TECHNOLOGY_PRESENTATION.EDITORIAL_NINE).optional(),
+  technologyPresentation: z.literal(TECHNOLOGY_PRESENTATION.EDITORIAL_TWELVE).optional(),
   architecture: z.object({
     description: z.string(),
     diagram: z.string().optional(),

@@ -1,5 +1,5 @@
 export const TECHNOLOGY_PRESENTATION = {
-  EDITORIAL_NINE: 'editorial-nine',
+  EDITORIAL_TWELVE: 'editorial-twelve',
 } as const;
 
 export type TechnologyPresentation = (typeof TECHNOLOGY_PRESENTATION)[keyof typeof TECHNOLOGY_PRESENTATION];
@@ -22,6 +22,12 @@ export interface ProjectTechnology {
 export interface ProjectWorkflowStep {
   title: string;
   description: string;
+  artwork?: ProjectWorkflowArtwork;
+}
+
+export interface ProjectWorkflowArtwork {
+  src: string;
+  className: string;
 }
 
 export interface ProjectWorkflow {

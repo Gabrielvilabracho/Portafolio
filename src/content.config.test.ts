@@ -17,13 +17,13 @@ describe('project content schema', () => {
   it('keeps technology lists unconstrained for every presentation mode', () => {
     expect(projectSchema.safeParse({
       ...baseProject,
-      technologyPresentation: TECHNOLOGY_PRESENTATION.EDITORIAL_NINE,
-      technologies: technologies(9),
+      technologyPresentation: TECHNOLOGY_PRESENTATION.EDITORIAL_TWELVE,
+      technologies: technologies(12),
     }).success).toBe(true);
 
     expect(projectSchema.safeParse({
       ...baseProject,
-      technologyPresentation: TECHNOLOGY_PRESENTATION.EDITORIAL_NINE,
+      technologyPresentation: TECHNOLOGY_PRESENTATION.EDITORIAL_TWELVE,
       technologies: technologies(8),
     }).success).toBe(true);
     expect(projectSchema.safeParse({ ...baseProject, technologies: technologies(1) }).success).toBe(true);

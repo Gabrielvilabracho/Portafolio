@@ -19,14 +19,29 @@ workflow:
   steps:
     - title: Ingest
       description: Capture documents and preserve their source context for traceability.
+      artwork:
+        src: /imagenes/strangers.svg
+        className: pointer-events-none absolute left-[12%] top-3 z-0 h-auto w-[min(76%,12rem)]
     - title: Understand
       description: Classify content and extract structured fields with AI assistance.
+      artwork:
+        src: /imagenes/figure-profile.svg
+        className: pointer-events-none absolute right-0 bottom-20 z-0 h-auto w-[min(58%,10rem)]
     - title: Validate
       description: Apply deterministic rules and profile-specific checks to every result.
+      artwork:
+        src: /imagenes/prakash-thombre.svg
+        className: pointer-events-none absolute right-6 bottom-25 z-0 h-auto w-[min(54%,10rem)]
     - title: Review
       description: Route uncertain or high-risk cases to reviewers with their evidence.
+      artwork:
+        src: /imagenes/retrato.svg
+        className: pointer-events-none absolute right-6 bottom-20 z-0 h-auto w-[min(52%,10rem)]
     - title: Deliver
       description: Release only approved, auditable data to downstream operations.
+      artwork:
+        src: /imagenes/figure-motion.svg
+        className: pointer-events-none absolute right-8 bottom-25 z-0 h-auto w-[min(70%,10rem)]
 
 featureRows:
   heading: A common platform core with bounded local intelligence.
@@ -41,7 +56,7 @@ featureRows:
       title: Trust by Design
       description: Every extracted field retains source evidence; deterministic validation and review govern uncertain or high-risk cases; approved-only delivery remains auditable.
 
-technologyPresentation: editorial-nine
+technologyPresentation: editorial-twelve
 
 technologies:
   - name: Next.js
@@ -57,6 +72,21 @@ technologies:
     role: Operational data and audit records
     category: data
     logo: /imagenes/technologies/postgresql.svg
+  - name: TypeScript
+    role: Type-safe application and integration contracts
+    category: language
+    logo: /imagenes/technologies/typescript.svg
+    logoLabel: TypeScript logo
+  - name: Trigger.dev
+    role: Scheduled sweeps and asynchronous jobs
+    category: infrastructure
+    logo: /imagenes/technologies/trigger-dev.svg
+    logoLabel: Trigger.dev logo
+  - name: LangGraph
+    role: Stateful AI extraction and review routing
+    category: ai
+    logo: /imagenes/technologies/langgraph.svg
+    logoLabel: LangGraph logo
   - name: Temporal
     role: Durable workflow orchestration
     category: infrastructure
@@ -66,7 +96,7 @@ technologies:
     role: document-processing workers and AI integration
     category: ai
     logo: /imagenes/technologies/python.svg
-  - name: Tesseract OCR
+  - name: OCR
     role: text recognition with source evidence
     category: ai
     logo: /imagenes/technologies/tesseract.svg
@@ -78,9 +108,10 @@ technologies:
     role: vector search and retrieval
     category: data
     logo: /imagenes/technologies/qdrant.svg
-  - name: OpenTelemetry
+  - name: Log
     role: workflow traceability and operational insight
     category: infrastructure
     logo: /imagenes/technologies/opentelemetry.svg
+    logoLabel: OpenTelemetry logo
     invertInDarkMode: true
 ---
