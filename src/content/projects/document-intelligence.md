@@ -21,12 +21,12 @@ workflow:
       description: Capture documents and preserve their source context for traceability.
       artwork:
         src: /imagenes/strangers.svg
-        className: pointer-events-none absolute left-[12%] top-3 z-0 h-auto w-[min(76%,12rem)]
+        className: pointer-events-none absolute left-[25%] top-10 z-0 h-auto w-[min(50%,12rem)]
     - title: Understand
       description: Classify content and extract structured fields with AI assistance.
       artwork:
         src: /imagenes/figure-profile.svg
-        className: pointer-events-none absolute right-0 bottom-20 z-0 h-auto w-[min(58%,10rem)]
+        className: pointer-events-none absolute right-1 bottom-20 z-0 h-auto w-[min(50%,10rem)]
     - title: Validate
       description: Apply deterministic rules and profile-specific checks to every result.
       artwork:
