@@ -30,6 +30,7 @@ function toProject(entry: CollectionEntry<'projects'>): Project {
     mark: data.mark,
     order: data.order,
     comingSoon: data.comingSoon,
+    caseStudySlug: data.caseStudySlug,
     links: data.links,
     overview: data.overview,
     context: data.context,

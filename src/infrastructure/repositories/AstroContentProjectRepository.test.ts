@@ -48,6 +48,7 @@ describe('AstroContentProjectRepository', () => {
           mark: 'A1',
           order: 2,
           comingSoon: true,
+          caseStudySlug: 'ai-support-agent-deep-dive',
           overview: 'A richer overview.',
           context: 'A specific project problem.',
           workflow: {
@@ -88,6 +89,7 @@ describe('AstroContentProjectRepository', () => {
         mark: 'A1',
         order: 2,
         comingSoon: true,
+        caseStudySlug: 'ai-support-agent-deep-dive',
         links: [{ label: 'Demo', url: 'https://example.com', type: 'demo' }],
         overview: 'A richer overview.',
         context: 'A specific project problem.',

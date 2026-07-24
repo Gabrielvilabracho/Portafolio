@@ -14,12 +14,23 @@ const genericProject: Project = {
   technologies: [],
 };
 
-async function render(project: Project) {
+async function render(project: Project, caseStudyHref?: string) {
   const container = await AstroContainer.create();
-  return container.renderToString(ProjectOverview, { props: { project } });
+  return container.renderToString(ProjectOverview, { props: { project, caseStudyHref } });
 }
 
 describe('ProjectOverview', () => {
+  it('renders the case study CTA only when the route resolver provides a detail href', async () => {
+    const resolvedHtml = await render(genericProject, '/es/case-studies/ai-support-agent/');
+    const unresolvedHtml = await render(genericProject);
+
+    expect(resolvedHtml).toContain('data-case-study-link');
+    expect(resolvedHtml).toContain('href="/es/case-studies/ai-support-agent/"');
+    expect(resolvedHtml).toContain('Read the case study');
+    expect(unresolvedHtml).not.toContain('data-case-study-link');
+    expect(unresolvedHtml).not.toContain('Read the case study');
+  });
+
   it('omits optional problem and workflow navigation safely', async () => {
     const html = await render({
       ...genericProject,

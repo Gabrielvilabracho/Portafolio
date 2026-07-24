@@ -7,6 +7,7 @@ technologies:
   - name: TypeScript
   - name: Claude API
   - name: RAG
+caseStudySlug: ai-support-agent
 ---
 
 Example project — replace with the real case content.

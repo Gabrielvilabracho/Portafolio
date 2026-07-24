@@ -1,7 +1,9 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'zod';
 import { glob } from 'astro/loaders';
+import { CASE_STUDY_KIND } from './domain/entities/case-study';
 import { TECHNOLOGY_PRESENTATION } from './domain/entities/project';
+import { routableSlugSchema } from './domain/validation/routableSlug';
 
 const metric = z.object({
   label: z.string(),
@@ -65,6 +67,7 @@ export const projectSchema = z.object({
   order: z.number().optional(),
   image: z.string().optional(),
   comingSoon: z.boolean().default(false),
+  caseStudySlug: routableSlugSchema.optional(),
   overview: z.string().optional(),
   context: z.string().optional(),
   approach: z.string().optional(),
@@ -89,9 +92,21 @@ export const projectSchema = z.object({
   links: z.array(link).optional(),
 });
 
+export const caseStudySchema = z.object({
+  title: z.string(),
+  slug: routableSlugSchema,
+  summary: z.string().optional(),
+  kind: z.enum([CASE_STUDY_KIND.PROJECT, CASE_STUDY_KIND.USE_CASE]).default(CASE_STUDY_KIND.PROJECT),
+});
+
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: projectSchema,
 });
 
-export const collections = { projects };
+const caseStudies = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/case-studies' }),
+  schema: caseStudySchema,
+});
+
+export const collections = { projects, caseStudies };

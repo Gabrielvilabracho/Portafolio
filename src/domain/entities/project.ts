@@ -63,6 +63,7 @@ export interface Project {
   mark?: string;
   order?: number;
   comingSoon: boolean;
+  caseStudySlug?: string;
   links?: ProjectLink[];
   overview?: string;
   context?: string;
