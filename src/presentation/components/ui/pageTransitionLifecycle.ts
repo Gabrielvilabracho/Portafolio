@@ -1,3 +1,6 @@
+import { stripLocalePrefix } from '../../../utils/i18n';
+import { stripBase } from '../../../utils/withBase';
+
 export const COVER_MS = 600;
 export const HOLD_MS = 150;
 export const LOADER_GATE_MS = COVER_MS + HOLD_MS;
@@ -16,6 +19,17 @@ export interface PageTransitionPreparation {
 
 const waitForGate = (milliseconds: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
+
+/** Derive a readable page label from a base-prefixed, localized destination pathname. */
+export function getPageTransitionLabel(
+  pathname: string,
+  base = import.meta.env.BASE_URL
+): string {
+  const routePath = stripLocalePrefix(stripBase(pathname, base)).replace(/\/$/, '');
+  const lastSegment = routePath.split('/').pop() ?? '';
+
+  return lastSegment ? lastSegment.replace(/-/g, ' ') : 'Home';
+}
 
 export function preparePageTransition({
   event,

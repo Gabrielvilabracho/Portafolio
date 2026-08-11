@@ -1,5 +1,6 @@
 ---
 import { TECHNOLOGY_PRESENTATION, type ProjectTechnology, type TechnologyPresentation } from '../../../domain/entities/project';
+import { withBase } from '../../../utils/withBase';
 
 export interface Props {
   technologies: ProjectTechnology[];
@@ -90,7 +91,7 @@ const technologyCellClasses = (index: number, count: number) => {
             </span>
             {technology.logo && (
               <img
-                src={technology.logo}
+                src={withBase(technology.logo)}
                 alt={technology.logoLabel ?? ''}
                 class:list={['h-10 w-10 shrink-0 object-contain object-right', technology.invertInDarkMode && 'dark:invert']}
               />

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Globe, { type GlobeMethods } from 'react-globe.gl';
 import * as THREE from 'three';
 import { logbookEntries } from '../sections/logbookEntries';
+import { withBase } from '../../../utils/withBase';
 
 const oceanMaterial = new THREE.MeshPhongMaterial({ color: '#0c0c0c' });
 
@@ -135,7 +136,7 @@ export default function LogbookGlobe({ currentEntry }: LogbookGlobeProps) {
       const el = document.createElement('div');
       // marker.svg as a CSS mask so the fill uses exact design-system colors
       const marker = document.createElement('div');
-      marker.style.maskImage = "url('/marker.svg')";
+      marker.style.maskImage = `url('${withBase('/marker.svg')}')`;
       marker.style.maskSize = 'contain';
       marker.style.maskRepeat = 'no-repeat';
       marker.style.maskPosition = 'center';
@@ -156,7 +157,7 @@ export default function LogbookGlobe({ currentEntry }: LogbookGlobeProps) {
   );
 
   useEffect(() => {
-    fetch('/countries.geojson')
+    fetch(withBase('/countries.geojson'))
       .then((r) => r.json())
       .then((d) => setCountries(d.features));
   }, []);

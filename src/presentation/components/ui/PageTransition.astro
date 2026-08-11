@@ -63,7 +63,11 @@ import { COVER_MS } from './pageTransitionLifecycle';
 </style>
 
 <script>
-  import { LEAVE_FALLBACK_MS, preparePageTransition } from './pageTransitionLifecycle';
+  import {
+    getPageTransitionLabel,
+    LEAVE_FALLBACK_MS,
+    preparePageTransition,
+  } from './pageTransitionLifecycle';
 
   // Curtain page transition: on internal navigation the dark crosses panel
   // covers the viewport in 600 ms, then holds for 150 ms so the destination
@@ -95,11 +99,7 @@ import { COVER_MS } from './pageTransitionLifecycle';
         // so derive the label from the destination URL instead of its <title>.
         const label = overlay.querySelector<HTMLSpanElement>('[data-page-label]');
         if (label) {
-          const path = (evt.to?.pathname ?? '')
-            .replace(/^\/(es|pt|ru)(?=\/|$)/, '')
-            .replace(/\/$/, '');
-          const lastSegment = path.split('/').pop() ?? '';
-          label.textContent = lastSegment ? lastSegment.replace(/-/g, ' ') : 'Home';
+          label.textContent = getPageTransitionLabel(evt.to?.pathname ?? '');
         }
 
         overlay.classList.remove('is-leaving');

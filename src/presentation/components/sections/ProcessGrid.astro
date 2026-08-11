@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../../../utils/withBase';
+
 export interface Step {
   number: string;
   title: string;
@@ -81,7 +83,7 @@ const [s1, s2, s3, s4] = steps;
         {/* Row 2 — Col 1: cross pattern */}
         <div
           class="border-r border-brand-grey-700"
-          style="min-height: 420px; background-image: url('/imagenes/cross-background.svg'); background-size: cover; background-repeat: no-repeat;"
+          style={`min-height: 420px; background-image: url('${withBase('/imagenes/cross-background.svg')}'); background-size: cover; background-repeat: no-repeat;`}
         />
 
         {/* Row 2 — Col 2: step 03 */}

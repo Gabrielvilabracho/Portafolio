@@ -1,5 +1,6 @@
 ---
 import type { ProjectWorkflowStep } from '../../../domain/entities/project';
+import { withBase } from '../../../utils/withBase';
 import ProblemSection from './ProblemSection.astro';
 
 export interface Props {
@@ -75,7 +76,7 @@ const stepColumnSpan = (index: number) => {
               </div>
               {artwork && (
                 <img
-                  src={artwork.src}
+                  src={withBase(artwork.src)}
                   alt=""
                   aria-hidden="true"
                   class={artwork.className}

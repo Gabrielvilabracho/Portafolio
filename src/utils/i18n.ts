@@ -1,3 +1,5 @@
+import { stripBase, withBase } from './withBase';
+
 export const LOCALES = ['en', 'es', 'pt', 'ru'] as const;
 export type Locale = (typeof LOCALES)[number];
 
@@ -19,9 +21,18 @@ function withTrailingSlash(pathname: string): string {
   return pathname.endsWith('/') ? pathname : `${pathname}/`;
 }
 
-/** Map a pathname to its equivalent in the given locale (default locale stays unprefixed). */
-export function localizePath(pathname: string, locale: Locale): string {
-  const basePath = withTrailingSlash(stripLocalePrefix(pathname));
-  if (locale === DEFAULT_LOCALE) return basePath;
-  return basePath === '/' ? `/${locale}/` : `/${locale}${basePath}`;
+/**
+ * Map a pathname to its equivalent in the given locale (default locale stays
+ * unprefixed). When a base path is provided, return the URL beneath that base.
+ */
+export function localizePath(pathname: string, locale: Locale, base?: string): string {
+  const routePath = base ? stripBase(pathname, base) : pathname;
+  const localizedPath = withTrailingSlash(stripLocalePrefix(routePath));
+  const localePath = locale === DEFAULT_LOCALE
+    ? localizedPath
+    : localizedPath === '/'
+      ? `/${locale}/`
+      : `/${locale}${localizedPath}`;
+
+  return base ? withBase(localePath, base) : localePath;
 }

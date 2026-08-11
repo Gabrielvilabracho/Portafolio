@@ -1,5 +1,15 @@
 import { describe, expect, it, vi } from 'vitest';
-import { preparePageTransition } from './pageTransitionLifecycle';
+import { getPageTransitionLabel, preparePageTransition } from './pageTransitionLifecycle';
+
+describe('getPageTransitionLabel', () => {
+  it('identifies the base-prefixed default-locale home route as Home', () => {
+    expect(getPageTransitionLabel('/Portafolio/', '/Portafolio/')).toBe('Home');
+  });
+
+  it('removes the base and locale before formatting a nested route label', () => {
+    expect(getPageTransitionLabel('/Portafolio/es/case-studies/', '/Portafolio/')).toBe('case studies');
+  });
+});
 
 describe('PageTransition timing contract', () => {
   it('releases the loader only after the 600 ms cover and 150 ms readable hold', async () => {
