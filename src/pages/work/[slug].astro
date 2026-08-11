@@ -4,6 +4,9 @@ import ContactCta from '../../presentation/components/sections/ContactCta.astro'
 import ProjectOverview from '../../presentation/components/sections/ProjectOverview.astro';
 import { getProjectsUseCase, getProjectBySlugUseCase } from '../../utils/di';
 import { routableProjects } from '../../application/use-cases/routableProjects';
+import { getCaseStudies } from '../../utils/caseStudyEntries';
+import { getProjectCaseStudyDetailPath } from '../../utils/caseStudyRoutes';
+import { DEFAULT_LOCALE, type Locale } from '../../utils/i18n';
 
 export async function getStaticPaths() {
   const projects = await getProjectsUseCase.execute();
@@ -17,11 +20,14 @@ if (!project) {
   throw new Error(`Project not found: ${slug}`);
 }
 
+const currentLocale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const caseStudyHref = getProjectCaseStudyDetailPath(project, await getCaseStudies(), currentLocale);
+
 ---
 
 <BaseLayout title={`${project.title} — Gabriel Vilabracho`} description={project.description}>
 
-  <ProjectOverview project={project} />
+  <ProjectOverview project={project} caseStudyHref={caseStudyHref} />
 
   <ContactCta />
 

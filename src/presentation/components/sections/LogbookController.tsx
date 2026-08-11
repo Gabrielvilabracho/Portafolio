@@ -1,6 +1,7 @@
 import { Component, useState, type ReactNode } from 'react';
 import LogbookGlobe from '../animations/LogbookGlobe.tsx';
 import { logbookEntries } from './logbookEntries';
+import { withBase } from '../../../utils/withBase';
 
 /**
  * WebGL can fail (GPU process disabled, headless browsers, old hardware).
@@ -21,7 +22,7 @@ class GlobeErrorBoundary extends Component<{ children: ReactNode }, { failed: bo
           style={{
             minHeight: '32em',
             background: '#18191b',
-            backgroundImage: "url('/imagenes/cross-background.svg')",
+            backgroundImage: `url('${withBase('/imagenes/cross-background.svg')}')`,
             backgroundSize: 'cover',
           }}
         >

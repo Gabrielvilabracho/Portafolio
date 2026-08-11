@@ -1,15 +1,13 @@
 ---
+import type { ProjectWorkflowStep } from '../../../domain/entities/project';
+import { withBase } from '../../../utils/withBase';
 import ProblemSection from './ProblemSection.astro';
-export interface WorkflowStep {
-  title: string;
-  description: string;
-}
 
 export interface Props {
   problem?: string;
   title: string;
   subtitle?: string;
-  steps: WorkflowStep[];
+  steps: ProjectWorkflowStep[];
 }
 
 const { problem, title, subtitle, steps } = Astro.props;
@@ -19,18 +17,18 @@ const stepGridColumns = steps.length <= 1
     ? 'md:grid-cols-2'
     : steps.length === 3
       ? 'md:grid-cols-3'
-	: steps.length === 4
-	  ? 'md:grid-cols-2 lg:grid-cols-4'
-		: steps.length === 5
-		  ? 'md:grid-cols-2 lg:grid-cols-6 xl:grid-cols-5'
-		  : 'md:grid-cols-2 lg:grid-cols-3';
+      : steps.length === 4
+        ? 'md:grid-cols-2 lg:grid-cols-4'
+        : steps.length === 5
+          ? 'md:grid-cols-2 lg:grid-cols-6 xl:grid-cols-5'
+          : 'md:grid-cols-2 lg:grid-cols-3';
 
 const stepColumnSpan = (index: number) => {
   if (steps.length !== 5) return undefined;
 
-	if (index === 4) return 'md:col-span-2 lg:col-span-3 xl:col-span-1';
-	if (index === 3) return 'lg:col-span-3 xl:col-span-1';
-	return 'lg:col-span-2 xl:col-span-1';
+  if (index === 4) return 'md:col-span-2 lg:col-span-3 xl:col-span-1';
+  if (index === 3) return 'lg:col-span-3 xl:col-span-1';
+  return 'lg:col-span-2 xl:col-span-1';
 };
 ---
 
@@ -57,24 +55,36 @@ const stepColumnSpan = (index: number) => {
       </div>
 
       <div class:list={['grid grid-cols-1 gap-px bg-brand-grey-700', stepGridColumns]}>
-		{steps.map((step, index) => (
-		  <div
-			class:list={[
-			  'flex flex-col justify-between gap-12 bg-dark-surface',
-			  stepColumnSpan(index),
-			]}
-			style="min-height: 18rem; padding: var(--brand-scale-800);"
-		  >
-            <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
-              <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <div class="flex flex-col gap-2">
-              <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{step.title}</h3>
-              <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{step.description}</p>
+        {steps.map((step, index) => {
+          const { artwork } = step;
+
+          return (
+            <div
+              class:list={[
+                'relative flex flex-col justify-between gap-12 overflow-hidden bg-dark-surface',
+                stepColumnSpan(index),
+              ]}
+              style="min-height: 18rem; padding: var(--brand-scale-800);"
+            >
+              <span class="relative z-10 flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+                <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <div class="relative z-10 flex flex-col gap-2">
+                <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{step.title}</h3>
+                <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{step.description}</p>
+              </div>
+              {artwork && (
+                <img
+                  src={withBase(artwork.src)}
+                  alt=""
+                  aria-hidden="true"
+                  class={artwork.className}
+                />
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   </div>

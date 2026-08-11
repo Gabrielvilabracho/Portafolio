@@ -14,12 +14,23 @@ const genericProject: Project = {
   technologies: [],
 };
 
-async function render(project: Project) {
+async function render(project: Project, caseStudyHref?: string) {
   const container = await AstroContainer.create();
-  return container.renderToString(ProjectOverview, { props: { project } });
+  return container.renderToString(ProjectOverview, { props: { project, caseStudyHref } });
 }
 
 describe('ProjectOverview', () => {
+  it('renders the case study CTA only when the route resolver provides a detail href', async () => {
+    const resolvedHtml = await render(genericProject, '/es/case-studies/ai-support-agent/');
+    const unresolvedHtml = await render(genericProject);
+
+    expect(resolvedHtml).toContain('data-case-study-link');
+    expect(resolvedHtml).toContain('href="/es/case-studies/ai-support-agent/"');
+    expect(resolvedHtml).toContain('Read the case study');
+    expect(unresolvedHtml).not.toContain('data-case-study-link');
+    expect(unresolvedHtml).not.toContain('Read the case study');
+  });
+
   it('omits optional problem and workflow navigation safely', async () => {
     const html = await render({
       ...genericProject,
@@ -50,7 +61,7 @@ describe('ProjectOverview', () => {
     expect(stackSection).not.toContain('<img');
   });
 
-  it('maps every Document Intelligence overview navigation anchor to a rendered section', async () => {
+  it('maps every overview navigation anchor to a rendered section', async () => {
     const html = await render({
       id: 'document-intelligence',
       slug: 'document-intelligence',
@@ -65,7 +76,10 @@ describe('ProjectOverview', () => {
         title: 'A controlled workflow from source document to trusted delivery.',
         subtitle: 'AI accelerates understanding while evidence controls operations.',
         navigationPhrase: 'The controlled path from source document to delivery.',
-        steps: ['Ingest', 'Understand', 'Validate', 'Review', 'Deliver'].map((title) => ({ title, description: `${title} document data safely.` })),
+        steps: [
+          { title: 'Capture', description: 'Capture document data safely.' },
+          { title: 'Review', description: 'Review document data safely.' },
+        ],
       },
       featureRows: {
         heading: 'A common platform core with bounded local intelligence.',
@@ -77,8 +91,8 @@ describe('ProjectOverview', () => {
           { tag: 'Layer 02', title: 'Trust by Design', description: 'Approved delivery remains auditable.' },
         ],
       },
-      technologyPresentation: TECHNOLOGY_PRESENTATION.EDITORIAL_NINE,
-      technologies: Array.from({ length: 9 }, (_, index) => ({ name: `Technology ${index + 1}`, category: 'other' as const })),
+      technologyPresentation: TECHNOLOGY_PRESENTATION.EDITORIAL_TWELVE,
+      technologies: Array.from({ length: 12 }, (_, index) => ({ name: `Technology ${index + 1}`, category: 'other' as const })),
       comingSoon: false,
     });
 

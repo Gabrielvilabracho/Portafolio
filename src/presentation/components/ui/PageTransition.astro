@@ -1,4 +1,5 @@
 ---
+import { COVER_MS } from './pageTransitionLifecycle';
 ---
 
 <div
@@ -6,6 +7,7 @@
   class="crosses-pattern"
   transition:persist="page-curtain"
   aria-hidden="true"
+  style={`--page-transition-cover-ms: ${COVER_MS}ms`}
 >
   <span class="page-transition__label" data-page-label></span>
 </div>
@@ -20,7 +22,7 @@
     justify-content: center;
     background-color: var(--mapped-surface-dark);
     transform: translateY(100%);
-    transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+    transition: transform var(--page-transition-cover-ms) cubic-bezier(0.65, 0, 0.35, 1);
     will-change: transform;
     pointer-events: none;
   }
@@ -61,15 +63,16 @@
 </style>
 
 <script>
-  // Curtain page transition: on internal navigation the dark crosses panel
-  // slides up from the bottom, holds covering the viewport (showing the
-  // destination page's label) while the next page loads, then continues
-  // sliding up to reveal it. The element uses transition:persist so it
-  // survives the DOM swap mid-animation.
-  const COVER_MS = 900;
-  const HOLD_MS = 250;
-  const LEAVE_FALLBACK_MS = 1200;
+  import {
+    getPageTransitionLabel,
+    LEAVE_FALLBACK_MS,
+    preparePageTransition,
+  } from './pageTransitionLifecycle';
 
+  // Curtain page transition: on internal navigation the dark crosses panel
+  // covers the viewport in 600 ms, then holds for 150 ms so the destination
+  // page's label is readable while the next page loads, before revealing it.
+  // The element uses transition:persist so it survives the DOM swap mid-animation.
   const getOverlay = () => document.querySelector<HTMLDivElement>('#page-transition');
   const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -78,37 +81,31 @@
 
   document.addEventListener('astro:before-preparation', (event) => {
     const overlay = getOverlay();
-    if (!overlay || prefersReduced()) return;
-
-    // Cancel a pending leave cleanup if the user navigates again mid-reveal.
-    leaving = false;
-    if (leaveTimeout) clearTimeout(leaveTimeout);
+    if (!overlay) return;
 
     const evt = event as Event & { to?: URL; loader?: () => Promise<void> };
 
-    // The destination document isn't fetched yet at before-preparation time,
-    // so derive the label from the destination URL instead of its <title>.
-    const label = overlay.querySelector<HTMLSpanElement>('[data-page-label]');
-    if (label) {
-      const path = (evt.to?.pathname ?? '')
-        .replace(/^\/(es|pt|ru)(?=\/|$)/, '')
-        .replace(/\/$/, '');
-      const lastSegment = path.split('/').pop() ?? '';
-      label.textContent = lastSegment ? lastSegment.replace(/-/g, ' ') : 'Home';
-    }
+    // Delay the swap until the 600 ms cover completes and the 150 ms readable
+    // hold elapses, in parallel with the fetch.
+    preparePageTransition({
+      event: evt,
+      prefersReducedMotion: prefersReduced(),
+      activateCurtain: () => {
+        // Cancel a pending leave cleanup if the user navigates again mid-reveal.
+        leaving = false;
+        if (leaveTimeout) clearTimeout(leaveTimeout);
 
-    overlay.classList.remove('is-leaving');
-    overlay.classList.add('is-active');
+        // The destination document isn't fetched yet at before-preparation time,
+        // so derive the label from the destination URL instead of its <title>.
+        const label = overlay.querySelector<HTMLSpanElement>('[data-page-label]');
+        if (label) {
+          label.textContent = getPageTransitionLabel(evt.to?.pathname ?? '');
+        }
 
-    // Delay the swap until the curtain fully covers the viewport (plus a
-    // short hold so the label is readable), in parallel with the fetch.
-    const originalLoader = evt.loader;
-    const covered = new Promise<void>((resolve) => setTimeout(resolve, COVER_MS + HOLD_MS));
-    if (originalLoader) {
-      evt.loader = async () => {
-        await Promise.all([originalLoader(), covered]);
-      };
-    }
+        overlay.classList.remove('is-leaving');
+        overlay.classList.add('is-active');
+      },
+    });
   });
 
   document.addEventListener('astro:page-load', () => {

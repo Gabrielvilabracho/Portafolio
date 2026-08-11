@@ -1,0 +1,91 @@
+---
+export interface Props {
+  title: string;
+  summary?: string;
+}
+
+const { title, summary } = Astro.props;
+---
+
+<section class="case-study-layout" data-case-study-layout>
+  <article class="case-study-content" data-case-study-content>
+    <header class="case-study-header">
+      <p class="case-study-kicker">Case study</p>
+      <h1>{title}</h1>
+      {summary && <p class="case-study-summary">{summary}</p>}
+    </header>
+
+    <slot />
+  </article>
+</section>
+
+<style>
+  .case-study-layout {
+    display: grid;
+    grid-template-columns: minmax(var(--brand-scale-1100), 1fr) minmax(0, 42rem) minmax(var(--brand-scale-1100), 1fr);
+    padding-block: clamp(var(--brand-scale-1400), 14vw, 14rem);
+  }
+
+  .case-study-content {
+    grid-column: 2;
+    min-width: 0;
+  }
+
+  .case-study-header {
+    margin-bottom: clamp(var(--brand-scale-1300), 10vw, 10rem);
+  }
+
+  .case-study-kicker {
+    color: var(--brand-grey-500);
+    font-size: var(--type-paragraph-xsm-size);
+    letter-spacing: 0.16em;
+    margin-bottom: var(--brand-scale-700);
+    text-transform: uppercase;
+  }
+
+  .case-study-content h1 {
+    font-size: clamp(2.75rem, 6vw, 5.5rem);
+    line-height: 0.98;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .case-study-summary {
+    color: var(--brand-grey-600);
+    font-size: var(--type-paragraph-lg-size);
+    line-height: 1.55;
+    margin: var(--brand-scale-900) 0 0;
+    max-width: 36rem;
+  }
+
+  .case-study-content :global(h2) {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.12;
+    margin: clamp(var(--brand-scale-1300), 8vw, 8rem) 0 var(--brand-scale-700);
+  }
+
+  .case-study-content :global(p),
+  .case-study-content :global(li) {
+    font-size: var(--type-paragraph-lg-size);
+    line-height: 1.65;
+  }
+
+  .case-study-content :global(p),
+  .case-study-content :global(ul),
+  .case-study-content :global(ol) {
+    margin: 0 0 var(--brand-scale-800);
+  }
+
+  .case-study-content :global(img),
+  .case-study-content :global(video) {
+    margin-block: clamp(var(--brand-scale-1100), 8vw, 8rem);
+    width: 100%;
+  }
+
+  @media (max-width: 719px) {
+    .case-study-layout {
+      display: block;
+      padding: var(--brand-scale-1300) var(--brand-scale-1100);
+    }
+  }
+</style>

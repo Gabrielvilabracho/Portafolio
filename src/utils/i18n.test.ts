@@ -66,4 +66,18 @@ describe('localizePath', () => {
       expect(localizePath(once, locale)).toBe(once);
     }
   });
+
+  it('keeps navigation URLs beneath the GitHub Pages base path', () => {
+    expect(localizePath('/', 'en', '/Portafolio/')).toBe('/Portafolio/');
+    expect(localizePath('/contact', 'es', '/Portafolio/')).toBe('/Portafolio/es/contact/');
+  });
+
+  it('switches locales from a base-prefixed current pathname without duplicating the base', () => {
+    const currentPath = '/Portafolio/es/contact/';
+
+    expect(localizePath(currentPath, 'en', '/Portafolio/')).toBe('/Portafolio/contact/');
+    expect(localizePath(currentPath, 'es', '/Portafolio/')).toBe('/Portafolio/es/contact/');
+    expect(localizePath(currentPath, 'pt', '/Portafolio/')).toBe('/Portafolio/pt/contact/');
+    expect(localizePath(currentPath, 'ru', '/Portafolio/')).toBe('/Portafolio/ru/contact/');
+  });
 });

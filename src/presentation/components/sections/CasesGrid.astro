@@ -6,6 +6,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import type { Project } from '../../../domain/entities/project';
 import EditorialCard from '../ui/EditorialCard.astro';
 import { DEFAULT_LOCALE } from '../../../utils/i18n';
+import { withBase } from '../../../utils/withBase';
 
 export interface Props {
   cases: Project[];
@@ -21,7 +22,7 @@ const currentLocale = Astro.currentLocale ?? DEFAULT_LOCALE;
     style="min-height: 20vh;"
   >
     <img
-      src="/imagenes/cross-background.svg"
+      src={withBase('/imagenes/cross-background.svg')}
       alt=""
       aria-hidden="true"
       class="absolute inset-0 w-full h-full pointer-events-none"

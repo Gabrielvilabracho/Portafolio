@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../presentation/layouts/BaseLayout.astro';
 import ContactForm from '../presentation/components/ui/ContactForm.astro';
+import { withBase } from '../utils/withBase';
 ---
 <BaseLayout
   title="Contact — Gabriel Vilabracho"
@@ -62,7 +63,7 @@ import ContactForm from '../presentation/components/ui/ContactForm.astro';
               class="social-icon-link"
               aria-label="Email"
             >
-              <img src="/envelope.svg" alt="Email" width="20" height="20" class="social-icon-img" />
+              <img src={withBase('/envelope.svg')} alt="Email" width="20" height="20" class="social-icon-img" />
             </a>
 
             <!-- LinkedIn -->
@@ -73,7 +74,7 @@ import ContactForm from '../presentation/components/ui/ContactForm.astro';
               class="social-icon-link"
               aria-label="LinkedIn"
             >
-              <img src="/linkedin.svg" alt="LinkedIn" width="20" height="20" class="social-icon-img" />
+              <img src={withBase('/linkedin.svg')} alt="LinkedIn" width="20" height="20" class="social-icon-img" />
             </a>
 
             <!-- Telegram -->
@@ -84,7 +85,7 @@ import ContactForm from '../presentation/components/ui/ContactForm.astro';
               class="social-icon-link"
               aria-label="Telegram"
             >
-              <img src="/telegram.svg" alt="Telegram" width="20" height="20" class="telegram-icon-img" />
+              <img src={withBase('/telegram.svg')} alt="Telegram" width="20" height="20" class="telegram-icon-img" />
             </a>
 
           </div>

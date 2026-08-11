@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { DEFAULT_LOCALE, LOCALES, localizePath, type Locale } from '../../../utils/i18n';
+import { withBase } from '../../../utils/withBase';
 
 export interface NavbarProps {
   currentLocale?: Locale;
@@ -106,6 +107,9 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
   const borderColor = isDark ? 'rgba(47, 48, 50, 1)' : 'rgba(195, 196, 200, 1)';
   const textColor = isDark ? '#ffffff' : 'var(--brand-grey-600)';
   const logoFilter = isDark ? 'brightness(0) invert(1)' : 'none';
+  const base = import.meta.env.BASE_URL;
+  const homeHref = localizePath('/', currentLocale, base);
+  const contactHref = localizePath('/contact', currentLocale, base);
 
   return (
     <header
@@ -123,12 +127,12 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
 
         <div className="flex items-stretch h-full">
           <a
-            href={localizePath('/', currentLocale)}
+            href={homeHref}
             className="inline-flex items-center justify-center px-8 h-full"
             style={{ borderLeft: `1px solid ${borderColor}`, transition: 'border-color 0.3s' }}
           >
             <img
-              src="/imagenes/gv-black.svg"
+              src={withBase('/imagenes/gv-black.svg')}
               alt="GV"
               height="22"
               style={{
@@ -197,7 +201,7 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
                   return (
                     <a
                       key={locale}
-                      href={localizePath(currentPath, locale)}
+                      href={localizePath(currentPath, locale, base)}
                       aria-label={LOCALE_LABELS[locale]}
                       aria-current={isCurrent ? 'true' : undefined}
                       onMouseEnter={() => setHoveredItem(`lang-${locale}`)}
@@ -216,7 +220,7 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
             )}
           </div>
           <a
-            href={localizePath('/contact', currentLocale)}
+            href={contactHref}
             onMouseEnter={() => setHoveredItem('contact')}
             onMouseLeave={() => setHoveredItem(null)}
             className="flex items-center justify-center px-8 h-full text-sm font-medium uppercase tracking-wider"

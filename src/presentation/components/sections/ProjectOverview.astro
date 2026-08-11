@@ -10,9 +10,10 @@ import TechnicalFoundation from './TechnicalFoundation.astro';
 
 export interface Props {
   project: Project;
+  caseStudyHref?: string;
 }
 
-const { project } = Astro.props;
+const { project, caseStudyHref } = Astro.props;
 const heroLabel = `${project.discipline ?? 'Project'} · ${project.year}`;
 type NavigableSection = Omit<Section, 'number'>;
 const availableSections = [
@@ -33,6 +34,20 @@ const sections = availableSections.map((section, index) => ({
   title={project.title}
   description={project.overview ?? project.description}
 />
+
+{caseStudyHref && (
+  <section class="container" data-case-study-link>
+    <div class="border-l border-r border-b border-brand-grey-200 dark:border-brand-grey-700" style="padding: var(--brand-scale-700) var(--brand-scale-1100);">
+      <a
+        href={caseStudyHref}
+        class="inline-flex items-center gap-3 text-xs uppercase tracking-widest transition-colors hover:text-brand-orange-500"
+      >
+        <span>Read the case study</span>
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+)}
 
 {sections.length > 0 && <SectionsGrid sections={sections} />}
 

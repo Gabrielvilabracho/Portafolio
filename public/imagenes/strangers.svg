@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="28 408 682 518" role="img" aria-labelledby="title desc">
+  <title id="title">Figure within concentric water rings</title>
+  <desc id="desc">A seated, half-submerged figure with a dark torso, irregular water rings, and a quiet reflected shadow.</desc>
+  <rect x="28" y="408" width="682" height="518" fill="#18191b"/>
+
+  <g id="rings" class="rings" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M45 916C32 863 44 778 81 704C116 634 157 567 223 529C278 497 337 482 397 484C482 484 566 506 628 552C680 591 700 655 692 722C687 775 659 826 609 864C554 907 482 919 397 920C277 920 152 925 45 916Z" stroke-width="3" stroke-opacity=".93"/>
+    <path d="M89 875C75 830 83 767 112 706C142 643 185 584 241 548C289 518 342 502 400 503C477 503 548 522 603 560C649 592 668 644 660 697C654 746 628 789 583 823C534 859 473 876 397 878C286 880 175 886 89 875Z" stroke-width="2.7" stroke-opacity=".91"/>
+    <path d="M129 837C116 797 124 746 149 691C178 632 217 584 267 554C307 530 350 518 402 518C468 519 529 536 575 568C615 596 633 636 627 678C621 720 600 756 561 786C518 818 462 836 397 838C305 840 200 846 129 837Z" stroke-width="2.45" stroke-opacity=".9"/>
+    <path d="M171 798C158 763 166 719 187 672C211 621 246 582 288 558C325 537 362 528 404 529C459 530 510 543 550 570C584 593 599 627 595 662C590 696 571 726 538 751C501 778 455 797 399 800C322 801 231 806 171 798Z" stroke-width="2.1" stroke-opacity=".88"/>
+    <path d="M212 760C202 731 210 694 227 655C248 611 277 582 313 562C343 545 373 538 407 539C451 539 493 551 526 574C553 593 567 620 563 648C559 675 543 697 515 718C484 741 444 758 399 761C338 762 260 766 212 760Z" stroke-width="1.8" stroke-opacity=".85"/>
+    <path d="M252 721C244 697 251 667 265 635C282 599 306 577 336 562C360 550 384 545 410 545C445 546 477 557 501 575C522 591 532 613 529 636C526 658 512 675 489 692C464 711 433 722 399 724C353 724 289 728 252 721Z" stroke-width="1.55" stroke-opacity=".8"/>
+    <path d="M288 683C282 664 288 641 299 616C312 588 331 571 354 560C374 551 393 548 413 549C440 550 464 559 482 573C498 586 505 603 503 621C500 638 489 651 471 664C451 678 426 686 399 687C364 688 317 690 288 683Z" stroke-width="1.25" stroke-opacity=".74"/>
+    <path d="M320 647C315 631 321 613 329 596C340 576 355 565 372 558C387 552 402 551 417 552C437 553 455 561 468 572C479 581 484 594 482 607C480 620 471 630 457 638C441 648 421 652 399 653C371 654 340 656 320 647Z" stroke-width="1.05" stroke-opacity=".67"/>
+  </g>
+
+  <g id="reflection" class="reflection" fill="none" stroke="#ffffff" stroke-linecap="round">
+    <path d="M332 584C350 594 375 599 401 599C425 600 446 594 462 583" stroke-width="1.5" stroke-opacity=".53"/>
+    <path d="M309 602C338 619 371 626 405 626C435 626 464 617 486 601" stroke-width="1.2" stroke-opacity=".4"/>
+    <path d="M318 615L347 621M357 617L386 624M397 620L428 625M439 618L469 611" stroke-width="1.1" stroke-opacity=".36"/>
+    <path d="M330 630L355 637M364 632L390 640M400 633L429 639M439 631L464 625" stroke-width="1" stroke-opacity=".33"/>
+    <path d="M343 646L366 651M374 647L399 655M407 648L435 653M443 646L462 641" stroke-width=".95" stroke-opacity=".29"/>
+    <path d="M351 661L374 666M382 663L405 670M413 663L438 668M446 660L461 656" stroke-width=".85" stroke-opacity=".25"/>
+    <path d="M360 676L380 681M388 678L408 683M416 678L438 682M446 675L460 672" stroke-width=".75" stroke-opacity=".22"/>
+    <path d="M368 690L386 694M394 692L412 697M420 691L438 694M445 688L456 686" stroke-width=".7" stroke-opacity=".18"/>
+    <path d="M377 704L392 707M400 705L415 710M423 704L438 707" stroke-width=".65" stroke-opacity=".15"/>
+    <path d="M323 594C350 606 374 612 402 612C432 612 459 605 479 593" stroke-width=".8" stroke-opacity=".28"/>
+  </g>
+
+  <g id="figure" class="figure" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M371 425C378 420 394 421 400 428L404 447C405 457 397 466 394 475L397 486C410 490 426 495 438 506C428 517 414 521 399 521C382 521 365 517 350 507C359 498 371 491 382 486L384 473C378 465 369 458 369 448Z" fill="#ffffff" fill-opacity=".88" stroke-width="1.3" stroke-opacity=".78"/>
+    <path d="M370 429C377 424 393 424 400 431L402 443C392 446 382 446 370 443Z" fill="#18191b" stroke="none" opacity=".72"/>
+    <path d="M373 447C382 451 393 452 402 447M379 470C385 473 392 473 397 470" fill="none" stroke-width=".8" stroke-opacity=".52"/>
+    <path d="M350 507C364 512 381 516 400 516C416 516 430 512 438 506C445 524 447 550 444 575C438 586 421 591 400 591C378 591 360 587 350 576C347 553 347 529 350 507Z" fill="#18191b" stroke-width="1.7" stroke-opacity=".82"/>
+    <path d="M352 510C365 521 380 526 400 526C416 526 431 521 437 511" fill="none" stroke-width="2.1" stroke-opacity=".92"/>
+    <path d="M358 520C364 539 362 557 360 577M376 526C370 548 371 570 375 585M423 525C431 541 431 559 426 582" fill="none" stroke-width="1.25" stroke-opacity=".4"/>
+    <path d="M366 576C375 566 384 562 400 563C416 563 427 568 435 576" fill="none" stroke-width="2.5" stroke-opacity=".75"/>
+    <path d="M377 575C384 569 391 568 400 568C410 568 417 570 424 576" fill="none" stroke-width="5.5" stroke-opacity=".13"/>
+    <path d="M346 506C360 500 368 497 382 495M398 495C414 497 428 501 442 507" fill="none" stroke-width=".8" stroke-opacity=".5"/>
+  </g>
+
+  <g id="water-texture" class="water-texture" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-opacity=".2">
+    <path d="M289 590L307 594M299 596L321 601M472 593L494 589M477 602L502 598" stroke-width=".8"/>
+    <path d="M275 609L300 614M285 618L313 624M487 614L514 608M494 625L521 618" stroke-width=".75"/>
+    <path d="M262 634L293 640M273 647L305 654M499 640L531 633M508 653L538 645" stroke-width=".7"/>
+    <path d="M251 664L286 670M266 679L300 685M510 670L546 662M518 685L552 677" stroke-width=".65"/>
+  </g>
+</svg>
