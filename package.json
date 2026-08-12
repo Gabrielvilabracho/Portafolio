@@ -13,6 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:pages-output": "node scripts/assert-pages-build.mjs --base=/Portafolio",
+    "test:project-card-layout": "npm run build && node scripts/assert-project-card-layout.mjs",
+    "test:visual": "npm test && npm run test:project-card-layout",
     "astro": "astro"
   },
   "dependencies": {
