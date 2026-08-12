@@ -98,4 +98,45 @@ assertMatches(
   new RegExp(`<input\\b(?=[^>]*\\bname="_next")(?=[^>]*\\bvalue="${escapeRegExp(thankYouUrl)}")[^>]*>`, 'i')
 );
 
+const caseStudyPath = 'case-studies/ai-support-agent/index.html';
+const caseStudyPage = await readFile(resolve(distDirectory, caseStudyPath), 'utf8');
+assertMatches(
+  caseStudyPage,
+  caseStudyPath,
+  'rendered Markdown heading',
+  /<h2 id="what-this-demonstrates">What this demonstrates<\/h2>/
+);
+assertMatches(
+  caseStudyPage,
+  caseStudyPath,
+  'rendered Markdown content',
+  /The localized detail page renders Markdown content and remains linked from the associated project\./
+);
+
+const spanishProjectPath = 'es/work/ai-support-agent/index.html';
+const spanishProjectPage = await readFile(resolve(distDirectory, spanishProjectPath), 'utf8');
+assertMatches(
+  spanishProjectPage,
+  spanishProjectPath,
+  'localized case-study link',
+  /<a[^>]*href="\/es\/case-studies\/ai-support-agent\/"[^>]*>[\s\S]*?<span>Read the case study<\/span>/
+);
+
+for (const locale of ['es', 'pt', 'ru']) {
+  const localeCaseStudyPath = `${locale}/${caseStudyPath}`;
+  const localeCaseStudyPage = await readFile(resolve(distDirectory, localeCaseStudyPath), 'utf8');
+  assertMatches(
+    localeCaseStudyPage,
+    localeCaseStudyPath,
+    'rendered Markdown content',
+    /This is intentionally generic placeholder content, included only to demonstrate the case-study template\./
+  );
+  assertMatches(
+    localeCaseStudyPage,
+    localeCaseStudyPath,
+    'rendered Markdown heading',
+    /<h2 id="what-this-demonstrates">What this demonstrates<\/h2>/
+  );
+}
+
 console.log(`GitHub Pages build-output assertions passed for ${configuredBase}.`);
