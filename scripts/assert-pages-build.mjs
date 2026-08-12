@@ -77,6 +77,12 @@ for (const localePath of localePaths) {
   assertMatches(
     content,
     relativePath,
+    `SVG favicon at ${configuredBase}/favicon.svg`,
+    new RegExp(`<link\\b(?=[^>]*\\brel="icon")(?=[^>]*\\btype="image/svg\\+xml")(?=[^>]*\\bhref="${escapeRegExp(`${configuredBase}/favicon.svg`)}")[^>]*>`, 'i')
+  );
+  assertMatches(
+    content,
+    relativePath,
     `Navbar contact link to ${contactHref}`,
     new RegExp(`<a\\b(?=[^>]*\\bhref="${escapeRegExp(contactHref)}")[^>]*>\\s*Contact\\s*</a>`, 'i')
   );
