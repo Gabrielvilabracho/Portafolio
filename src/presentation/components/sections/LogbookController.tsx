@@ -2,6 +2,25 @@ import { Component, useState, type ReactNode } from 'react';
 import LogbookGlobe from '../animations/LogbookGlobe.tsx';
 import { logbookEntries } from './logbookEntries';
 import { withBase } from '../../../utils/withBase';
+import { canUseWebGL } from '../../../utils/webgl';
+
+function MapUnavailable({ message }: { message: string }) {
+  return (
+    <div
+      className="w-full h-full flex items-center justify-center"
+      style={{
+        minHeight: '32em',
+        background: '#18191b',
+        backgroundImage: `url('${withBase('/imagenes/cross-background.svg')}')`,
+        backgroundSize: 'cover',
+      }}
+    >
+      <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--brand-grey-500)' }}>
+        {message}
+      </p>
+    </div>
+  );
+}
 
 /**
  * WebGL can fail (GPU process disabled, headless browsers, old hardware).
@@ -16,21 +35,7 @@ class GlobeErrorBoundary extends Component<{ children: ReactNode }, { failed: bo
 
   render() {
     if (this.state.failed) {
-      return (
-        <div
-          className="w-full h-full flex items-center justify-center"
-          style={{
-            minHeight: '32em',
-            background: '#18191b',
-            backgroundImage: `url('${withBase('/imagenes/cross-background.svg')}')`,
-            backgroundSize: 'cover',
-          }}
-        >
-          <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--brand-grey-500)' }}>
-            Interactive map unavailable — WebGL is disabled in this browser
-          </p>
-        </div>
-      );
+      return <MapUnavailable message="Interactive map unavailable — the globe renderer could not initialize" />;
     }
     return this.props.children;
   }
@@ -40,6 +45,7 @@ export const entries = logbookEntries;
 
 export default function LogbookController() {
   const [current, setCurrent] = useState(0);
+  const [isWebGLAvailable] = useState(canUseWebGL);
   const entry = entries[current];
 
   return (
@@ -94,9 +100,13 @@ export default function LogbookController() {
       {/* Grid: Globe + Entry */}
       <div className="grid grid-cols-1 lg:grid-cols-5">
         <div className="lg:col-span-3 border-brand-grey-700 lg:border-r" style={{ minHeight: '32em' }}>
-          <GlobeErrorBoundary>
-            <LogbookGlobe currentEntry={current} />
-          </GlobeErrorBoundary>
+          {isWebGLAvailable ? (
+            <GlobeErrorBoundary>
+              <LogbookGlobe currentEntry={current} />
+            </GlobeErrorBoundary>
+          ) : (
+            <MapUnavailable message="Interactive map unavailable — WebGL is disabled in this browser" />
+          )}
         </div>
 
         <div className="lg:col-span-2 flex flex-col gap-4" style={{ padding: 'var(--brand-scale-1000) var(--brand-scale-900)' }}>
