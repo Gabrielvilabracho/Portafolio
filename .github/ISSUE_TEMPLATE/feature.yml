@@ -1,0 +1,76 @@
+name: Feature request
+description: Propose a user-focused improvement with explicit scope and acceptance criteria.
+title: ""
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the user need and desired outcome before proposing implementation details. Keep the request focused enough to review as one unit of work.
+
+  - type: textarea
+    id: problem-user-need
+    attributes:
+      label: Problem or user need
+      description: Explain who is affected, what they are trying to accomplish, and why the current experience is insufficient.
+      placeholder: Describe the user and the problem from their perspective.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-outcome
+    attributes:
+      label: Proposed outcome
+      description: Describe the user-visible result without prescribing unnecessary implementation details.
+      placeholder: Explain what successful support for this need would enable.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: List objective, verifiable conditions that define completion.
+      placeholder: |
+        - [ ] The user can ...
+        - [ ] The system displays ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives-considered
+    attributes:
+      label: Alternatives considered
+      description: Describe workarounds or other approaches considered and why they are insufficient.
+      placeholder: Summarize viable alternatives and their tradeoffs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: in-scope
+    attributes:
+      label: In scope
+      description: List the behaviors, users, routes, or deliverables included in this request.
+      placeholder: Define the smallest complete outcome.
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: List related work that should not be included in this request.
+      placeholder: Identify explicit boundaries and follow-up work.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I searched open and closed issues for duplicates.
+          required: true
+        - label: This request describes a user outcome rather than only an implementation preference.
+          required: true

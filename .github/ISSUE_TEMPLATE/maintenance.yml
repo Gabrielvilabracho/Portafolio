@@ -1,0 +1,92 @@
+name: Maintenance request
+description: Report a bug, dependency update, or non-sensitive security maintenance need.
+title: ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping maintain the project.
+
+        Do not publicly disclose exploitable vulnerabilities. Use GitHub private vulnerability reporting when available, or contact a maintainer privately. Never include secrets, credentials, personal data, or exploit details in this form.
+
+  - type: dropdown
+    id: maintenance-type
+    attributes:
+      label: Maintenance type
+      description: Select the category that best describes this request.
+      options:
+        - Bug
+        - Dependency update
+        - Security maintenance
+      multiple: false
+    validations:
+      required: true
+
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Provide a concise description of the problem or maintenance need.
+      placeholder: Briefly describe what needs attention.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior-risk
+    attributes:
+      label: Current behavior or risk
+      description: Explain what happens now and the impact or risk it creates.
+      placeholder: Describe the observed behavior, impact, or maintenance risk.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-evidence
+    attributes:
+      label: Reproduction or evidence
+      description: Provide minimal reproduction steps, logs, screenshots, or dependency evidence. Redact sensitive information.
+      placeholder: |
+        1. Go to ...
+        2. Perform ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-outcome
+    attributes:
+      label: Expected outcome
+      description: Describe the behavior or maintenance result that would resolve this request.
+      placeholder: Explain what should happen instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-environment
+    attributes:
+      label: Affected environment
+      description: Identify relevant browsers, operating systems, runtimes, versions, routes, or deployment environments.
+      placeholder: Include only the environment details needed to investigate.
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification-criteria
+    attributes:
+      label: Verification criteria
+      description: State how maintainers can verify that the problem has been resolved safely.
+      placeholder: List objective checks or observable outcomes.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I searched open and closed issues for duplicates.
+          required: true
+        - label: I limited this request to the reported problem and excluded unrelated work.
+          required: true
+        - label: I included no secrets, credentials, personal data, or exploitable vulnerability details.
+          required: true
