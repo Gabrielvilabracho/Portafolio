@@ -44,7 +44,7 @@ Reusable templates reduce incomplete reports, prevent false issue linkage, and a
 - [x] **GCT-02** Add a reusable feature-request Issue Form and configure the chooser to disable blank contributor issues.
 - [x] **GCT-03** Add a default pull request template aligned with the repository's actual verification commands and contribution policy.
 - [x] **GCT-04** Validate YAML syntax and perform structural readback of all templates.
-- [ ] **GCT-05** Commit the work unit and assess the candidate under native review mode.
+- [x] **GCT-05** Commit the work unit and assess the candidate under native review mode.
 
 ## Acceptance criteria
 
@@ -70,6 +70,8 @@ Reusable templates reduce incomplete reports, prevent false issue linkage, and a
 - Kept public security guidance explicit without adding an unverified private-reporting URL.
 - Verified the declared `enhancement` label exists on `Gabrielvilabracho/Portafolio`.
 - Final authored size is 240 lines, below the 400-line delivery budget.
+- Created work-unit commit `404941e chore(github): add community templates`.
+- Native reliability review approved the frozen candidate with no findings.
 
 ## Verification evidence
 
@@ -78,8 +80,9 @@ Reusable templates reduce incomplete reports, prevent false issue linkage, and a
 - PR template command comparison: passed against `package.json` and `.github/workflows/ci.yml`.
 - Structural readback: passed for all four community-template files.
 - `git diff --check` and no-index checks for untracked files: passed with no whitespace diagnostics.
+- Native review: approved with no findings under lineage `review-ff0fde7559ac7a09`; exact acknowledgement consumed revision `sha256:94183c727f663e5f319b30f7d502384990cff07b8bd52d4bcce2052b3568c92d` and burned its authority.
 - Limitation: final GitHub rendering and chooser activation can only be confirmed after the templates reach `master`.
 
 ## Next step
 
-Commit the validated template work unit and assess it under the repository's native review mode.
+Resolve the one-time bootstrap delivery path without linking an unrelated issue, then activate and verify the templates on `master`.
