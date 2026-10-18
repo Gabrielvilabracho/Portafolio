@@ -40,6 +40,23 @@ function assertMatches(content, relativePath, description, pattern) {
   }
 }
 
+function assertOrdered(content, relativePath, descriptionsAndPatterns) {
+  let previousIndex = -1;
+
+  for (const [description, pattern] of descriptionsAndPatterns) {
+    const match = pattern.exec(content);
+    if (!match) {
+      throw new Error(`${relativePath}: missing ${description}.`);
+    }
+
+    if (match.index <= previousIndex) {
+      throw new Error(`${relativePath}: ${description} is out of order.`);
+    }
+
+    previousIndex = match.index;
+  }
+}
+
 const buildFiles = await getBuildFiles(distDirectory);
 const textFiles = buildFiles.filter((path) => ['.css', '.html'].includes(extname(path)));
 const violations = [];
@@ -111,6 +128,50 @@ assertMatches(
   caseStudyPath,
   'rendered Markdown content',
   /The localized detail page renders Markdown content and remains linked from the associated project\./
+);
+
+const documentIntelligencePath = 'case-studies/document-intelligence/index.html';
+const documentIntelligencePage = await readFile(
+  resolve(distDirectory, documentIntelligencePath),
+  'utf8'
+);
+assertOrdered(documentIntelligencePage, documentIntelligencePath, [
+  [
+    'components section before the connections and protocols section',
+    /<h2 id="3-components-technologies-and-responsibilities">3\. Components, technologies, and responsibilities<\/h2>/
+  ],
+  [
+    'connections and protocols heading after the components section',
+    /<h2 id="4-conexiones-y-protocolos">4\. Conexiones y protocolos<\/h2>/
+  ],
+  [
+    'renumbered security section after the diagram',
+    /<h2 id="5-security-privacy-and-audit-controls">5\. Security, privacy, and audit controls<\/h2>/
+  ]
+]);
+assertMatches(
+  documentIntelligencePage,
+  documentIntelligencePath,
+  'semantic diagram figure with an accessible caption reference',
+  /<figure\b(?=[^>]*\bclass="case-study-diagram")(?=[^>]*\baria-labelledby="connections-and-protocols-caption")[^>]*>/i
+);
+assertMatches(
+  documentIntelligencePage,
+  documentIntelligencePath,
+  'lazy-loaded Connections and Protocols iframe with the base-safe light-theme source',
+  /<iframe\b(?=[^>]*\bclass="case-study-diagram__frame")(?=[^>]*\bsrc="\/Portafolio\/diagrams\/document-intelligence\/connections-and-protocols\.html\?embed=1&amp;theme=light")(?=[^>]*\btitle="Connections and Protocols — Document Intelligence architecture diagram")(?=[^>]*\bloading="lazy")[^>]*>/i
+);
+assertMatches(
+  documentIntelligencePage,
+  documentIntelligencePath,
+  'diagram figcaption',
+  /<figcaption\b[^>]*\bid="connections-and-protocols-caption"[^>]*>[\s\S]*?<\/figcaption>/i
+);
+assertMatches(
+  documentIntelligencePage,
+  documentIntelligencePath,
+  'standalone Connections and Protocols artifact link',
+  /<a\b(?=[^>]*\bhref="\/Portafolio\/diagrams\/document-intelligence\/connections-and-protocols\.html\?theme=light")[^>]*>\s*Open the standalone diagram\s*<\/a>/i
 );
 
 const spanishProjectPath = 'es/work/ai-support-agent/index.html';

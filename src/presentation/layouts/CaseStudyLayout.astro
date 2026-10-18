@@ -124,6 +124,105 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
     color: var(--case-heading-secondary);
   }
 
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(table) {
+    border: 1px solid var(--case-border);
+    border-collapse: collapse;
+    inline-size: 100%;
+    line-height: 1.5;
+    table-layout: fixed;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(th),
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(td) {
+    border: 1px solid var(--case-border);
+    overflow-wrap: anywhere;
+    padding: var(--brand-scale-700);
+    vertical-align: middle;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(th) {
+    border-bottom-width: 2px;
+    color: var(--case-heading-primary);
+    text-align: center;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(th:nth-child(1)),
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(td:nth-child(1)) {
+    inline-size: 24%;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(th:nth-child(2)),
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(td:nth-child(2)) {
+    inline-size: 30%;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(th:nth-child(3)),
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(td:nth-child(3)) {
+    inline-size: 46%;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(td:nth-child(1)),
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(td:nth-child(2)) {
+    text-align: center;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(td:nth-child(3)) {
+    text-align: left;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram) {
+    background: var(--case-surface);
+    border: 1px solid var(--case-border);
+    inline-size: min(82rem, calc(100vw - (2 * var(--brand-scale-1100))));
+    left: 50%;
+    margin-block: var(--brand-scale-1100) clamp(var(--brand-scale-1300), 8vw, 8rem);
+    margin-inline: 0;
+    position: relative;
+    transform: translateX(-50%);
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram__viewport) {
+    border-bottom: 1px solid var(--case-border);
+    max-inline-size: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram__viewport:focus-visible) {
+    outline: 3px solid var(--case-accent);
+    outline-offset: 3px;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram__frame) {
+    block-size: clamp(38rem, 64vw, 52rem);
+    border: 0;
+    display: block;
+    inline-size: 100%;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram figcaption) {
+    color: var(--case-text);
+    font-size: var(--type-paragraph-sm-size);
+    line-height: 1.55;
+    margin: 0;
+    padding: var(--brand-scale-700) var(--brand-scale-800);
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram figcaption a) {
+    color: var(--case-heading-primary);
+    display: inline-block;
+    font-weight: 600;
+    margin-inline-start: 0.35em;
+    text-decoration-color: var(--case-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram figcaption a:focus-visible) {
+    outline: 3px solid var(--case-accent);
+    outline-offset: 3px;
+  }
+
   .case-study-content :global(p),
   .case-study-content :global(ul),
   .case-study-content :global(ol) {
@@ -140,6 +239,31 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
     .case-study-layout {
       display: block;
       padding: var(--brand-scale-1300) var(--brand-scale-1100);
+    }
+
+    .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(table) {
+      font-size: var(--type-paragraph-xsm-size);
+    }
+
+    .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(th),
+    .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(td) {
+      padding: calc(var(--brand-scale-700) / 2);
+    }
+
+    .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram) {
+      inline-size: 100%;
+      left: auto;
+      margin-block: var(--brand-scale-1000) var(--brand-scale-1300);
+      transform: none;
+    }
+
+    .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram__frame) {
+      block-size: 60rem;
+      min-inline-size: 112rem;
+    }
+
+    .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-diagram figcaption) {
+      padding: var(--brand-scale-700);
     }
   }
 </style>
