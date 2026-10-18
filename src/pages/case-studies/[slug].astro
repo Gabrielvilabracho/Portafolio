@@ -11,10 +11,11 @@ export async function getStaticPaths() {
 
 const { caseStudy } = Astro.props as { caseStudy: CollectionEntry<'caseStudies'> };
 const { Content } = await render(caseStudy);
+const caseStudyTheme = caseStudy.data.slug === 'document-intelligence' ? 'document-intelligence' : undefined;
 ---
 
 <BaseLayout title={`${caseStudy.data.title} — Gabriel Vilabracho`} description={caseStudy.data.summary}>
-  <CaseStudyLayout title={caseStudy.data.title} summary={caseStudy.data.summary}>
+  <CaseStudyLayout title={caseStudy.data.title} summary={caseStudy.data.summary} theme={caseStudyTheme}>
     <Content />
   </CaseStudyLayout>
 </BaseLayout>

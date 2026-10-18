@@ -28,4 +28,17 @@ describe('CaseStudyLayout', () => {
 
     expect(html).not.toContain('case-study-summary');
   });
+
+  it('applies the Document Intelligence theme only when requested', async () => {
+    const container = await AstroContainer.create();
+    const themedHtml = await container.renderToString(CaseStudyLayout, {
+      props: { title: 'Document Intelligence', theme: 'document-intelligence' },
+    });
+    const defaultHtml = await container.renderToString(CaseStudyLayout, {
+      props: { title: 'Default case study' },
+    });
+
+    expect(themedHtml).toContain('data-case-theme="document-intelligence"');
+    expect(defaultHtml).not.toContain('data-case-theme');
+  });
 });

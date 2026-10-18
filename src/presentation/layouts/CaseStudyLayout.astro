@@ -2,12 +2,13 @@
 export interface Props {
   title: string;
   summary?: string;
+  theme?: 'document-intelligence';
 }
 
-const { title, summary } = Astro.props;
+const { title, summary, theme } = Astro.props;
 ---
 
-<section class="case-study-layout" data-case-study-layout>
+<section class="case-study-layout" data-case-study-layout data-case-theme={theme}>
   <article class="case-study-content" data-case-study-content>
     <header class="case-study-header">
       <p class="case-study-kicker">Case study</p>
@@ -26,6 +27,20 @@ const { title, summary } = Astro.props;
     padding-block: clamp(var(--brand-scale-1400), 14vw, 14rem);
   }
 
+  .case-study-layout[data-case-theme='document-intelligence'] {
+    --case-surface: #ABBAB9;
+    --case-border: rgb(61 61 61 / 24%);
+    --case-text: #1E1E1E;
+    --case-accent: var(--brand-orange-500);
+    --case-heading-primary: #3D3D3D;
+    --case-heading-secondary: #1E1E1E;
+
+    background-color: var(--case-surface);
+    border-block: 1px solid var(--case-border);
+    color: var(--case-text);
+    font-family: var(--brand-font-family);
+  }
+
   .case-study-content {
     grid-column: 2;
     min-width: 0;
@@ -33,6 +48,11 @@ const { title, summary } = Astro.props;
 
   .case-study-header {
     margin-bottom: clamp(var(--brand-scale-1300), 10vw, 10rem);
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-header {
+    border-bottom: 1px solid var(--case-border);
+    padding-bottom: var(--brand-scale-900);
   }
 
   .case-study-kicker {
@@ -43,11 +63,19 @@ const { title, summary } = Astro.props;
     text-transform: uppercase;
   }
 
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-kicker {
+    color: var(--case-accent);
+  }
+
   .case-study-content h1 {
     font-size: clamp(2.75rem, 6vw, 5.5rem);
     line-height: 0.98;
     margin: 0;
     text-transform: uppercase;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content h1 {
+    color: var(--case-heading-primary);
   }
 
   .case-study-summary {
@@ -58,16 +86,35 @@ const { title, summary } = Astro.props;
     max-width: 36rem;
   }
 
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-summary {
+    color: var(--case-text);
+  }
+
   .case-study-content :global(h2) {
     font-size: clamp(1.5rem, 3vw, 2.25rem);
     line-height: 1.12;
     margin: clamp(var(--brand-scale-1300), 8vw, 8rem) 0 var(--brand-scale-700);
   }
 
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(h2) {
+    color: var(--case-heading-primary);
+  }
+
   .case-study-content :global(p),
   .case-study-content :global(li) {
     font-size: var(--type-paragraph-lg-size);
     line-height: 1.65;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(p),
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(li) {
+    color: var(--case-text);
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(h3),
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(h4),
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(h5) {
+    color: var(--case-heading-secondary);
   }
 
   .case-study-content :global(p),
