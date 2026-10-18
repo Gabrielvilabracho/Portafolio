@@ -8,7 +8,7 @@ Create and review the Document Intelligence diagram set as standalone Archify ar
 - The generated standalone HTML is the validated review and delivery artifact.
 - The first diagram is the `architecture` view titled **Connections and Protocols**.
 - Static presentation is the default; this architecture view does not add animation.
-- Portfolio integration is a separate future task. None of the integration phases below are complete because of this standalone delivery.
+- Portfolio integration is handled by the dedicated milestone below; the earlier schema/custom-renderer direction remains deferred.
 
 ### Connections and Protocols milestone
 
@@ -23,9 +23,35 @@ Create and review the Document Intelligence diagram set as standalone Archify ar
 
 **Validation evidence:** Showcase validation passed all 9 of 9 artifact checks with 0 composition errors and 0 warnings. Delivery bound specification SHA-256 `754a400f4f0b93442b12d5c612425711cedc6688ef5e78bb3d525bcc7ac1de84` (5,558 bytes) to artifact SHA-256 `6b6a5183f02019d3695529eca8056034b73df8ff19c176dcaadec3c258667caf` (818,028 bytes). Automated browser evidence passed containment, readability and Viewer chrome checks at 1440×900, 1600×1000, 1920×1080 and 2048×1320; light and dark screenshots at 1440×900 and 2048×1320 were inspected after one focused vertical-compaction correction.
 
+### Portfolio integration milestone
+
+Integrate the reviewed Connections and Protocols artifact into the current Document Intelligence case study without reviving the superseded schema/custom-renderer approach in deferred Phases 2–5.
+
+- [x] **DI-INT-1 — Align the artifact treatment:** select the closest supported Archify presentation preset, preserve the JSON source of truth and redeliver the generated HTML with showcase validation.
+- [x] **DI-INT-2 — Extend the case-study narrative:** add `4. Conexiones y protocolos` immediately after `3. Components, technologies, and responsibilities`, embed the light artifact with an accessible title/caption/link, and renumber the following sections.
+- [x] **DI-INT-3 — Add responsive presentation:** style the embed with the scoped Document Intelligence semantic tokens while preserving diagram readability on desktop and mobile.
+- [ ] **DI-INT-4 — Verify and close the work unit:** assert generated-page placement and attributes, run Archify and Astro checks, inspect the embedded result, record evidence, and create the work-unit commit.
+
+### Portfolio integration tracking
+
+- **Status:** Implementation and delegated verification are complete. DI-INT-4 remains open only for the parent-owned work-unit commit and final review boundary.
+- **TDD evidence:** RED — `npm run build && npm run test:pages-output` built 12 pages, then failed because `case-studies/document-intelligence/index.html` lacked the new Connections and Protocols heading. GREEN — after implementation, the same command built 12 pages and passed the generated-output assertions. REFACTOR — the mobile iframe minimum width increased after browser evidence measured 5px rendered SVG labels; the final command remained green and the smallest measured embedded label increased to 8px.
+- **Archify evidence:** The `editorial` preset is declared in the canonical JSON. Showcase validation passed 9 of 9 checks with 0 composition errors and 0 warnings. Deterministic delivery bound specification SHA-256 `931ae9abc1d112974f6d8ca89b90e39d8271848d7d496dbd9b0c7c1fae65dddf` (5,592 bytes) to artifact SHA-256 `d27792956a6e32705264af1d2fc5da0860280274628fbff6433f848b4bbbd530` (818,032 bytes).
+- **Astro evidence:** `npm run check` passed 75 files with 0 errors, warnings, or hints. `git diff --check` passed with no output.
+- **Browser evidence:** Archify `visual-check` passed containment, readability, and Viewer chrome checks at 1440×900, 1600×1000, 1920×1080, and 2048×1320. Embedded checks at 1440×900 and 390×844 confirmed the light artifact, semantic-token frame, a 1,310px desktop viewport without internal horizontal scrolling, and an intentional 1,234px mobile diagram canvas inside a 344px horizontal-scroll viewport. Existing long inline repository citations still extend the overall mobile document width to 418px independently of the contained diagram.
+- **Feature-branch chain:** Slice 1 is commit `eb71a14` (`feat(case-study): embed document architecture diagram`) with 383 authored lines for the narrative, responsive embed and generated-page assertions. Slice 2 contains the Archify preset, regenerated artifact/evidence and this recovery record.
+
+**Authorized scope:** `diagrams/document-intelligence/connections-and-protocols.json`, generated `public/diagrams/document-intelligence/connections-and-protocols.html`, its versioned `connections-and-protocols.visual-check.*` evidence sidecars, `src/content/case-studies/document-intelligence.md`, `src/presentation/layouts/CaseStudyLayout.astro`, `scripts/assert-pages-build.mjs`, and this feature document. Existing unrelated worktree changes must remain untouched.
+
+**Execution route:** `delegated`. The implementation spans four non-trivial source/content/artifact files plus generated output and verification, so the writer trigger applies.
+
+**TDD mode:** Strict where deterministic generated-page assertions apply. Observe RED for the new heading, placement and iframe contract before implementation; then GREEN and refactor. Archify visual styling has no meaningful unit-test RED and instead requires showcase validation, deterministic delivery, browser evidence and direct visual inspection.
+
+**Delivery strategy:** The final staged implementation reached 438 authored changed lines because the new case-study document and its existing table treatment entered version control with this integration. The user selected `feature-branch-chain`. Planned review slices: (1) case-study narrative, responsive embed and generated-page assertions; (2) Archify editorial preset, regenerated artifact/evidence and ODD tracking. No pull request is created without separate user authorization.
+
 ## Goal
 
-Establish reviewed, responsive Archify diagram artifacts for the Document Intelligence case study. Embedding those artifacts inside the reusable case-study template remains a separate integration goal.
+Establish reviewed, responsive Archify diagram artifacts for the Document Intelligence case study and integrate the approved Connections and Protocols view without introducing a custom diagram renderer.
 
 ## Scope
 
@@ -114,28 +140,28 @@ Establish reviewed, responsive Archify diagram artifacts for the Document Intell
 
 ## Phase 6 — Integrate and validate
 
-- [ ] Render the selected diagram from `src/pages/case-studies/[slug].astro`.
-- [ ] Confirm the chosen placement in the case-study template.
-- [ ] Verify light and dark mode contrast.
-- [ ] Verify desktop and mobile layouts.
-- [ ] Run the project build and address any errors.
+- [x] Embed the selected diagram through the Document Intelligence Markdown body without changing the shared route.
+- [x] Place the diagram directly after section 3 under `4. Conexiones y protocolos`.
+- [x] Use the light editorial artifact inside an outer frame driven by the active case-study semantic tokens.
+- [x] Verify the desktop breakout and intentional mobile horizontal-scroll treatment.
+- [x] Run the project build and generated-page assertions successfully.
 
 **Expected result:** The Document Intelligence case study displays a themed, responsive and accessible flow diagram.
 
 ## Implementation decision
 
-Use Archify JSON as the diagram source of truth and the standalone generated HTML as the validated review/delivery artifact. The prior Markdown/frontmatter integration direction remains only a future option; a separate portfolio-integration task must confirm placement and embedding mechanics before changing the case-study template. Move to MDX only if future case studies need to insert several interactive components at arbitrary positions between paragraphs.
+Use Archify JSON as the diagram source of truth and the standalone generated HTML as the validated review/delivery artifact. The portfolio embeds that artifact from the existing Markdown body, so no schema, route, MDX migration, or custom renderer is required. The outer frame uses the Document Intelligence semantic tokens; the inner viewer uses Archify's supported light `editorial` preset rather than claiming unsupported arbitrary palette control. Move to MDX only if future case studies need to insert several interactive components at arbitrary positions between paragraphs.
 
 ## Verification checklist
 
 - [x] Global palette and typography remain unchanged outside the selected case study.
 - [x] The case-study theme is scoped to its own layout.
-- [ ] Diagram data contains no hard-coded presentation styles.
-- [ ] The diagram uses semantic color tokens from the active theme.
-- [ ] The diagram is readable without animation.
-- [ ] Reduced-motion users receive a static diagram.
+- [x] Diagram data contains no hard-coded presentation styles beyond the supported semantic preset selection.
+- [x] The embed frame uses semantic color tokens from the active case-study theme.
+- [x] The diagram is readable without animation.
+- [x] Reduced-motion users receive a static diagram.
 - [x] The project build passes.
 
 ## Next step
 
-Review the standalone **Connections and Protocols** artifact. Plan portfolio integration as a separate task without treating the deferred Phase 2–6 checklist as completed.
+Complete the parent-owned work-unit commit and native review boundary, then continue with the next Document Intelligence diagram only after its standalone artifact is reviewed.
