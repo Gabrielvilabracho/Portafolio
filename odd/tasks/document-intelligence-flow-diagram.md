@@ -38,6 +38,8 @@ Render the document-processing flow as an accessible, responsive, optionally ani
 - **Font decision:** Keep `ABC Monument Grotesk` through `var(--brand-font-family)`; do not add a secondary font or change global typography.
 - **TDD evidence:** RED — `npm test -- src/presentation/layouts/CaseStudyLayout.test.ts` failed only the new opt-in theme test because the rendered layout omitted `data-case-theme="document-intelligence"` (2 passed, 1 failed). GREEN — the same command passed all 3 tests after implementation. REFACTOR — color rules were narrowed to the opt-in theme ancestor so default selectors retain their original behavior; the final focused verification rerun remained green with 3 passing tests.
 - **Verification:** `npm test -- src/presentation/layouts/CaseStudyLayout.test.ts` passed (1 file, 3 tests); `npm run check` passed (73 files, 0 errors, 0 warnings, 0 hints); `npm run build` passed (12 pages built) with a non-failing Vite chunk-size warning.
+- **Work-unit commit:** `f8dc1bd` (`feat(case-study): add document intelligence theme`).
+- **RDD assessment:** `medium` because the case-study route changed; `review_due: false` with `review_due_reason: under_budget` for the committed range from `74d4cba`.
 - **Engram mirror:** Pending. `mem_save` rejected the verified decision because multiple active runtime sessions matched the project and directory; no session identity was invented.
 
 ## Phase 2 — Extend case-study content data
