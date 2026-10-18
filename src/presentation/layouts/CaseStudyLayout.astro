@@ -1,14 +1,25 @@
 ---
+import {
+  getCaseStudyThemeStyle,
+  type CaseStudyTheme,
+} from '../themes/caseStudyThemes';
+
 export interface Props {
   title: string;
   summary?: string;
-  theme?: 'document-intelligence';
+  theme?: CaseStudyTheme;
 }
 
 const { title, summary, theme } = Astro.props;
+const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
 ---
 
-<section class="case-study-layout" data-case-study-layout data-case-theme={theme}>
+<section
+  class="case-study-layout"
+  data-case-study-layout
+  data-case-theme={theme?.id}
+  style={themeStyle}
+>
   <article class="case-study-content" data-case-study-content>
     <header class="case-study-header">
       <p class="case-study-kicker">Case study</p>
@@ -27,17 +38,13 @@ const { title, summary, theme } = Astro.props;
     padding-block: clamp(var(--brand-scale-1400), 14vw, 14rem);
   }
 
-  .case-study-layout[data-case-theme='document-intelligence'] {
-    --case-surface: #ABBAB9;
-    --case-border: rgb(61 61 61 / 24%);
-    --case-text: #1E1E1E;
-    --case-accent: var(--brand-orange-500);
-    --case-heading-primary: #3D3D3D;
-    --case-heading-secondary: #1E1E1E;
-
+  .case-study-layout[data-case-theme] {
     background-color: var(--case-surface);
-    border-block: 1px solid var(--case-border);
     color: var(--case-text);
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] {
+    border-block: 1px solid var(--case-border);
     font-family: var(--brand-font-family);
   }
 

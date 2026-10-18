@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import type { CaseStudyTheme } from '../../themes/caseStudyThemes';
 import { DEFAULT_LOCALE, LOCALES, localizePath, type Locale } from '../../../utils/i18n';
 import { withBase } from '../../../utils/withBase';
 
 export interface NavbarProps {
   currentLocale?: Locale;
   currentPath?: string;
+  caseStudyTheme?: CaseStudyTheme;
 }
 
 const LOCALE_LABELS: Record<Locale, string> = {
@@ -14,7 +16,41 @@ const LOCALE_LABELS: Record<Locale, string> = {
   ru: 'Русский',
 };
 
-export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '/' }: NavbarProps) {
+interface NavbarPresentation {
+  backgroundColor: string;
+  borderColor: string;
+  textColor: string;
+  controlTextColor: string;
+  logoFilter: string;
+}
+
+export function resolveNavbarPresentation(
+  caseStudyTheme: CaseStudyTheme | undefined,
+  isDark: boolean,
+  bgOpacity: number
+): NavbarPresentation {
+  const backgroundColor = isDark
+    ? `rgba(12, 12, 12, ${bgOpacity})`
+    : caseStudyTheme?.surface ?? `rgba(255, 255, 255, ${bgOpacity})`;
+  const borderColor = isDark
+    ? 'rgba(47, 48, 50, 1)'
+    : caseStudyTheme?.border ?? 'rgba(195, 196, 200, 1)';
+  const textColor = isDark ? '#ffffff' : caseStudyTheme?.text ?? 'var(--brand-grey-600)';
+
+  return {
+    backgroundColor,
+    borderColor,
+    textColor,
+    controlTextColor: caseStudyTheme?.navbarControlText ?? textColor,
+    logoFilter: caseStudyTheme ? 'none' : isDark ? 'brightness(0) invert(1)' : 'none',
+  };
+}
+
+export default function Navbar({
+  currentLocale = DEFAULT_LOCALE,
+  currentPath = '/',
+  caseStudyTheme,
+}: NavbarProps) {
   const [blurAmount, setBlurAmount] = useState(0);
   const [bgOpacity, setBgOpacity] = useState(0);
   const [isDark, setIsDark] = useState(false);
@@ -100,13 +136,13 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
     };
   }, []);
 
-  const bgColor = isDark
-    ? `rgba(12, 12, 12, ${bgOpacity})`
-    : `rgba(255, 255, 255, ${bgOpacity})`;
-
-  const borderColor = isDark ? 'rgba(47, 48, 50, 1)' : 'rgba(195, 196, 200, 1)';
-  const textColor = isDark ? '#ffffff' : 'var(--brand-grey-600)';
-  const logoFilter = isDark ? 'brightness(0) invert(1)' : 'none';
+  const {
+    backgroundColor,
+    borderColor,
+    textColor,
+    controlTextColor,
+    logoFilter,
+  } = resolveNavbarPresentation(caseStudyTheme, isDark, bgOpacity);
   const base = import.meta.env.BASE_URL;
   const homeHref = localizePath('/', currentLocale, base);
   const contactHref = localizePath('/contact', currentLocale, base);
@@ -114,11 +150,12 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
   return (
     <header
       ref={headerRef}
+      data-case-theme={caseStudyTheme?.id}
       className="fixed top-0 left-0 w-full z-50"
       style={{
         height: 'var(--layout-nav-height)',
         backdropFilter: `blur(${blurAmount}px)`,
-        backgroundColor: bgColor,
+        backgroundColor,
         borderBottom: `1px solid ${borderColor}`,
         transition: 'background-color 0.3s, border-color 0.3s',
       }}
@@ -128,8 +165,19 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
         <div className="flex items-stretch h-full">
           <a
             href={homeHref}
+            data-navbar-control="gv"
+            data-navbar-control-boxed={caseStudyTheme ? 'true' : undefined}
             className="inline-flex items-center justify-center px-8 h-full"
-            style={{ borderLeft: `1px solid ${borderColor}`, transition: 'border-color 0.3s' }}
+            style={{
+              backgroundColor: caseStudyTheme?.navbarControlSurface,
+              border: caseStudyTheme?.navbarControlBorder
+                ? `1px solid ${caseStudyTheme.navbarControlBorder}`
+                : undefined,
+              borderLeft: caseStudyTheme ? undefined : `1px solid ${borderColor}`,
+              height: caseStudyTheme ? 'calc(100% - 10px)' : '100%',
+              marginBlock: caseStudyTheme ? '5px' : undefined,
+              transition: 'border-color 0.3s',
+            }}
           >
             <img
               src={withBase('/imagenes/gv-black.svg')}
@@ -221,13 +269,21 @@ export default function Navbar({ currentLocale = DEFAULT_LOCALE, currentPath = '
           </div>
           <a
             href={contactHref}
+            data-navbar-control="contact"
+            data-navbar-control-boxed={caseStudyTheme ? 'true' : undefined}
             onMouseEnter={() => setHoveredItem('contact')}
             onMouseLeave={() => setHoveredItem(null)}
             className="flex items-center justify-center px-8 h-full text-sm font-medium uppercase tracking-wider"
             style={{
-              borderLeft: `1px solid ${borderColor}`,
-              borderRight: `1px solid ${borderColor}`,
-              color: hoveredItem === 'contact' ? 'var(--brand-orange-500)' : textColor,
+              backgroundColor: caseStudyTheme?.navbarControlSurface,
+              border: caseStudyTheme?.navbarControlBorder
+                ? `1px solid ${caseStudyTheme.navbarControlBorder}`
+                : undefined,
+              borderLeft: caseStudyTheme ? undefined : `1px solid ${borderColor}`,
+              borderRight: caseStudyTheme ? undefined : `1px solid ${borderColor}`,
+              color: hoveredItem === 'contact' ? 'var(--brand-orange-500)' : controlTextColor,
+              height: caseStudyTheme ? 'calc(100% - 10px)' : '100%',
+              margin: caseStudyTheme ? '5px 0 5px 5px' : undefined,
               transition: 'color 0.3s, border-color 0.3s',
             }}
           >
