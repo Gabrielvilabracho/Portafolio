@@ -1,10 +1,31 @@
 # Document Intelligence Flow Diagram — Implementation Plan
 
-Add a reusable, themed flow-diagram component to the Document Intelligence case study without changing the portfolio's global visual identity.
+Create and review the Document Intelligence diagram set as standalone Archify artifacts before any portfolio integration work begins.
+
+## Selected Archify approach
+
+- Archify JSON is the source of truth for each diagram.
+- The generated standalone HTML is the validated review and delivery artifact.
+- The first diagram is the `architecture` view titled **Connections and Protocols**.
+- Static presentation is the default; this architecture view does not add animation.
+- Portfolio integration is a separate future task. None of the integration phases below are complete because of this standalone delivery.
+
+### Connections and Protocols milestone
+
+- [x] Author `diagrams/document-intelligence/connections-and-protocols.json` as a showcase-quality architecture specification.
+- [x] Preserve one primary path from User through Next.js / BFF, Go API and Temporal to Python Workers.
+- [x] Show identity, persistence, internal API, AI backends and Layout / OCR as sparse side branches without asserting deployment topology.
+- [x] Make general processing, GPU processing and Layout / OCR Temporal queue separation visible in the topology and summary cards.
+- [x] Deliver `public/diagrams/document-intelligence/connections-and-protocols.html` as the standalone review artifact.
+- [ ] Integrate the delivered artifact into the portfolio case study in a separate task.
+
+**TDD applicability:** No meaningful deterministic RED exists for a new passive diagram artifact. Proportional verification used Archify showcase validation, deterministic delivery receipts, automated browser containment/readability checks and direct inspection of the generated light/dark screenshots.
+
+**Validation evidence:** Showcase validation passed all 9 of 9 artifact checks with 0 composition errors and 0 warnings. Delivery bound specification SHA-256 `754a400f4f0b93442b12d5c612425711cedc6688ef5e78bb3d525bcc7ac1de84` (5,558 bytes) to artifact SHA-256 `6b6a5183f02019d3695529eca8056034b73df8ff19c176dcaadec3c258667caf` (818,028 bytes). Automated browser evidence passed containment, readability and Viewer chrome checks at 1440×900, 1600×1000, 1920×1080 and 2048×1320; light and dark screenshots at 1440×900 and 2048×1320 were inspected after one focused vertical-compaction correction.
 
 ## Goal
 
-Render the document-processing flow as an accessible, responsive, optionally animated visual block inside the reusable case-study template.
+Establish reviewed, responsive Archify diagram artifacts for the Document Intelligence case study. Embedding those artifacts inside the reusable case-study template remains a separate integration goal.
 
 ## Scope
 
@@ -55,6 +76,8 @@ Render the document-processing flow as an accessible, responsive, optionally ani
 
 ## Phase 2 — Extend case-study content data
 
+> **Deferred integration track:** Phases 2–6 describe possible portfolio integration work. They remain intentionally incomplete and are not part of the standalone Archify delivery.
+
 - [ ] Extend `caseStudySchema` in `src/content.config.ts` with an optional case-study theme field.
 - [ ] Add an optional diagram identifier, for example `flowDiagram: document-processing`.
 - [ ] Add the selected theme and diagram identifier to the Document Intelligence case-study frontmatter.
@@ -101,7 +124,7 @@ Render the document-processing flow as an accessible, responsive, optionally ani
 
 ## Implementation decision
 
-Use the existing Markdown-based case-study structure and render one diagram from the page template through frontmatter. Move to MDX only if future case studies need to insert several interactive components at arbitrary positions between paragraphs.
+Use Archify JSON as the diagram source of truth and the standalone generated HTML as the validated review/delivery artifact. The prior Markdown/frontmatter integration direction remains only a future option; a separate portfolio-integration task must confirm placement and embedding mechanics before changing the case-study template. Move to MDX only if future case studies need to insert several interactive components at arbitrary positions between paragraphs.
 
 ## Verification checklist
 
@@ -115,4 +138,4 @@ Use the existing Markdown-based case-study structure and render one diagram from
 
 ## Next step
 
-Proceed with Phase 2's data-driven theme and diagram fields, then define the reusable diagram data in Phase 3 before building the renderer.
+Review the standalone **Connections and Protocols** artifact. Plan portfolio integration as a separate task without treating the deferred Phase 2–6 checklist as completed.
