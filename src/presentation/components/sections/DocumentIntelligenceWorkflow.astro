@@ -1,0 +1,84 @@
+---
+import type { ProjectFeatureRows, ProjectWorkflow } from '../../../domain/entities/project';
+import { withBase } from '../../../utils/withBase';
+import ProblemSection from './ProblemSection.astro';
+import DocumentIntelligenceWorkflowStep from './DocumentIntelligenceWorkflowStep.astro';
+import InteractiveSvgViewer from './InteractiveSvgViewer';
+
+export interface Props {
+  problem?: string;
+  workflow: ProjectWorkflow;
+  featureRows: ProjectFeatureRows;
+}
+
+const { problem, workflow, featureRows } = Astro.props;
+const promotedSteps = workflow.steps.slice(0, 2);
+const remainingSteps = workflow.steps.slice(2);
+const architectureDiagram = withBase('/imagenes/Frame 9-2.svg');
+---
+
+<section id="workflow" class="bg-dark-surface" data-navbar-theme="dark" aria-labelledby="workflow-heading" data-document-intelligence-workflow>
+  <div class="container">
+    <div class="border-l border-r border-t border-brand-grey-700">
+      <div class="grid grid-cols-1 lg:grid-cols-12 border-b border-brand-grey-700">
+        {problem && (
+          <div class="lg:col-span-3 lg:border-r border-brand-grey-700" style="padding: var(--brand-scale-700);">
+            <ProblemSection problem={problem} maxWidth="30ch" />
+          </div>
+        )}
+
+        <div class:list={['flex flex-col gap-4 lg:col-span-5', !problem && 'lg:col-span-8']} style="padding: var(--brand-scale-900);">
+          <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+            <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+            Workflow
+          </span>
+          <h2 id="workflow-heading" class="font-normal uppercase" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; color: #ffffff; max-width: 18ch;">
+            {workflow.title}
+          </h2>
+          {workflow.subtitle && <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400); max-width: 52ch;">{workflow.subtitle}</p>}
+        </div>
+
+        {promotedSteps.map((step, index) => (
+          <DocumentIntelligenceWorkflowStep step={step} number={index + 1} className="lg:col-span-2 lg:border-l border-brand-grey-700" compact />
+        ))}
+      </div>
+
+      <div class="grid grid-cols-1 gap-px bg-brand-grey-700 md:grid-cols-3">
+        {remainingSteps.map((step, index) => (
+          <DocumentIntelligenceWorkflowStep step={step} number={index + promotedSteps.length + 1} />
+        ))}
+      </div>
+
+      <div id={featureRows.sectionId} class="grid grid-cols-1 lg:grid-cols-12 border-b border-brand-grey-700">
+        <div class="lg:col-span-5 lg:border-r border-brand-grey-700">
+          <div class="border-b border-brand-grey-700" style="padding: var(--brand-scale-1100) var(--brand-scale-900);">
+            <h2 class="font-normal uppercase" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; color: #ffffff; max-width: 22ch;">
+              {featureRows.heading}
+            </h2>
+          </div>
+
+          {featureRows.rows.map((row, index) => (
+            <div class:list={['flex flex-col gap-3', index < featureRows.rows.length - 1 && 'border-b border-brand-grey-700']} style="padding: var(--brand-scale-900);">
+              <span class="flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+                <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+                {row.tag}
+              </span>
+              <h3 class="font-bold uppercase leading-tight" style="font-size: clamp(1.1rem, 1.8vw, 1.5rem); color: #ffffff;">
+                {row.title}
+              </h3>
+              <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400); max-width: 52ch;">{row.description}</p>
+            </div>
+          ))}
+        </div>
+
+        <figure class="relative flex min-h-[22rem] items-center justify-center overflow-hidden bg-[#0a0a0d] lg:col-span-7">
+          <InteractiveSvgViewer
+            client:load
+            src={architectureDiagram}
+            alt="Document Intelligence platform architecture and operational workflow"
+          />
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
