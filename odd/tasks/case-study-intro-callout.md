@@ -55,6 +55,9 @@ The opening statement establishes the case study's central engineering argument.
     - Structural assertions passed: malformed marker absent, labelled section present, and all callout selectors theme-scoped.
     - `npm run build` passed: Astro generated 12 pages in 1.05 seconds; existing font-reference and chunk-size warnings remain.
     - Local route readback passed with HTTP 200.
+    - Desktop visual verification passed at 1440px: equal lateral placement, 64px internal padding, and no callout overflow.
+    - Mobile visual verification passed at 375px: approximately 31px lateral gaps, 22px internal padding, and equal callout client/scroll width.
+    - Runtime foreground/background contrast measured 14.61:1; unrelated code elements lower on the page remain the source of pre-existing document overflow.
   - Commit: `79bc72af8576ec2f1e5940e672f454cbe36d267d`
   - RDD assessment: medium, `under_budget`; the work unit remains in the pending medium-risk review slice.
 
