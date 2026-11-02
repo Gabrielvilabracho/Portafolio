@@ -34,11 +34,11 @@ The opening statement establishes the case study's central engineering argument.
 - Forecast: approximately 80 authored changed lines, below the 400-line chaining threshold.
 - Branch: `feat/document-intelligence-theme`
 - Reviewed boundary: pending
-- Running authored line count: 0
+- Running authored line count: 122
 
 ## Tasks
 
-- [ ] **CSIC-1: Add the semantic intro callout**
+- [x] **CSIC-1: Add the semantic intro callout**
   - Route: delegated direct
   - Trigger evidence: the implementation requires coordinated non-trivial edits across product context, Markdown content, and Astro layout styling.
   - Acceptance criteria:
@@ -55,11 +55,11 @@ The opening statement establishes the case study's central engineering argument.
     - Structural assertions passed: malformed marker absent, labelled section present, and all callout selectors theme-scoped.
     - `npm run build` passed: Astro generated 12 pages in 1.05 seconds; existing font-reference and chunk-size warnings remain.
     - Local route readback passed with HTTP 200.
-  - Commit: pending
-  - RDD assessment: initial assessment returned high/unassessable because the dirty worktree contains undeclared untracked files; reassess the isolated committed work unit.
+  - Commit: `79bc72af8576ec2f1e5940e672f454cbe36d267d`
+  - RDD assessment: medium, `under_budget`; the work unit remains in the pending medium-risk review slice.
 
 ## Progress
 
-- Current task: CSIC-1, implementation and functional checks complete; commit and review evidence pending.
+- Current task: none; CSIC-1 is complete.
 - Mirror: pending because Engram found multiple active project sessions.
-- Next step: delegate the bounded implementation and retry the mirror at task closure.
+- Next step: visually inspect the callout in the existing local Astro session; include this commit in the next medium-risk review slice.
