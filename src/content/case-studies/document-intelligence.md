@@ -4,7 +4,10 @@ slug: document-intelligence
 summary: How AI-assisted extraction, deterministic validation, human review, and audit evidence create trusted operational data.
 ---
 
-# Turning probabilistic extraction into governed accounting data
+<section class="case-study-intro-callout" aria-labelledby="document-intelligence-intro-title">
+  <h2 class="case-study-intro-callout__title" id="document-intelligence-intro-title">TURNING PROBABILISTIC EXTRACTION INTO GOVERNED ACCOUNTING DATA</h2>
+  <p class="case-study-intro-callout__body">In accounting automation, Artificial Intelligence models can extract vendor identifiers or tax amounts that appear syntactically correct, but are mathematically or fiscally incorrect. The engineering challenge is not simply to extract text, but to design an architecture that strictly controls when an AI "guess" can become official accounting data suitable for an ERP.</p>
+</section>
 
 ## Executive summary
 

@@ -229,6 +229,25 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
     margin: 0 0 var(--brand-scale-800);
   }
 
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-intro-callout) {
+    background-color: var(--case-heading-secondary);
+    color: var(--brand-grey-100);
+    margin-inline: clamp(var(--brand-scale-300), 2.5vw, var(--brand-scale-700));
+    padding: clamp(var(--brand-scale-800), 5vw, var(--brand-scale-1100));
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-intro-callout__title) {
+    color: var(--brand-grey-100);
+    margin: 0 0 var(--brand-scale-700);
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.case-study-intro-callout__body) {
+    color: var(--brand-grey-100);
+    letter-spacing: 0.01em;
+    margin: 0;
+    max-inline-size: 70ch;
+  }
+
   .case-study-content :global(img),
   .case-study-content :global(video) {
     margin-block: clamp(var(--brand-scale-1100), 8vw, 8rem);
