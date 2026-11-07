@@ -1,4 +1,6 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { loadRenderers } from 'astro:container';
+import { getContainerRenderer } from '@astrojs/react/container-renderer';
 import { describe, expect, it } from 'vitest';
 import { TECHNOLOGY_PRESENTATION, type Project } from '../../../domain/entities/project';
 import ProjectOverview from './ProjectOverview.astro';
@@ -15,7 +17,8 @@ const genericProject: Project = {
 };
 
 async function render(project: Project, caseStudyHref?: string) {
-  const container = await AstroContainer.create();
+  const renderers = await loadRenderers([getContainerRenderer()]);
+  const container = await AstroContainer.create({ renderers });
   return container.renderToString(ProjectOverview, { props: { project, caseStudyHref } });
 }
 

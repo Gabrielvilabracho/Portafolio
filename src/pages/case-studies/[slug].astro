@@ -2,8 +2,17 @@
 import { render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../presentation/layouts/BaseLayout.astro';
 import CaseStudyLayout from '../../presentation/layouts/CaseStudyLayout.astro';
+import {
+  CASE_STUDY_THEME_IDS,
+  resolveCaseStudyTheme,
+  type CaseStudyThemeId,
+} from '../../presentation/themes/caseStudyThemes';
 import { getCaseStudies } from '../../utils/caseStudyEntries';
 import { getCaseStudyStaticPaths } from '../../utils/caseStudyRoutes';
+
+const CASE_STUDY_THEME_BY_SLUG: Partial<Record<string, CaseStudyThemeId>> = {
+  'document-intelligence': CASE_STUDY_THEME_IDS.DOCUMENT_INTELLIGENCE,
+};
 
 export async function getStaticPaths() {
   return getCaseStudyStaticPaths(await getCaseStudies());
@@ -11,10 +20,15 @@ export async function getStaticPaths() {
 
 const { caseStudy } = Astro.props as { caseStudy: CollectionEntry<'caseStudies'> };
 const { Content } = await render(caseStudy);
+const caseStudyTheme = resolveCaseStudyTheme(caseStudy.data.slug, CASE_STUDY_THEME_BY_SLUG);
 ---
 
-<BaseLayout title={`${caseStudy.data.title} — Gabriel Vilabracho`} description={caseStudy.data.summary}>
-  <CaseStudyLayout title={caseStudy.data.title} summary={caseStudy.data.summary}>
+<BaseLayout
+  title={`${caseStudy.data.title} — Gabriel Vilabracho`}
+  description={caseStudy.data.summary}
+  caseStudyTheme={caseStudyTheme}
+>
+  <CaseStudyLayout title={caseStudy.data.title} summary={caseStudy.data.summary} theme={caseStudyTheme}>
     <Content />
   </CaseStudyLayout>
 </BaseLayout>

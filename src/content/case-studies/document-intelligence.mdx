@@ -1,0 +1,555 @@
+---
+title: "Document Intelligence Platform"
+slug: document-intelligence
+summary: How AI-assisted extraction, deterministic validation, human review, and audit evidence create trusted operational data.
+---
+
+import Disclosure from '../../presentation/components/ui/Disclosure.astro';
+import DocumentLifecycle from '../../presentation/components/sections/DocumentLifecycle.astro';
+import DocumentComponentsTable from '../../presentation/components/sections/DocumentComponentsTable.astro';
+import DocumentConnections from '../../presentation/components/sections/DocumentConnections.astro';
+
+export const lifecycle = {
+  label: 'Document lifecycle',
+  stages: [
+    { label: 'Intake', description: 'Receive the document within the tenant boundary.' },
+    { label: 'Extraction', description: 'Extract header, line items, and totals as candidate data.' },
+    { label: 'Validation', description: 'Check consistency and business rules with deterministic validation.' },
+    { label: 'Review & Approval', description: 'Human review is required before approval.' },
+    { label: 'Export', description: 'Deliver the approved output through the direct API.' },
+  ],
+};
+
+export const componentInventory = {
+  label: 'COMPONENTS AND TECNOLOGIES',
+  componentHeading: 'Componente',
+  technologiesHeading: 'Tecnologías',
+  components: [
+    { name: 'Portal web y BFF', technologies: 'Next.js 15, React 19, TypeScript, Clerk' },
+    { name: 'API y control central', technologies: 'Go, Chi, pgx, Temporal SDK' },
+    { name: 'Orquestación', technologies: 'Temporal' },
+    { name: 'Workers documentales', technologies: 'Python, Temporal SDK, ONNX Runtime, httpx' },
+    { name: 'Gateway de IA', technologies: 'FastAPI, LiteLLM' },
+    { name: 'Backend principal de IA', technologies: 'Amazon Bedrock' },
+    { name: 'Backend opcional de IA', technologies: 'vLLM, API compatible con OpenAI, Qwen VLM' },
+    { name: 'Layout y OCR', technologies: 'PP-DocLayoutV3, PaddleOCR, GLM-OCR' },
+    { name: 'Base de datos', technologies: 'Amazon RDS, PostgreSQL, pgvector' },
+    { name: 'Búsqueda vectorial', technologies: 'pgvector, KNN por coseno, HNSW' },
+    { name: 'Almacenamiento de archivos', technologies: 'Amazon S3, adaptador compatible con S3' },
+    { name: 'Revisión humana', technologies: 'Next.js + API Go' },
+    {
+      name: 'Exportación',
+      technologies: 'Go, CSV, JSON, XML y formatos compatibles con SAF-T',
+      note: 'Approved documents can currently be delivered through the direct API as canonical JSON or a SAF-T-compatible pilot envelope. CSV rendering exists in the codebase but is currently rejected by the direct service allowlist. XML is supported as profile configuration, but no operational XML renderer or HTTP delivery route is currently wired.',
+    },
+    { name: 'Observabilidad', technologies: 'Sentry, CloudWatch, Prometheus, Grafana, OpenTelemetry y logs estructurados' },
+  ],
+};
+
+export const connections = {
+  label: 'Conexiones y protocolos',
+  mainFlowHeading: 'Conexiones y protocolos',
+  queueLabel: 'Las colas principales de Temporal separan:',
+  requestFlow: [
+    { name: 'Usuario', mechanism: 'HTTPS + sesión Clerk' },
+    { name: 'Next.js / BFF', mechanism: 'HTTP REST + JWT' },
+    { name: 'API Go', mechanism: 'mediante gRPC y mTLS' },
+    {
+      name: 'Temporal',
+      mechanism: 'Task Queues',
+      queues: ['Procesamiento general.', 'Procesamiento con GPU.', 'Layout y OCR.'],
+    },
+    { name: 'Workers Python' },
+  ],
+  branchSections: [
+    {
+      id: 'supporting-connections',
+      title: 'API Go / Workers Python',
+      sources: [
+        {
+          id: 'go-api-connections',
+          name: 'API Go',
+          targets: [
+            { name: 'PostgreSQL', mechanism: 'mediante pgx' },
+            { name: 'Amazon S3', mechanism: 'mediante API S3' },
+            { name: 'Clerk', mechanism: 'mediante HTTPS/JWKS' },
+          ],
+        },
+        {
+          id: 'python-worker-connections',
+          name: 'Workers Python',
+          targets: [
+            { name: 'API Go interna', mechanism: 'mediante HTTP + token de servicio' },
+            { name: 'Gateway FastAPI', mechanism: 'mediante HTTP' },
+            { name: 'S3', mechanism: 'mediante API S3' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'model-access',
+      title: 'Gateway FastAPI / Worker de Layout/OCR',
+      sources: [
+        {
+          id: 'fastapi-gateway-connections',
+          name: 'Gateway FastAPI',
+          targets: [
+            { name: 'Amazon Bedrock', mechanism: 'mediante LiteLLM' },
+            { name: 'vLLM/Qwen', mechanism: 'mediante API compatible con OpenAI' },
+          ],
+        },
+        {
+          id: 'layout-ocr-connections',
+          name: 'Worker de Layout/OCR',
+          targets: [
+            { name: 'GLM-OCR', mechanism: 'mediante API compatible con OpenAI' },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+<section class="case-study-intro-callout" aria-labelledby="document-intelligence-intro-title">
+  <h2 class="case-study-intro-callout__title" id="document-intelligence-intro-title">TURNING PROBABILISTIC EXTRACTION INTO GOVERNED ACCOUNTING DATA</h2>
+  <p class="case-study-intro-callout__body">In accounting automation, Artificial Intelligence models can extract vendor identifiers or tax amounts that appear syntactically correct, but are mathematically or fiscally incorrect. The engineering challenge is not simply to extract text, but to design an architecture that strictly controls when an AI "guess" can become official accounting data suitable for an ERP.</p>
+</section>
+
+## SOLVES THIS PROBLEM THROUGH AN ABSOLUTE SEPRATION<br />BETWEEN UNCERTAINTY (AI) AND AUTHORITY (BASE SYSTEM)
+
+The platform operates under a strict design rule: a model's output is always a proposal, never an accounting truth. To guarantee this, the system divides its topology into two major blocks:
+
+      - Python and Temporal Workers:
+            They are responsible for orchestration,
+             OCR routing, calls to LLMs, and normalization.
+            They propose candidate data.
+
+      - Central API in Go and PostgreSQL (Authority):
+            Retains exclusive control over the document lifecycle.
+            It is the sole entity with write permissions
+            to the tenant databases and is responsible
+            for approving or rejecting state transitions.
+---
+
+<Disclosure title="GOVERNANCE AND MULTI-TENANT SECURITY">
+
+## GOVERNANCE AND MULTI-TENANT SECURITY
+
+The design prioritizes transactional security and data isolation:
+
+      - Isolation by Design:<br /> Strict data separation using PostgreSQL schemas and S3 storage prefixes.
+
+      - Ephemeral Credentials:<br />Workers operate without direct database access. They use short-lived tokens limited to a single tenant, a single document, and a single execution.
+
+      - Clean History:<br />Sensitive data such as PII, tax identification numbers (TIN), or monetary amounts never enter Temporal event payloads, ensuring a secure and compliant audit trail. A model can return a plausible supplier identifier, invoice date, tax amount, or total that is syntactically correct and still wrong. The engineering challenge is therefore not limited to extracting fields. The platform must control when uncertain evidence can become durable canonical data and when that data may leave the system.
+
+</Disclosure>
+---
+
+<Disclosure title="OPERATIONAL FLOW & EVIDENCE LEVELS">
+
+## Operational Flow and Evidence Levels
+
+To understand how the platform processes documents, it is essential to master its architecture of 4 Evidence Levels:
+
+### Source Evidence
+
+The raw data and spatial coordinates detected by the OCR and Vision engine.
+
+<Disclosure title="Code evidence: workers/temporal-python/activities/hocr.py">
+
+```python
+@dataclass(frozen=True)
+class HocrLine:
+    page: int
+    text: str
+    bbox: tuple[int, int, int, int]
+    confidence: float
+    page_width: int
+    page_height: int
+```
+
+Test evidence: `workers/temporal-python/tests/test_ocr_golden_dataset.py` verifies that text, page order, coordinates, and confidence are preserved.
+
+</Disclosure>
+
+### Canonical Candidates
+
+The projection of raw evidence onto a closed and versioned database schema.
+
+<Disclosure title="Database evidence: db/migrations/tenant_template/0001_documents.up.sql">
+
+```sql
+candidate_value jsonb NOT NULL,
+confidence numeric(5,4) NOT NULL
+    CHECK (confidence >= 0 AND confidence <= 1),
+source_evidence jsonb NOT NULL DEFAULT '[]'::jsonb,
+mapper_version text NOT NULL DEFAULT 'legacy',
+validation_rule_version text NOT NULL DEFAULT 'legacy',
+validation_status validation_status NOT NULL DEFAULT 'uncertain',
+validation_errors jsonb NOT NULL DEFAULT '[]'::jsonb,
+produced_by text NOT NULL DEFAULT 'system'
+```
+
+The permitted canonical field names are restricted by database constraints in:
+`db/migrations/tenant_template/0037_document_type_candidate.up.sql`.
+
+Example candidate:
+
+```json
+{
+  "canonical_field_name": "invoiceTotal",
+  "value": "1234.56",
+  "confidence": 0.93,
+  "source_evidence": {
+    "page": 1,
+    "bbox": [10, 20, 30, 40]
+  },
+  "produced_by": "structure_fields_totals",
+  "validation_status": "valid"
+}
+```
+
+</Disclosure>
+
+### Validated Canonical Data
+
+Values that have passed the validator's rigorous mathematical and logical rules.
+
+<Disclosure title="Code evidence: workers/temporal-python/activities/validator.py">
+
+```python
+for taxable_key, tax_key, total_key in CANONICAL_AMOUNT_TOTAL_GROUPS:
+    if {taxable_key, tax_key, total_key}.issubset(canonical_invoice_data):
+        if not validate_decimal_string_amount_total(
+            canonical_invoice_data[taxable_key],
+            canonical_invoice_data[tax_key],
+            canonical_invoice_data[total_key],
+        ):
+            blocking_reasons.append(
+                f"{taxable_key}_plus_{tax_key}_must_match_{total_key}"
+            )
+```
+
+This rule verifies that:
+
+**Taxable Amount + Tax Amount = Total Amount**
+
+Test evidence: `workers/temporal-python/tests/test_validation_rules.py` verifies exact decimal reconciliation, total mismatches, and Portuguese NIF validation.
+
+Passing these checks produces a successful validation outcome. It does not automatically grant the same authority as a human reviewer decision.
+
+</Disclosure>
+
+### Reviewer Decisions
+
+If the validator detects an anomaly, a human intervenes. Human decision holds absolute authority over the automation.
+
+<Disclosure title="Code evidence: services/api/internal/store/review_store.go">
+
+```sql
+UPDATE field_candidates
+SET candidate_value = $1,
+    produced_by = 'reviewer',
+    validation_status = 'valid',
+    updated_at = now()
+WHERE document_id = $2
+  AND canonical_field_name = $3
+```
+
+The decision is recorded through these events:
+
+- `review.corrections_recorded`
+- `review.validation_outcome_recorded`
+
+The events are persisted in:
+
+- `document_history`
+- `control_plane.audit_log`
+
+Reviewer-owned candidates are protected from subsequent automated updates.
+
+</Disclosure>
+
+> *Human reviewer decisions have protected transactional authority over automated candidates and remain fully auditable.*
+
+</Disclosure>
+
+---
+
+<Disclosure title="LIFECYCLE *(STEP BY STEP)*">
+
+## The Document Lifecycle
+
+<DocumentLifecycle label={lifecycle.label} stages={lifecycle.stages} />
+
+### Intake
+
+The Go API accepts bounded document uploads, resolves the tenant context before processing the file, stores the document under a tenant-scoped key, and atomically creates the document and its intake audit event. PostgreSQL initializes the document in the `intake_registered` state and records its reception timestamp.
+
+<Disclosure title="Code evidence: db/migrations/tenant_template/0001_documents.up.sql">
+
+```sql
+lifecycle_state document_lifecycle_state
+    NOT NULL DEFAULT 'intake_registered',
+
+created_at timestamptz
+    NOT NULL DEFAULT now(),
+
+updated_at timestamptz
+    NOT NULL DEFAULT now()
+```
+
+**Supporting evidence**
+
+- Validates the tenant context and limits upload size.
+- Verifies the user token and resolves tenant membership.
+- Creates the document and the `document.intake_registered` audit event in one transaction.
+- Proves that `received_at` is derived from `documents.created_at`.
+
+</Disclosure>
+
+> **Accuracy note:** *Secure tenant resolution is guaranteed in production Clerk mode. The alternative pilot-header mode must remain behind a trusted boundary.*
+
+### Orchestration and Extraction
+
+A Python Temporal workflow classifies the PDF processing shape as digital, scanned, or complex and selects the appropriate text or vision route. It then runs header, line-item, and totals extraction concurrently through specialized AI inference activities.
+
+<Disclosure title="Code evidence: workers/temporal-python/workflows/document_processing_workflow.py">
+
+```python
+header_ref, lines_ref, totals_ref = await asyncio.gather(
+    workflow.execute_activity(header_specialist, ...),
+    workflow.execute_activity(lines_specialist, ...),
+    workflow.execute_activity(totals_specialist, ...),
+)
+```
+
+**Supporting evidence**
+
+- `activities/document_processing.py` classifies documents as digital, scanned, or complex.
+- `activities/structure_fields.py` defines separate header, line-item, and totals extraction activities.
+- The specialists submit text or page images through the AI inference gateway.
+- `tests/test_specialist_branch_retry.py` proves that one failed branch can retry without rerunning the other specialists.
+
+</Disclosure>
+
+> **Accuracy note:** *PDF processing shape, fiscal document type, and business category are three separate classifications. The inference gateway can use Bedrock or vLLM depending on deployment configuration.*
+
+### Deterministic Validation
+
+Canonical invoice data is validated using exact base-10 decimal arithmetic. The system verifies subtotal-plus-tax against the total, validates Portuguese NIF checksums, restricts accepted VAT rates, and reconciles multi-rate VAT bands against document totals.
+
+<Disclosure title="Code evidence: workers/temporal-python/activities/validator.py">
+
+```python
+def validate_amount_total(
+    taxable_amount: Any,
+    tax_amount: Any,
+    total_amount: Any,
+) -> bool:
+    taxable = to_decimal(taxable_amount)
+    tax = to_decimal(tax_amount)
+    total = to_decimal(total_amount)
+
+    if taxable is None or tax is None or total is None:
+        return False
+
+    return taxable + tax == total
+```
+
+This verifies `Taxable Amount + Tax Amount = Total Amount`.
+
+- Exact decimal totals pass validation.
+- A one-cent mismatch fails validation.
+- Portuguese NIF checksums are verified.
+- VAT rates are restricted to 0, 6, 13, and 23.
+- Multi-rate VAT bands must reconcile with document totals.
+
+</Disclosure>
+
+> **Accuracy note:** *The validator intentionally uses exact decimal equality and never binary floating-point arithmetic for fiscal amounts.*
+
+### Human Review and Approval
+
+Every processed document transitions to `ready_for_review`. Any exact arithmetic mismatch, including a one-cent difference, creates a blocking validation reason. The Go API prevents approval until validation succeeds and all mandatory fields are resolved. Reviewer corrections are marked as reviewer-owned, remain auditable, and cannot be silently overwritten by subsequent automated extraction.
+
+<Disclosure title="Code evidence: Approval-blocking evidence">
+
+`services/api/internal/review/review_service.go`
+
+```go
+if !state.ValidationPassed ||
+    len(state.UnresolvedExportFields) > 0 {
+    return s.blockApproval(
+        ctx,
+        tenant,
+        documentID,
+        state,
+    )
+}
+```
+
+</Disclosure>
+
+<Disclosure title="Code evidence: Reviewer-protection evidence">
+
+`services/api/internal/store/field_candidates_store.go`
+
+```sql
+UPDATE field_candidates
+SET candidate_value = $4,
+    produced_by = $8,
+    validation_status = 'uncertain'
+WHERE document_id = $1
+  AND canonical_field_name = $2
+  AND produced_by <> 'reviewer'
+```
+
+The final condition prevents automated processes from modifying reviewer-owned candidates.
+
+</Disclosure>
+
+<Disclosure title="Code evidence: Audit evidence">
+
+Reviewer actions generate:
+
+```text
+review.corrections_recorded
+review.validation_outcome_recorded
+```
+
+These events are persisted in:
+
+```text
+document_history
+control_plane.audit_log
+```
+
+</Disclosure>
+
+> **Accuracy note:** *Review does not happen “only if necessary.” The current workflow always transitions processed documents to `ready_for_review`, and export requires an approved document.*
+
+### Approved Export Delivery
+
+Before a document can be exported, the platform verifies its lifecycle approval, review approval, validation result, and canonical-data completeness. Approved documents can currently be delivered through the direct API as canonical JSON or a SAF-T-compatible pilot envelope.
+
+<Disclosure title="Code evidence: services/api/internal/export/export_service.go">
+
+```go
+if !lifecycleAllowsExport(candidate.LifecycleState) {
+    reasons = append(reasons, "approval_required")
+}
+
+if candidate.ReviewStatus != "approved" &&
+    candidate.ReviewStatus != "not_required" {
+    reasons = append(reasons, "review_not_approved")
+}
+
+if !candidate.ValidationPassed {
+    reasons = append(reasons, "validation_failed")
+}
+
+if !candidate.ExportComplete {
+    reasons = append(
+        reasons,
+        "export_requirements_incomplete",
+    )
+}
+```
+
+**Supporting evidence**
+
+- `export_service_test.go` proves that blocked documents never reach the export builder.
+- `exportprofile/exportprofile.go` defines profile metadata for CSV, XML, and JSON.
+- `store/db_harness_test.go` verifies that profile delivery applies the same approval and validation gates.
+
+</Disclosure>
+
+**Important limitation**
+
+The current direct export service fully exposes:
+
+- `canonical_json`
+- `saft_pt_compatible`
+
+CSV rendering exists in the codebase but is currently rejected by the direct service allowlist. XML is supported as profile configuration, but no operational XML renderer or HTTP delivery route is currently wired.
+
+> **Production wording:** *The platform currently delivers approved canonical JSON and a SAF-T-compatible pilot envelope, while the profile architecture establishes the foundation for future CSV, XML, and JSON ERP integrations.*
+
+</Disclosure>
+
+---
+
+<Disclosure title="COMPONENTS AND TECNOLOGIES">
+
+<DocumentComponentsTable
+  label={componentInventory.label}
+  componentHeading={componentInventory.componentHeading}
+  technologiesHeading={componentInventory.technologiesHeading}
+  components={componentInventory.components}
+/>
+
+</Disclosure>
+
+<a
+  href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/diagrams/document-intelligence/connections-case-study.png`}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Open the full-size connections diagram in a new tab"
+  style={{ display: 'block', margin: '2rem auto' }}
+>
+  <img
+    src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/diagrams/document-intelligence/connections-case-study.png`}
+    alt="Platform components, connections, and communication protocols."
+    width="2712"
+    height="1020"
+    loading="lazy"
+    decoding="async"
+    style={{ display: 'block', width: '100%', maxWidth: '100%', height: 'auto' }}
+  />
+</a>
+
+---
+
+<Disclosure title="Conexions & Protocols">
+
+<DocumentConnections
+  lang="es"
+  label={connections.label}
+  mainFlowHeading={connections.mainFlowHeading}
+  queueLabel={connections.queueLabel}
+  requestFlow={connections.requestFlow}
+  branchSections={connections.branchSections}
+/>
+
+</Disclosure>
+
+---
+
+<Disclosure title="System Limits">
+
+3. Límites del sistema
+- Límite público: únicamente el portal Next.js y el API Go están expuestos a usuarios.
+- Límite interno: FastAPI, workers, OCR y servicios de inferencia permanecen dentro de la red privada.
+- Autoridad de datos: solamente el API Go escribe directamente en PostgreSQL y controla los estados del documento.
+- Aislamiento por tenant: PostgreSQL separa los datos por esquemas y S3 mediante prefijos de objetos.
+- Orquestación: Temporal coordina procesos y reintentos, pero no es la fuente de verdad de los documentos.
+- Proveedores externos: Clerk gestiona identidad y Bedrock proporciona inferencia administrada.
+- Componentes opcionales: vLLM/Qwen y el pipeline PP-DocLayoutV3/GLM-OCR requieren activación explícita.
+- Exportación: el sistema genera y registra archivos para ERP
+
+</Disclosure>
+
+5% overall field accuracy, 90% per-field accuracy, no more than 2% nulls, and zero mathematical errors. It evaluates field values, source evidence, review routing, export readiness, validation failures, and total reconciliation.
+
+These values are configured thresholds. They are not proof that the platform has achieved those results in production.
+
+
+## Transferable lessons
+
+1. **Keep probabilistic processing away from authoritative writes.** Models and orchestration should propose evidence. A smaller trusted boundary should own state changes.
+2. **Canonicalize before validating.** Deterministic rules need stable, versioned field definitions.
+3. **Turn every refusal into a reason.** Explicit blocking reasons make uncertainty reviewable, testable, and auditable.
+4. **Make human authority durable.** Reviewer decisions must survive automation reruns.
+5. **Separate verification from business outcomes.** Passing tests demonstrate contract evidence for a revision, not production success.

@@ -25,6 +25,7 @@ function toProject(entry: CollectionEntry<'projects'>): Project {
     description: data.description,
     image: data.image,
     technologies: data.technologies ?? [],
+    secondaryTechnologies: data.secondaryTechnologies,
     discipline: data.discipline,
     focus: data.focus,
     mark: data.mark,

@@ -37,6 +37,11 @@ export interface ProjectWorkflow {
   steps: ProjectWorkflowStep[];
 }
 
+export interface ProjectContext {
+  title: string;
+  subtitle?: string;
+}
+
 export interface ProjectFeatureRow {
   tag: string;
   title: string;
@@ -58,6 +63,7 @@ export interface Project {
   description: string;
   image?: string;
   technologies: ProjectTechnology[];
+  secondaryTechnologies?: ProjectTechnology[];
   discipline?: string;
   focus?: string;
   mark?: string;
@@ -66,7 +72,7 @@ export interface Project {
   caseStudySlug?: string;
   links?: ProjectLink[];
   overview?: string;
-  context?: string;
+  context?: string | ProjectContext;
   workflow?: ProjectWorkflow;
   featureRows?: ProjectFeatureRows;
   linksLabel?: string;

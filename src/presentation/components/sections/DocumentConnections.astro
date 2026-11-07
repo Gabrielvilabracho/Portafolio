@@ -1,0 +1,184 @@
+---
+interface RequestNode {
+  readonly name: string;
+  readonly mechanism?: string;
+  readonly queues?: readonly string[];
+}
+
+interface ConnectionTarget {
+  readonly name: string;
+  readonly mechanism: string;
+}
+
+interface ConnectionSource {
+  readonly id: string;
+  readonly name: string;
+  readonly targets: readonly ConnectionTarget[];
+}
+
+interface BranchSection {
+  readonly id: string;
+  readonly title: string;
+  readonly sources: readonly ConnectionSource[];
+}
+
+export interface Props {
+  readonly lang?: string;
+  readonly label: string;
+  readonly mainFlowHeading: string;
+  readonly queueLabel: string;
+  readonly requestFlow: readonly RequestNode[];
+  readonly branchSections: readonly BranchSection[];
+}
+
+const { lang = 'en', label, mainFlowHeading, queueLabel, requestFlow, branchSections } = Astro.props;
+---
+
+<div id="document-connections" role="group" aria-label={label} lang={lang}>
+  <section aria-labelledby="main-request-flow">
+    <h3 id="main-request-flow">{mainFlowHeading}</h3>
+    <ol role="list" aria-labelledby="main-request-flow">
+      {requestFlow.map((node) => (
+        <li>
+          <strong>{node.name}</strong>
+          {node.mechanism && (
+            <div class="request-link">
+              <span class="connection-mechanism">{node.mechanism}</span>
+              {node.queues && (
+                <ul class="queue-categories" role="list" aria-label={queueLabel}>
+                  {node.queues.map((queue) => <li>{queue}</li>)}
+                </ul>
+              )}
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  {branchSections.map((group) => (
+    <section aria-labelledby={group.id}>
+      <h3 id={group.id}>{group.title}</h3>
+      {group.sources.map((source) => (
+        <div class="branch-group">
+          <h4 id={source.id}>{source.name}</h4>
+          <ul class="branches" role="list" aria-labelledby={source.id}>
+            {source.targets.map((target) => (
+              <li>
+                <strong>{target.name}</strong>
+                <span class="connection-mechanism">{target.mechanism}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+  ))}
+</div>
+
+<style>
+  #document-connections {
+    margin-block: var(--brand-scale-800);
+    color: var(--case-text);
+    background: transparent;
+    font-family: inherit;
+    font-size: max(14px, 1rem);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  #document-connections section + section {
+    margin-block-start: var(--brand-scale-900);
+    padding-block-start: var(--brand-scale-800);
+    border-block-start: 1px solid var(--case-border);
+  }
+
+  /* The ID keeps article-wide heading and list rules out of this compact map. */
+  #document-connections h3,
+  #document-connections h4,
+  #document-connections strong {
+    color: var(--case-heading-secondary);
+    font-size: max(14px, 1rem);
+    font-weight: var(--brand-weight-medium);
+    line-height: 1.6;
+  }
+
+  #document-connections h3 {
+    margin: 0 0 var(--brand-scale-700);
+    font-size: max(14px, 1.125rem);
+  }
+
+  #document-connections h4 {
+    margin: 0 0 var(--brand-scale-300);
+  }
+
+  #document-connections ol,
+  #document-connections ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #document-connections li {
+    margin: 0;
+    padding: 0;
+    font-size: max(14px, 1rem);
+    line-height: 1.6;
+  }
+
+  #document-connections .connection-mechanism {
+    font-size: max(12px, 0.875rem);
+    font-weight: normal;
+  }
+
+  #document-connections .request-link {
+    position: relative;
+    margin: var(--brand-scale-300) 0 var(--brand-scale-300) var(--brand-scale-300);
+    padding: var(--brand-scale-300) 0 var(--brand-scale-700) var(--brand-scale-700);
+    border-inline-start: 1px solid var(--case-border);
+  }
+
+  /* Empty CSS arrows carry direction visually without repeating accessible text. */
+  #document-connections .request-link::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: -3px;
+    inset-block-end: 0;
+    inline-size: 5px;
+    block-size: 5px;
+    border-inline-end: 1px solid var(--case-border);
+    border-block-end: 1px solid var(--case-border);
+    transform: rotate(45deg);
+  }
+
+  #document-connections .queue-categories {
+    margin-block-start: var(--brand-scale-300);
+  }
+
+  #document-connections .branch-group + .branch-group {
+    margin-block-start: var(--brand-scale-700);
+  }
+
+  #document-connections .branches {
+    margin-inline-start: var(--brand-scale-300);
+    border-inline-start: 1px solid var(--case-border);
+  }
+
+  #document-connections .branches > li {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--brand-scale-500);
+    padding: var(--brand-scale-300) 0 var(--brand-scale-300) var(--brand-scale-700);
+  }
+
+  #document-connections .branches > li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: calc(var(--brand-scale-300) + 0.8rem);
+    inline-size: var(--brand-scale-500);
+    border-block-start: 1px solid var(--case-border);
+  }
+</style>
