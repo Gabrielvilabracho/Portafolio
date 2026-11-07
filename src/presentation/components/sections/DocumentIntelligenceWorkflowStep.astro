@@ -1,0 +1,38 @@
+---
+import type { ProjectWorkflowStep } from '../../../domain/entities/project';
+import { withBase } from '../../../utils/withBase';
+
+export interface Props {
+  step: ProjectWorkflowStep;
+  number: number;
+  className?: string;
+  compact?: boolean;
+}
+
+const { step, number, className, compact = false } = Astro.props;
+---
+
+<div
+  class:list={[
+    'relative flex flex-col justify-between gap-8 overflow-hidden bg-dark-surface',
+    className,
+  ]}
+  style={`min-height: ${compact ? '17rem' : '18rem'}; padding: var(--brand-scale-800);`}
+>
+  <span class="relative z-10 flex items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400);">
+    <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+    {String(number).padStart(2, '0')}
+  </span>
+  <div class="relative z-10 flex flex-col gap-2">
+    <h3 class="text-sm font-bold uppercase tracking-wider" style="color: #ffffff;">{step.title}</h3>
+    <p class="text-sm leading-relaxed" style="color: var(--brand-grey-400);">{step.description}</p>
+  </div>
+  {step.artwork && (
+    <img
+      src={withBase(step.artwork.src)}
+      alt=""
+      aria-hidden="true"
+      class={step.artwork.className}
+    />
+  )}
+</div>

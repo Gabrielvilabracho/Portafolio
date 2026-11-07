@@ -1,0 +1,253 @@
+---
+import { withBase } from '../../../utils/withBase';
+
+export const VIDEO_MIME_TYPES = {
+  MP4: 'video/mp4',
+  WEBM: 'video/webm',
+} as const;
+
+export type VideoMimeType = (typeof VIDEO_MIME_TYPES)[keyof typeof VIDEO_MIME_TYPES];
+
+export interface VideoSource {
+  src: `/${string}`;
+  type: VideoMimeType;
+}
+
+export interface Props {
+  poster: `/${string}`;
+  title: string;
+  sources: readonly [VideoSource, ...VideoSource[]];
+}
+
+const { poster, title, sources } = Astro.props;
+const supportedMimeTypes = new Set<string>(Object.values(VIDEO_MIME_TYPES));
+
+if (
+  !title.trim() ||
+  !poster.startsWith('/') ||
+  poster.startsWith('//') ||
+  sources.some(({ src, type }) => !src.startsWith('/') || src.startsWith('//') || !supportedMimeTypes.has(type))
+) {
+  throw new Error('VideoPlayer requires a title, a local poster, and local MP4 or WebM sources.');
+}
+
+const resolvedPoster = withBase(poster);
+const resolvedSources = sources.map(({ src, type }) => ({ src: withBase(src), type }));
+---
+
+<figure class="video-player" data-video-player>
+  <div class="video-player__frame">
+    <video
+      class="video-player__media"
+      data-video-element
+      poster={resolvedPoster}
+      preload="none"
+      playsinline
+      title={title}
+      aria-label={title}
+    >
+      {resolvedSources.map((source) => <source data-src={source.src} type={source.type} />)}
+      Your browser does not support HTML video.
+    </video>
+
+    <button class="video-player__play" type="button" data-video-play aria-label={`Play ${title}`}>
+      <span class="video-player__play-mark" aria-hidden="true"></span>
+      <span>Play</span>
+    </button>
+  </div>
+
+  <figcaption class="video-player__caption">
+    <span class="video-player__caption-mark" aria-hidden="true"></span>
+    <span>{title}</span>
+  </figcaption>
+
+  <p class="video-player__error" data-video-error role="status" aria-live="polite" hidden></p>
+
+  <noscript>
+    <video class="video-player__media" controls poster={resolvedPoster} preload="none" playsinline title={title} aria-label={title}>
+      {resolvedSources.map((source) => <source src={source.src} type={source.type} />)}
+      Your browser does not support HTML video.
+    </video>
+  </noscript>
+</figure>
+
+<style>
+  .video-player {
+    border: 1px solid var(--brand-grey-200);
+    background-color: var(--mapped-surface-light);
+  }
+
+  .video-player__frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: var(--brand-grey-900);
+  }
+
+  .video-player__media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .video-player__play {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 3rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--brand-orange-500);
+    background-color: var(--brand-grey-900);
+    color: #ffffff;
+    cursor: pointer;
+    font-size: var(--type-paragraph-sm-size);
+    font-weight: var(--brand-weight-medium);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: translate(-50%, -50%);
+    transition: background-color 160ms ease, color 160ms ease, opacity 160ms ease;
+  }
+
+  .video-player__play:hover {
+    background-color: var(--brand-orange-500);
+    color: var(--brand-grey-900);
+  }
+
+  .video-player__play:focus-visible {
+    outline: 2px solid var(--brand-orange-500);
+    outline-offset: 4px;
+  }
+
+  .video-player__play-mark,
+  .video-player__caption-mark {
+    width: 0;
+    height: 0;
+    border-top: 0.36rem solid transparent;
+    border-bottom: 0.36rem solid transparent;
+    border-left: 0.52rem solid currentColor;
+  }
+
+  .video-player[data-playing='true'] .video-player__play {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .video-player__caption {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: var(--brand-scale-300) var(--brand-scale-400);
+    color: var(--brand-grey-700);
+    font-size: var(--type-paragraph-sm-size);
+    font-weight: var(--brand-weight-medium);
+    line-height: 1.4;
+  }
+
+  .video-player__caption-mark {
+    width: 0.7rem;
+    height: 0.7rem;
+    flex: 0 0 auto;
+    border: 0;
+    background-color: var(--brand-orange-500);
+  }
+
+  .video-player__error {
+    margin: 0;
+    padding: 0 var(--brand-scale-400) var(--brand-scale-300);
+    color: var(--brand-orange-500);
+    font-size: var(--type-paragraph-sm-size);
+    line-height: 1.5;
+  }
+
+  :global(.dark) .video-player {
+    border-color: var(--brand-grey-700);
+    background-color: var(--brand-grey-900);
+  }
+
+  :global(.dark) .video-player__caption {
+    color: var(--brand-grey-300);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-player__play {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const initVideoPlayers = () => {
+    document.querySelectorAll<HTMLElement>('[data-video-player]').forEach((player) => {
+      if (player.dataset.videoPlayerReady) return;
+
+      const video = player.querySelector<HTMLVideoElement>('[data-video-element]');
+      const playButton = player.querySelector<HTMLButtonElement>('[data-video-play]');
+      const errorMessage = player.querySelector<HTMLElement>('[data-video-error]');
+
+      if (!video || !playButton || !errorMessage) return;
+
+      player.dataset.videoPlayerReady = 'true';
+
+      const showError = (message: string) => {
+        errorMessage.textContent = message;
+        errorMessage.hidden = false;
+        player.dataset.playing = 'false';
+      };
+
+      const clearError = () => {
+        errorMessage.textContent = '';
+        errorMessage.hidden = true;
+      };
+
+      const startPlayback = () => {
+        const deferredSources = video.querySelectorAll<HTMLSourceElement>('source[data-src]');
+
+        if (!video.dataset.sourcesLoaded) {
+          deferredSources.forEach((source) => {
+            const src = source.dataset.src;
+            if (src) source.src = src;
+          });
+          video.dataset.sourcesLoaded = 'true';
+          video.load();
+        }
+
+        video.controls = true;
+        clearError();
+
+        try {
+          const playback = video.play();
+          if (playback) {
+            void playback.catch(() => {
+              showError('Playback was blocked. Use the video controls to try again.');
+            });
+          }
+        } catch {
+          showError('Playback could not start. Use the video controls to try again.');
+        }
+      };
+
+      playButton.addEventListener('click', startPlayback);
+      video.addEventListener('playing', () => {
+        clearError();
+        player.dataset.playing = 'true';
+      });
+      video.addEventListener('error', () => {
+        showError('This video could not be loaded. Please try again later.');
+      });
+    });
+  };
+
+  initVideoPlayers();
+
+  const videoPlayerWindow = window as Window & typeof globalThis & {
+    __videoPlayerPageLoadBound?: boolean;
+  };
+
+  if (!videoPlayerWindow.__videoPlayerPageLoadBound) {
+    videoPlayerWindow.__videoPlayerPageLoadBound = true;
+    document.addEventListener('astro:page-load', initVideoPlayers);
+  }
+</script>

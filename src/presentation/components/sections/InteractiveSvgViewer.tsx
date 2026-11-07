@@ -4,6 +4,7 @@ const MIN_SCALE = 1;
 const MAX_SCALE = 4;
 const CONTROL_ZOOM_STEP = 0.25;
 const WHEEL_ZOOM_STEP = 0.15;
+const SVG_VERTICAL_OFFSET = 0;
 
 interface InteractiveSvgViewerProps {
   src: string;
@@ -224,17 +225,17 @@ export default function InteractiveSvgViewer({ src, alt }: InteractiveSvgViewerP
     dragRef.current = null;
   }
 
-  const transform = `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.scale})`;
+  const transform = `translate3d(${view.x}px, ${view.y + SVG_VERTICAL_OFFSET}px, 0) scale(${view.scale})`;
   const zoomPercent = Math.round(view.scale * 100);
 
   return (
     <div
       data-interactive-svg-viewer
-      className="flex min-h-[22rem] w-full flex-col overflow-hidden bg-[#0a0a0d]"
+      className="flex w-full flex-col overflow-hidden bg-[#18191B]"
     >
       <div
         className="flex items-center justify-between gap-3 border-b border-brand-grey-700"
-        style={{ padding: 'var(--brand-scale-300) var(--brand-scale-500)' }}
+        style={{ padding: 'var(--brand-scale-200) var(--brand-scale-500)' }}
       >
         <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--brand-grey-400)' }}>
           Diagram navigator
@@ -276,7 +277,7 @@ export default function InteractiveSvgViewer({ src, alt }: InteractiveSvgViewerP
       <div
         ref={viewportRef}
         data-svg-viewer-viewport
-        className="relative flex min-h-[20rem] flex-1 items-center justify-center overflow-hidden"
+        className="relative flex aspect-[2278/1444] w-full flex-none items-center justify-center overflow-hidden"
         role="region"
         aria-label={`Interactive viewer for ${alt}`}
         onPointerDown={handlePointerDown}

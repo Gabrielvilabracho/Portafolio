@@ -1,0 +1,120 @@
+---
+interface ComponentRow {
+  readonly name: string;
+  readonly technologies: string;
+  readonly note?: string;
+}
+
+export interface Props {
+  readonly label: string;
+  readonly componentHeading: string;
+  readonly technologiesHeading: string;
+  readonly components: readonly ComponentRow[];
+}
+
+const { label, componentHeading, technologiesHeading, components } = Astro.props;
+---
+
+<!-- Explicit roles preserve table semantics when mobile rows use CSS grid. -->
+<table id="document-components-table" role="table" aria-label={label}>
+  <thead role="rowgroup">
+    <tr role="row">
+      <th scope="col" role="columnheader">{componentHeading}</th>
+      <th scope="col" role="columnheader">{technologiesHeading}</th>
+    </tr>
+  </thead>
+  <tbody role="rowgroup">
+    {components.map((component) => (
+      <tr role="row">
+        <th scope="row" role="rowheader">{component.name}</th>
+        <td role="cell">
+          {component.technologies}
+          {component.note && <small>{component.note}</small>}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<style>
+  /* The single-instance ID outranks the article's generic framed table rules. */
+  #document-components-table {
+    inline-size: 100%;
+    margin-block: var(--brand-scale-500) 0;
+    border: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: transparent;
+    color: var(--case-text);
+    font-family: inherit;
+    font-size: max(14px, 1rem);
+    line-height: 1.6;
+  }
+
+  #document-components-table th,
+  #document-components-table td {
+    border: 0;
+    border-block-end: 1px solid var(--case-border);
+    padding: var(--brand-scale-500) 0;
+    background: transparent;
+    text-align: start;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  #document-components-table th {
+    color: var(--case-heading-secondary);
+    font-weight: var(--brand-weight-medium);
+  }
+
+  #document-components-table th:first-child {
+    inline-size: 35%;
+    padding-inline-end: var(--brand-scale-700);
+  }
+
+  #document-components-table th:nth-child(2),
+  #document-components-table td {
+    inline-size: 65%;
+  }
+
+  #document-components-table small {
+    display: block;
+    margin-block-start: var(--brand-scale-300);
+    font-size: max(12px, 0.875rem);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 719px) {
+    #document-components-table,
+    #document-components-table tbody {
+      display: block;
+    }
+
+    #document-components-table thead {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    #document-components-table tbody tr {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: var(--brand-scale-500);
+      border-block-end: 1px solid var(--case-border);
+    }
+
+    #document-components-table tbody th:first-child,
+    #document-components-table tbody td {
+      inline-size: auto;
+      padding: 0;
+      border: 0;
+    }
+
+    #document-components-table tbody td {
+      padding-block-start: var(--brand-scale-300);
+    }
+  }
+</style>

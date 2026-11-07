@@ -1,5 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { extname, relative, resolve } from 'node:path';
+import assert from 'node:assert/strict';
+import { JSDOM } from 'jsdom';
 
 const baseArgument = process.argv.find((argument) => argument.startsWith('--base='));
 if (!baseArgument) throw new Error('Expected a GitHub Pages base path via --base=/repository-name.');
@@ -94,8 +96,8 @@ for (const localePath of localePaths) {
   assertMatches(
     content,
     relativePath,
-    `SVG favicon at ${configuredBase}/favicon.svg`,
-    new RegExp(`<link\\b(?=[^>]*\\brel="icon")(?=[^>]*\\btype="image/svg\\+xml")(?=[^>]*\\bhref="${escapeRegExp(`${configuredBase}/favicon.svg`)}")[^>]*>`, 'i')
+    `ICO favicon at ${configuredBase}/favicon.ico`,
+    new RegExp(`<link\\b(?=[^>]*\\brel="icon")(?=[^>]*\\btype="image/x-icon")(?=[^>]*\\bhref="${escapeRegExp(`${configuredBase}/favicon.ico`)}")[^>]*>`, 'i')
   );
   assertMatches(
     content,
@@ -136,43 +138,55 @@ const documentIntelligencePage = await readFile(
   'utf8'
 );
 assertOrdered(documentIntelligencePage, documentIntelligencePath, [
-  [
-    'components section before the connections and protocols section',
-    /<h2 id="3-components-technologies-and-responsibilities">3\. Components, technologies, and responsibilities<\/h2>/
-  ],
-  [
-    'connections and protocols heading after the components section',
-    /<h2 id="4-conexiones-y-protocolos">4\. Conexiones y protocolos<\/h2>/
-  ],
-  [
-    'renumbered security section after the diagram',
-    /<h2 id="5-security-privacy-and-audit-controls">5\. Security, privacy, and audit controls<\/h2>/
-  ]
+  ['components inventory before the PNG diagram', /<table\b[^>]*\bid="document-components-table"/],
+  ['linked PNG before the connections map', /<a\b[^>]*\bhref="[^"]*\/diagrams\/document-intelligence\/connections-case-study\.png"/],
+  ['connections map after the PNG diagram', /<div\b[^>]*\bid="document-connections"/],
 ]);
-assertMatches(
-  documentIntelligencePage,
-  documentIntelligencePath,
-  'semantic diagram figure with an accessible caption reference',
-  /<figure\b(?=[^>]*\bclass="case-study-diagram")(?=[^>]*\baria-labelledby="connections-and-protocols-caption")[^>]*>/i
-);
-assertMatches(
-  documentIntelligencePage,
-  documentIntelligencePath,
-  'lazy-loaded Connections and Protocols iframe with the base-safe light-theme source',
-  /<iframe\b(?=[^>]*\bclass="case-study-diagram__frame")(?=[^>]*\bsrc="\/Portafolio\/diagrams\/document-intelligence\/connections-and-protocols\.html\?embed=1&amp;theme=light")(?=[^>]*\btitle="Connections and Protocols — Document Intelligence architecture diagram")(?=[^>]*\bloading="lazy")[^>]*>/i
-);
-assertMatches(
-  documentIntelligencePage,
-  documentIntelligencePath,
-  'diagram figcaption',
-  /<figcaption\b[^>]*\bid="connections-and-protocols-caption"[^>]*>[\s\S]*?<\/figcaption>/i
-);
-assertMatches(
-  documentIntelligencePage,
-  documentIntelligencePath,
-  'standalone Connections and Protocols artifact link',
-  /<a\b(?=[^>]*\bhref="\/Portafolio\/diagrams\/document-intelligence\/connections-and-protocols\.html\?theme=light")[^>]*>\s*Open the standalone diagram\s*<\/a>/i
-);
+const article = new JSDOM(documentIntelligencePage, { url: `${pagesSite}${configuredBase}/case-studies/document-intelligence/` }).window.document;
+const text = (element) => element?.textContent?.trim();
+const outerDisclosures = Array.from(article.querySelectorAll('details'))
+  .filter((entry) => !entry.parentElement?.closest('details'));
+assert.deepEqual(outerDisclosures.map((entry) => text(entry.querySelector(':scope > summary'))), [
+  'GOVERNANCE AND MULTI-TENANT SECURITY',
+  'OPERATIONAL FLOW & EVIDENCE LEVELS',
+  'LIFECYCLE *(STEP BY STEP)*',
+  'COMPONENTS AND TECNOLOGIES',
+  'Conexions & Protocols',
+  'System Limits',
+]);
+assert.ok(outerDisclosures.every((entry) => !entry.hasAttribute('open')), 'Editorial disclosures must start closed');
+for (const [selector, summary] of [
+  ['.document-lifecycle', 'LIFECYCLE *(STEP BY STEP)*'],
+  ['#document-components-table', 'COMPONENTS AND TECNOLOGIES'],
+  ['#document-connections', 'Conexions & Protocols'],
+]) {
+  assert.equal(article.querySelectorAll(selector).length, 1, `Exactly one ${selector}`);
+  assert.equal(text(article.querySelector(selector)?.closest('details')?.querySelector(':scope > summary')), summary);
+}
+assert.equal(article.querySelectorAll('.document-lifecycle ol > li').length, 5);
+assert.equal(article.querySelectorAll('#document-components-table tbody tr').length, 14);
+assert.equal(article.querySelectorAll('#document-components-table th[scope="row"]').length, 14);
+assert.equal(article.querySelectorAll('#document-components-table th[scope="col"]').length, 2);
+assert.equal(article.querySelectorAll('#document-connections ol > li').length, 5);
+assert.equal(article.querySelectorAll('#document-connections .request-link').length, 4);
+assert.equal(article.querySelectorAll('#document-connections .branches > li').length, 9);
+assert.equal(article.querySelectorAll('#document-connections .connection-mechanism').length, 13);
+assert.equal(article.querySelectorAll('#document-connections .queue-categories li').length, 3);
+assert.equal(article.querySelector('#document-connections')?.getAttribute('lang'), 'es');
+const diagramPath = `${configuredBase}/diagrams/document-intelligence/connections-case-study.png`;
+const diagramLinks = article.querySelectorAll(`a[href="${diagramPath}"]`);
+assert.equal(diagramLinks.length, 1, 'One base-safe full-size PNG link');
+const diagramLink = diagramLinks[0];
+assert.equal(diagramLink.getAttribute('target'), '_blank');
+assert.ok(diagramLink.relList.contains('noopener') && diagramLink.relList.contains('noreferrer'));
+assert.equal(diagramLink.getAttribute('aria-label'), 'Open the full-size connections diagram in a new tab');
+const diagramImage = diagramLink.querySelector('img');
+assert.equal(diagramImage?.getAttribute('src'), diagramPath);
+assert.equal(diagramImage?.getAttribute('alt'), 'Platform components, connections, and communication protocols.');
+assert.equal(diagramImage?.getAttribute('loading'), 'lazy');
+assert.equal(diagramImage?.getAttribute('decoding'), 'async');
+assert.equal(diagramImage?.getAttribute('width'), '2712');
+assert.equal(diagramImage?.getAttribute('height'), '1020');
 
 const spanishProjectPath = 'es/work/ai-support-agent/index.html';
 const spanishProjectPage = await readFile(resolve(distDirectory, spanishProjectPath), 'utf8');
@@ -180,7 +194,7 @@ assertMatches(
   spanishProjectPage,
   spanishProjectPath,
   'localized case-study link',
-  /<a[^>]*href="\/es\/case-studies\/ai-support-agent\/"[^>]*>[\s\S]*?<span>Read the case study<\/span>/
+  new RegExp(`<a[^>]*href="${escapeRegExp(`${configuredBase}/es/case-studies/ai-support-agent/`)}"[^>]*>[\\s\\S]*?<span>Read the case study<\\/span>`)
 );
 
 for (const locale of ['es', 'pt', 'ru']) {

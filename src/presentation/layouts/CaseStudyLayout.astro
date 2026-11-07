@@ -25,6 +25,21 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
       <p class="case-study-kicker">Case study</p>
       <h1>{title}</h1>
       {summary && <p class="case-study-summary">{summary}</p>}
+      {theme?.id === 'document-intelligence' && (
+        <img
+          src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/imagenes/personal_brand/contavia-logo-name-white.svg`}
+          alt="Contavia"
+          width="287"
+          height="48"
+          style={{
+            display: 'block',
+            width: '287px',
+            maxWidth: '100%',
+            height: 'auto',
+            margin: '2rem 0 1rem',
+          }}
+        />
+      )}
     </header>
 
     <slot />
@@ -54,7 +69,7 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
   }
 
   .case-study-header {
-    margin-bottom: clamp(var(--brand-scale-1300), 10vw, 10rem);
+    margin-bottom: clamp(1rem, 3vw, 2rem) ;
   }
 
   .case-study-layout[data-case-theme='document-intelligence'] .case-study-header {
@@ -100,7 +115,7 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
   .case-study-content :global(h2) {
     font-size: clamp(1.5rem, 3vw, 2.25rem);
     line-height: 1.12;
-    margin: clamp(var(--brand-scale-1300), 8vw, 8rem) 0 var(--brand-scale-700);
+    margin: clamp(2rem, 5vw, 4rem) 0 var(--brand-scale-700);
   }
 
   .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(h2) {
@@ -246,6 +261,16 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
     letter-spacing: 0.01em;
     margin: 0;
     max-inline-size: 70ch;
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(.disclosure) {
+    margin-block-end: var(--brand-scale-1100);
+  }
+
+  .case-study-layout[data-case-theme='document-intelligence'] .case-study-content :global(blockquote) {
+    border-inline-start: 1px solid var(--case-text);
+    margin-inline: 0;
+    padding-inline-start: var(--brand-scale-500);
   }
 
   .case-study-content :global(img),

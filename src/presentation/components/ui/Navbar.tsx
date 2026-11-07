@@ -180,7 +180,7 @@ export default function Navbar({
             }}
           >
             <img
-              src={withBase('/imagenes/gv-black.svg')}
+              src={withBase('/imagenes/personal_brand/gv-black.svg')}
               alt="GV"
               height="22"
               style={{

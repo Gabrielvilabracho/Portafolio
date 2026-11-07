@@ -42,6 +42,11 @@ const workflow = z.object({
   steps: z.array(workflowStep).min(2).max(6),
 });
 
+const projectContext = z.object({
+  title: z.string(),
+  subtitle: z.string().optional(),
+});
+
 const featureRow = z.object({
   tag: z.string(),
   title: z.string(),
@@ -69,7 +74,7 @@ export const projectSchema = z.object({
   comingSoon: z.boolean().default(false),
   caseStudySlug: routableSlugSchema.optional(),
   overview: z.string().optional(),
-  context: z.string().optional(),
+  context: z.union([z.string(), projectContext]).optional(),
   approach: z.string().optional(),
   differentiator: z.string().optional(),
   workflow: workflow.optional(),
@@ -81,6 +86,7 @@ export const projectSchema = z.object({
     diagram: z.string().optional(),
   }).optional(),
   technologies: z.array(technology).optional(),
+  secondaryTechnologies: z.array(technology).optional(),
   metrics: z.array(metric).optional(),
   demo: z.object({
     type: z.enum(['video', 'gif', 'image']),
@@ -105,7 +111,7 @@ const projects = defineCollection({
 });
 
 const caseStudies = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/case-studies' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/case-studies' }),
   schema: caseStudySchema,
 });
 

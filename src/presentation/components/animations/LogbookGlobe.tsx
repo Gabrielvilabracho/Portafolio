@@ -136,7 +136,7 @@ export default function LogbookGlobe({ currentEntry }: LogbookGlobeProps) {
       const el = document.createElement('div');
       // marker.svg as a CSS mask so the fill uses exact design-system colors
       const marker = document.createElement('div');
-      marker.style.maskImage = `url('${withBase('/marker.svg')}')`;
+      marker.style.maskImage = `url('${withBase('/icons/marker.svg')}')`;
       marker.style.maskSize = 'contain';
       marker.style.maskRepeat = 'no-repeat';
       marker.style.maskPosition = 'center';

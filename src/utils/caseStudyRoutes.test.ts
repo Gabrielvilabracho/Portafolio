@@ -1,5 +1,46 @@
-import { describe, expect, it } from 'vitest';
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { loadRenderers } from 'astro:container';
+import { getContainerRenderer } from '@astrojs/react/container-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getProjectCaseStudyDetailPath, getCaseStudyStaticPaths } from './caseStudyRoutes';
+import ProjectPage from '../pages/work/[slug].astro';
+
+// This route receives params rather than props; its generated props type is never.
+const projectPageFactory = ProjectPage as unknown as Parameters<AstroContainer['renderToString']>[0];
+
+vi.mock('./di', () => ({
+  getProjectsUseCase: { execute: async () => [] },
+  getProjectBySlugUseCase: { execute: async (slug: string) => ({
+    id: slug, slug, title: 'Example project', description: 'Example description',
+    type: 'project', year: 2026, comingSoon: false, technologies: [],
+    caseStudySlug: slug === 'linked' ? 'support-automation' : undefined,
+  }) },
+}));
+vi.mock('./caseStudyEntries', () => ({
+  getCaseStudies: async () => [{ id: 'support-automation', data: { slug: 'support-automation' } }],
+}));
+
+afterEach(() => vi.unstubAllEnvs());
+
+describe('project page case-study navigation boundary', () => {
+  it.each(['/', '/Portafolio/'])('prefixes a resolved CTA exactly once for base %s', async (base) => {
+    vi.stubEnv('BASE_URL', base);
+    const renderers = await loadRenderers([getContainerRenderer()]);
+    const container = await AstroContainer.create({ renderers });
+    const html = await container.renderToString(projectPageFactory, { params: { slug: 'linked' } });
+    expect(html).toContain(`href="${base}case-studies/support-automation/"`);
+    expect(html).not.toContain('/Portafolio/Portafolio/');
+  });
+
+  it('omits the CTA when no detail route resolves under a non-root base', async () => {
+    vi.stubEnv('BASE_URL', '/Portafolio/');
+    const renderers = await loadRenderers([getContainerRenderer()]);
+    const container = await AstroContainer.create({ renderers });
+    const html = await container.renderToString(projectPageFactory, { params: { slug: 'unlinked' } });
+    expect(html).not.toContain('data-case-study-link');
+    expect(html).not.toContain('/undefined');
+  });
+});
 
 describe('case study routes', () => {
   const caseStudies = [

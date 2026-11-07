@@ -40,7 +40,7 @@ Make the Document Intelligence SVG diagram navigable inside its existing panel w
   - Evidence: focused tests cover controls/reset, wheel consumption only when scale changes, pinch zoom, pan bounds, reduced motion, and Astro-mounted viewer markup; both declared checks pass.
 
 ## Progress
-- 2026-10-30 — Implemented and verified. The initial RED run failed as expected because `InteractiveSvgViewer` did not exist. After implementation, focused Vitest passed 6 tests across 2 files and `astro check` reported 0 errors, warnings, and hints.
+- 2026-10-30 — Implemented and verified. The initial RED run failed as expected because `InteractiveSvgViewer` did not exist. After implementation, focused Vitest passed 6 tests across 2 files and `astro check` reported 0 errors, warnings, and hints. Work-unit commit: `dcca055` (`feat(diagram): add interactive SVG navigation`).
 
 ## Next Step
 Parent review and work-unit delivery can proceed from the scoped diff and recorded verification evidence.

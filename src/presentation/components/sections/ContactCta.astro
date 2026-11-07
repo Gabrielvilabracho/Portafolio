@@ -1,7 +1,7 @@
 ---
 /**
  * Dark contact CTA: portrait left, heading + form right.
- * Drop a portrait at /imagenes/portrait.jpg to fill the photo slot.
+ * Drop a portrait at /imagenes/photos/portrait.jpg to fill the photo slot.
  */
 import ContactForm from '../ui/ContactForm.astro';
 import { withBase } from '../../../utils/withBase';
@@ -16,7 +16,7 @@ import { withBase } from '../../../utils/withBase';
           style="max-width: 24em; aspect-ratio: 4 / 5; background-color: var(--brand-grey-200); border-radius: 4px;"
         >
           <img
-            src={withBase('/imagenes/portrait.jpg')}
+            src={withBase('/imagenes/photos/portrait.jpg')}
             alt="Gabriel Vilabracho"
             class="w-full h-full object-cover"
             onerror="this.style.display='none'; this.parentElement.classList.add('crosses-pattern-light');"
