@@ -40,3 +40,13 @@ Publish the accumulated portfolio work without changing its current design or ed
 - No commits, uploads, remote authenticated operations, or deployment have occurred.
 - Single-batch publication strategy and configured GitHub-session authorization obtained explicitly. GitHub confirms default branch `master`; origin fetched successfully.
 - Next step: commit the verified candidate, complete applicable native review, then publish and confirm deployment.
+
+## Publication CI runtime correction
+- Reported GitHub run `42401980378` failed `npm run check` because Node `22.12.0` is below Astro's supported minimum.
+- Installed and locked Astro `7.4.4` both declare `engines.node: >=22.23.4`. Both workflows and the root package/lock engine metadata now match that minimum; dependencies, action references, permissions, design, and content are unchanged.
+- Version evidence: Context7 `/withastro/docs` documents minimum Node `22.23.4`; [Astro's GitHub Pages deployment guide](https://docs.astro.build/en/guides/deploy/github/) supports an explicit build runtime. [Official Node release notes](https://nodejs.org/en/blog/release/v22.23.4) confirm `22.23.4` LTS was released on 2026-10-21. No newer major or speculative patch is required.
+- Deterministic RED before edits: a read-only Node assertion parsed workflows with the installed `yaml` package, verified installed/locked Astro metadata, then failed on CI's `22.12.0` versus required `22.23.4` (`ERR_ASSERTION`). Local verification runtime is Node `v24.14.1`, not the pinned CI runtime.
+- GREEN: the same read-only Node assertion passes for parsed YAML, both exact workflow pins (`22.23.4`), installed/locked Astro metadata, and root package/lock engines (`>=22.23.4`).
+- Local verification: `npm run check` passes (87 files, no errors/warnings/hints); `npm test` passes (155 tests in 27 files); `npm run build` passes; `npm run test:pages-output` passes for `/Portafolio`. Existing non-blocking npm `allow-scripts`, font-resolution, and large-chunk warnings remain.
+- Final structural verification also checks that workflow objects differ from HEAD only in their Node version and that package/lock metadata differ only in the root Node engine. `git diff --check` is required at handoff.
+- Remote CI/deployment confirmation, review, and publication remain parent-owned; this correction performs no remote mutations or Git staging/commits. P3/P4 checkboxes and prior publication history are deliberately left unchanged.
