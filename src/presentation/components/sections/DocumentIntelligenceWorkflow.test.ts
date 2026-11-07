@@ -57,7 +57,7 @@ describe('DocumentIntelligenceWorkflow', () => {
     expect(html).toContain('aria-label="Zoom in"');
     expect(html).toContain('aria-label="Zoom out"');
     expect(html).toContain('aria-label="Reset zoom"');
-    expect(html).toContain('src="/imagenes/web_pices/Frame 9-2.svg"');
+    expect(html).toContain('src="/imagenes/web_pices/Frame 9-4.svg"');
     expect(html).toContain('alt="Document Intelligence platform architecture and operational workflow"');
     expect(html).toContain('data-svg-viewer-viewport');
     expect(html).toContain('object-contain');
