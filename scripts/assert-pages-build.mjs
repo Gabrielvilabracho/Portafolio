@@ -144,6 +144,16 @@ assertOrdered(documentIntelligencePage, documentIntelligencePath, [
 ]);
 const article = new JSDOM(documentIntelligencePage, { url: `${pagesSite}${configuredBase}/case-studies/document-intelligence/` }).window.document;
 const text = (element) => element?.textContent?.trim();
+const heroImagePath = `${configuredBase}/imagenes/art/invoice-blue-marketing.jpeg`;
+const heroImage = article.querySelector(`img.case-study-hero-image[src="${heroImagePath}"]`);
+assert.ok(heroImage, 'Document Intelligence hero image must use the configured base path');
+assert.equal(heroImage.getAttribute('width'), '1872');
+assert.equal(heroImage.getAttribute('height'), '2272');
+assert.ok(
+  heroImage.compareDocumentPosition(article.querySelector('.case-study-kicker'))
+    & article.defaultView.Node.DOCUMENT_POSITION_FOLLOWING,
+  'Document Intelligence hero image must render before the Case study kicker'
+);
 const outerDisclosures = Array.from(article.querySelectorAll('details'))
   .filter((entry) => !entry.parentElement?.closest('details'));
 assert.deepEqual(outerDisclosures.map((entry) => text(entry.querySelector(':scope > summary'))), [

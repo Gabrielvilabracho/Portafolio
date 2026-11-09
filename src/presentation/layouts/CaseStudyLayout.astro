@@ -3,6 +3,7 @@ import {
   getCaseStudyThemeStyle,
   type CaseStudyTheme,
 } from '../themes/caseStudyThemes';
+import { withBase } from '../../utils/withBase';
 
 export interface Props {
   title: string;
@@ -22,6 +23,18 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
 >
   <article class="case-study-content" data-case-study-content>
     <header class="case-study-header">
+      {theme?.id === 'document-intelligence' && (
+        <img
+          class="case-study-hero-image"
+          src={withBase('/imagenes/art/invoice-blue-marketing.jpeg')}
+          alt="Abstract blue invoice composition"
+          width="1872"
+          height="2272"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+      )}
       <p class="case-study-kicker">Case study</p>
       <h1>{title}</h1>
       {summary && <p class="case-study-summary">{summary}</p>}
@@ -277,6 +290,16 @@ const themeStyle = theme ? getCaseStudyThemeStyle(theme) : undefined;
   .case-study-content :global(video) {
     margin-block: clamp(var(--brand-scale-1100), 8vw, 8rem);
     width: 100%;
+  }
+
+  .case-study-header .case-study-hero-image {
+    background-color: var(--case-surface);
+    border: 1px solid var(--case-border);
+    box-sizing: border-box;
+    display: block;
+    height: auto;
+    margin: 0 auto clamp(var(--brand-scale-1100), 7vw, 5rem);
+    width: min(100%, 34rem);
   }
 
   @media (max-width: 719px) {
