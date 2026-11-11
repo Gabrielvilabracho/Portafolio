@@ -28,7 +28,7 @@ workflow:
       description: Classify content and extract structured fields with AI assistance.
       artwork:
         src: /imagenes/art/figure-profile.svg
-        className: pointer-events-none absolute right-1 bottom-20 z-0 h-auto w-[min(50%,10rem)]
+        className: pointer-events-none absolute right-1 bottom-24 z-0 h-auto w-[min(50%,10rem)]
     - title: Validate
       description: Apply deterministic rules and profile-specific checks to every result.
       artwork:
