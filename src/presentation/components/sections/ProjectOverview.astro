@@ -4,6 +4,7 @@ import ProjectHero from './ProjectHero.astro';
 import SectionsGrid, { type Section } from './SectionsGrid.astro';
 import ProcessGrid from './ProcessGrid.astro';
 import FeatureRows from './FeatureRows.astro';
+import DocumentIntelligenceWorkflow from './DocumentIntelligenceWorkflow.astro';
 import WorkflowGrid from './WorkflowGrid.astro';
 import ProblemSection from './ProblemSection.astro';
 import TechnicalFoundation from './TechnicalFoundation.astro';
@@ -15,6 +16,12 @@ export interface Props {
 
 const { project, caseStudyHref } = Astro.props;
 const heroLabel = `${project.discipline ?? 'Project'} · ${project.year}`;
+const usesDocumentIntelligenceWorkflow = project.slug === 'document-intelligence' && Boolean(project.workflow && project.featureRows);
+const problemTitle = typeof project.context === 'string' ? undefined : project.context?.title;
+const problemSubtitle = typeof project.context === 'string' ? project.context : project.context?.subtitle;
+const contextText = typeof project.context === 'string'
+  ? project.context
+  : project.context && [project.context.title, project.context.subtitle].filter(Boolean).join(' ');
 type NavigableSection = Omit<Section, 'number'>;
 const availableSections = [
   project.context && { title: 'Problem', phrase: 'The challenge this project was built to solve.', href: '#problem' },
@@ -52,19 +59,28 @@ const sections = availableSections.map((section, index) => ({
 {sections.length > 0 && <SectionsGrid sections={sections} />}
 
 {project.workflow ? (
-  <WorkflowGrid
-    problem={project.context}
-    title={project.workflow.title}
-    subtitle={project.workflow.subtitle}
-    steps={project.workflow.steps}
-  />
+  usesDocumentIntelligenceWorkflow && project.featureRows ? (
+    <DocumentIntelligenceWorkflow
+      problemTitle={problemTitle}
+      problemSubtitle={problemSubtitle}
+      workflow={project.workflow}
+      featureRows={project.featureRows}
+    />
+  ) : (
+    <WorkflowGrid
+      problem={contextText}
+      title={project.workflow.title}
+      subtitle={project.workflow.subtitle}
+      steps={project.workflow.steps}
+    />
+  )
 ) : (
   <>
-    {project.context && (
+    {contextText && (
       <section class="bg-dark-surface" data-navbar-theme="dark" aria-labelledby="problem-heading">
         <div class="container">
           <div class="border-l border-r border-b border-brand-grey-700" style="padding: var(--brand-scale-900);">
-            <ProblemSection problem={project.context} maxWidth="52ch" />
+            <ProblemSection problem={contextText} maxWidth="52ch" />
           </div>
         </div>
       </section>
@@ -83,16 +99,18 @@ const sections = availableSections.map((section, index) => ({
   </>
 )}
 
-<FeatureRows
-  heading={project.featureRows?.heading ?? 'We build systems where complexity is the real challenge.'}
-  sectionId={project.featureRows?.sectionId}
-  rows={project.featureRows?.rows ?? [
-    { tag: 'Layer 01', title: 'Problem Definition', description: 'Understanding the root cause before writing a single line of code. Constraints, stakeholders, and failure modes mapped first.' },
-    { tag: 'Layer 02', title: 'Architecture Decision', description: 'Choosing the right structure for the problem — not the trendiest stack. Every trade-off documented and justified.' },
-    { tag: 'Layer 03', title: 'Implementation', description: 'Building iteratively with real feedback loops. No big-bang releases — each increment validated against the original problem.' },
-    { tag: 'Layer 04', title: 'Result & Impact', description: 'Measurable outcomes tied to the business goal. Performance, reliability, and adoption tracked from day one.' },
-  ]}
-/>
+{!usesDocumentIntelligenceWorkflow && (
+  <FeatureRows
+    heading={project.featureRows?.heading ?? 'We build systems where complexity is the real challenge.'}
+    sectionId={project.featureRows?.sectionId}
+    rows={project.featureRows?.rows ?? [
+      { tag: 'Layer 01', title: 'Problem Definition', description: 'Understanding the root cause before writing a single line of code. Constraints, stakeholders, and failure modes mapped first.' },
+      { tag: 'Layer 02', title: 'Architecture Decision', description: 'Choosing the right structure for the problem — not the trendiest stack. Every trade-off documented and justified.' },
+      { tag: 'Layer 03', title: 'Implementation', description: 'Building iteratively with real feedback loops. No big-bang releases — each increment validated against the original problem.' },
+      { tag: 'Layer 04', title: 'Result & Impact', description: 'Measurable outcomes tied to the business goal. Performance, reliability, and adoption tracked from day one.' },
+    ]}
+  />
+)}
 
 {project.image && (
   <section class="container">
@@ -102,7 +120,13 @@ const sections = availableSections.map((section, index) => ({
   </section>
 )}
 
-{project.technologies.length > 0 && <TechnicalFoundation technologies={project.technologies} presentation={project.technologyPresentation} />}
+{(project.technologies.length > 0 || project.secondaryTechnologies?.length) && (
+  <TechnicalFoundation
+    technologies={project.technologies}
+    secondaryTechnologies={project.secondaryTechnologies}
+    presentation={project.technologyPresentation}
+  />
+)}
 
 {project.links && project.links.length > 0 && (
   <section class="container">

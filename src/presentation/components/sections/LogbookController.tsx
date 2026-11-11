@@ -11,7 +11,7 @@ function MapUnavailable({ message }: { message: string }) {
       style={{
         minHeight: '32em',
         background: '#18191b',
-        backgroundImage: `url('${withBase('/imagenes/cross-background.svg')}')`,
+        backgroundImage: `url('${withBase('/imagenes/web_pices/cross-background.svg')}')`,
         backgroundSize: 'cover',
       }}
     >

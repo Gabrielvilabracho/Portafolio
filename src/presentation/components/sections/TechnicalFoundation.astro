@@ -4,10 +4,11 @@ import { withBase } from '../../../utils/withBase';
 
 export interface Props {
   technologies: ProjectTechnology[];
+  secondaryTechnologies?: ProjectTechnology[];
   presentation?: TechnologyPresentation;
 }
 
-const { technologies, presentation } = Astro.props;
+const { technologies, secondaryTechnologies = [], presentation } = Astro.props;
 
 // This display policy is specific to the twelve-item editorial composition, never a project technology-count invariant.
 const EDITORIAL_TWELVE_TECHNOLOGY_GRID = {
@@ -65,7 +66,7 @@ const technologyCellClasses = (index: number, count: number) => {
           Technical foundation
         </p>
         <h2 id="technical-foundation-heading" class="font-normal uppercase" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; max-width: 18ch;">
-          The technologies and tools that power this project.
+          The Stack and tools that power this project.
         </h2>
       </div>
     )}
@@ -78,7 +79,7 @@ const technologyCellClasses = (index: number, count: number) => {
             Technical foundation
           </p>
           <h2 id="technical-foundation-heading" class="font-normal uppercase" style="font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--brand-grey-900); max-width: 22ch;">
-            The technologies and tools that power this project.
+            The Stack and tools that power this project.
           </h2>
         </div>
       )}
@@ -101,5 +102,27 @@ const technologyCellClasses = (index: number, count: number) => {
         </div>
       ))}
     </div>
+    {secondaryTechnologies.length > 0 && (
+      <div data-secondary-technology-grid class="grid grid-cols-1 gap-px border-t border-brand-grey-200 bg-brand-grey-200 dark:border-brand-grey-700 dark:bg-brand-grey-700 md:grid-cols-3 lg:grid-cols-6">
+        {secondaryTechnologies.map((technology) => (
+          <div data-secondary-technology-cell class="flex flex-col justify-between gap-8 bg-white dark:bg-dark-surface" style="min-height: 10.5rem; padding: var(--brand-scale-800);">
+            <div class="flex min-w-0 items-start justify-between gap-6">
+              <span data-technology-marker class="flex min-w-0 items-center gap-2 text-xs uppercase tracking-widest leading-none" style="color: var(--brand-grey-400); overflow-wrap: anywhere;">
+                <span class="inline-block shrink-0" style="width: 0.85em; height: 0.85em; background-color: var(--brand-orange-500);"></span>
+                {technology.name}
+              </span>
+              {technology.logo && (
+                <img
+                  src={withBase(technology.logo)}
+                  alt={technology.logoLabel ?? ''}
+                  class:list={['h-10 w-10 shrink-0 object-contain object-right', technology.invertInDarkMode && 'dark:invert']}
+                />
+              )}
+            </div>
+            <div>{technology.role && <p data-technology-role class="text-sm leading-relaxed" style="color: var(--brand-grey-500); max-width: 30ch;">{technology.role}</p>}</div>
+          </div>
+        ))}
+      </div>
+    )}
   </div>
 </section>

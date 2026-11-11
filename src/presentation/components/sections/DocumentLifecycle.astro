@@ -1,0 +1,75 @@
+---
+interface Stage {
+  readonly label: string;
+  readonly description: string;
+}
+
+export interface Props {
+  readonly label: string;
+  readonly stages: readonly Stage[];
+}
+
+const { label, stages } = Astro.props;
+---
+
+<div class="document-lifecycle">
+  <ol aria-label={label}>
+    {stages.map((stage) => (
+      <li>
+        <strong>{stage.label}</strong>
+        <span>{stage.description}</span>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .document-lifecycle {
+    margin-block: var(--brand-scale-800);
+    color: var(--case-text);
+  }
+
+  /* Keep article-wide list spacing from overriding this compact overview. */
+  .document-lifecycle > ol {
+    margin: 0;
+    padding: 0 0 0 var(--brand-scale-800);
+    list-style: decimal-leading-zero outside;
+  }
+
+  .document-lifecycle li {
+    position: relative;
+    padding-inline-start: var(--brand-scale-300);
+    padding-block-end: var(--brand-scale-700);
+    font-size: max(14px, 1rem);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .document-lifecycle li:last-child {
+    padding-block-end: 0;
+  }
+
+  .document-lifecycle li::marker {
+    color: var(--case-heading-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .document-lifecycle li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: calc(-1 * var(--brand-scale-300));
+    inset-block-start: var(--brand-scale-700);
+    inset-block-end: var(--brand-scale-300);
+    border-inline-start: 1px solid var(--case-border);
+  }
+
+  .document-lifecycle strong,
+  .document-lifecycle span {
+    display: block;
+  }
+
+  .document-lifecycle strong {
+    color: var(--case-heading-secondary);
+    font-weight: var(--brand-weight-medium);
+  }
+</style>

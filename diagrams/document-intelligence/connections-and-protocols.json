@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Connections and Protocols",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "visual_preset": "editorial",
+    "viewBox": [1380, 620]
+  },
+  "components": [
+    {
+      "id": "doc_user",
+      "type": "external",
+      "label": "User",
+      "sublabel": "Browser",
+      "pos": [30, 235],
+      "size": [120, 68]
+    },
+    {
+      "id": "web_bff",
+      "type": "frontend",
+      "label": "Next.js / BFF",
+      "sublabel": "Web experience",
+      "pos": [220, 235],
+      "size": [150, 68]
+    },
+    {
+      "id": "go_api",
+      "type": "backend",
+      "label": "Go API",
+      "sublabel": "Application API",
+      "pos": [450, 235],
+      "size": [150, 68]
+    },
+    {
+      "id": "temporal_core",
+      "type": "messagebus",
+      "label": "Temporal",
+      "sublabel": "Workflow orchestration",
+      "tag": "gRPC + mTLS",
+      "pos": [680, 235],
+      "size": [170, 68]
+    },
+    {
+      "id": "python_workers",
+      "type": "backend",
+      "label": "Python Workers",
+      "sublabel": "General + GPU processing",
+      "tag": "Task Queues",
+      "pos": [960, 235],
+      "size": [180, 68]
+    },
+    {
+      "id": "data_stores",
+      "type": "database",
+      "label": "Data Stores",
+      "sublabel": "PostgreSQL • Amazon S3",
+      "pos": [520, 430],
+      "size": [190, 70]
+    },
+    {
+      "id": "clerk_identity",
+      "type": "security",
+      "label": "Clerk",
+      "sublabel": "Session + JWKS",
+      "pos": [450, 50],
+      "size": [150, 68]
+    },
+    {
+      "id": "internal_go_api",
+      "type": "backend",
+      "label": "Internal Go API",
+      "sublabel": "Worker-facing endpoints",
+      "tag": "Service token",
+      "pos": [760, 430],
+      "size": [170, 70]
+    },
+    {
+      "id": "fastapi_gateway",
+      "type": "backend",
+      "label": "FastAPI Gateway",
+      "sublabel": "Model routing",
+      "pos": [970, 430],
+      "size": [170, 70]
+    },
+    {
+      "id": "ai_backends",
+      "type": "cloud",
+      "label": "AI Backends",
+      "sublabel": "Bedrock • vLLM / Qwen",
+      "pos": [1180, 430],
+      "size": [170, 70]
+    },
+    {
+      "id": "layout_ocr_worker",
+      "type": "backend",
+      "label": "Layout / OCR Worker",
+      "sublabel": "Dedicated processing lane",
+      "tag": "Task Queue",
+      "pos": [680, 50],
+      "size": [180, 70]
+    },
+    {
+      "id": "glm_ocr",
+      "type": "external",
+      "label": "GLM-OCR",
+      "sublabel": "Vision model service",
+      "pos": [1010, 50],
+      "size": [160, 70]
+    }
+  ],
+  "connections": [
+    {
+      "id": "user_to_bff",
+      "from": "doc_user",
+      "to": "web_bff",
+      "label": "HTTPS + Clerk session",
+      "variant": "emphasis",
+      "labelAt": [185, 317]
+    },
+    {
+      "id": "bff_to_go",
+      "from": "web_bff",
+      "to": "go_api",
+      "label": "HTTP REST + JWT",
+      "variant": "emphasis"
+    },
+    {
+      "id": "go_to_temporal",
+      "from": "go_api",
+      "to": "temporal_core",
+      "label": "gRPC + mTLS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "temporal_to_workers",
+      "from": "temporal_core",
+      "to": "python_workers",
+      "label": "General + GPU task queues",
+      "variant": "emphasis",
+      "labelAt": [850, 317]
+    },
+    {
+      "id": "go_to_stores",
+      "from": "go_api",
+      "to": "data_stores",
+      "label": "pgx → PostgreSQL • S3 API → Amazon S3",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "workers_to_s3",
+      "from": "python_workers",
+      "to": "data_stores",
+      "label": "S3 API → Amazon S3",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "go_to_clerk",
+      "from": "go_api",
+      "to": "clerk_identity",
+      "label": "HTTPS / JWKS",
+      "variant": "security"
+    },
+    {
+      "id": "workers_to_internal_api",
+      "from": "python_workers",
+      "to": "internal_go_api",
+      "label": "HTTP + service token",
+      "labelAt": [915, 350]
+    },
+    {
+      "id": "workers_to_gateway",
+      "from": "python_workers",
+      "to": "fastapi_gateway",
+      "label": "HTTP",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [1080, 375]
+    },
+    {
+      "id": "gateway_to_ai",
+      "from": "fastapi_gateway",
+      "to": "ai_backends",
+      "label": "LiteLLM → Bedrock • OpenAI-compatible → vLLM / Qwen",
+      "labelAt": [1160, 520]
+    },
+    {
+      "id": "temporal_to_layout",
+      "from": "temporal_core",
+      "to": "layout_ocr_worker",
+      "label": "Layout / OCR task queue",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "layout_to_glm",
+      "from": "layout_ocr_worker",
+      "to": "glm_ocr",
+      "label": "OpenAI-compatible API"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Primary request path",
+      "items": [
+        "User traffic reaches the BFF over HTTPS with a Clerk session.",
+        "JWT-authenticated REST enters the Go API before Temporal coordinates processing."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Queue separation",
+      "items": [
+        "General and GPU processing use dedicated Temporal task queues.",
+        "Layout / OCR work remains on its own task queue."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Model access",
+      "items": [
+        "FastAPI routes to Bedrock through LiteLLM and to vLLM / Qwen through an OpenAI-compatible API.",
+        "The Layout / OCR worker calls GLM-OCR through an OpenAI-compatible API."
+      ]
+    }
+  ]
+}

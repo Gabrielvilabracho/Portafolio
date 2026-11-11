@@ -7,6 +7,7 @@ import { routableProjects } from '../../application/use-cases/routableProjects';
 import { getCaseStudies } from '../../utils/caseStudyEntries';
 import { getProjectCaseStudyDetailPath } from '../../utils/caseStudyRoutes';
 import { DEFAULT_LOCALE, type Locale } from '../../utils/i18n';
+import { withBase } from '../../utils/withBase';
 
 export async function getStaticPaths() {
   const projects = await getProjectsUseCase.execute();
@@ -21,7 +22,8 @@ if (!project) {
 }
 
 const currentLocale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
-const caseStudyHref = getProjectCaseStudyDetailPath(project, await getCaseStudies(), currentLocale);
+const caseStudyPath = getProjectCaseStudyDetailPath(project, await getCaseStudies(), currentLocale);
+const caseStudyHref = caseStudyPath === undefined ? undefined : withBase(caseStudyPath);
 
 ---
 

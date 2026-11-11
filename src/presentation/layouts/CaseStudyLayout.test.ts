@@ -1,5 +1,6 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, it } from 'vitest';
+import { CASE_STUDY_THEMES } from '../themes/caseStudyThemes';
 import CaseStudyLayout from './CaseStudyLayout.astro';
 
 describe('CaseStudyLayout', () => {
@@ -27,5 +28,33 @@ describe('CaseStudyLayout', () => {
     });
 
     expect(html).not.toContain('case-study-summary');
+  });
+
+  it('applies the Document Intelligence theme only when requested', async () => {
+    const container = await AstroContainer.create();
+    const theme = CASE_STUDY_THEMES['document-intelligence'];
+    const themedHtml = await container.renderToString(CaseStudyLayout, {
+      props: { title: 'Document Intelligence', theme },
+    });
+    const defaultHtml = await container.renderToString(CaseStudyLayout, {
+      props: { title: 'Default case study' },
+    });
+
+    expect(themedHtml).toContain('data-case-theme="document-intelligence"');
+    expect(themedHtml).toContain(`--case-surface:${theme.surface}`);
+    expect(defaultHtml).not.toContain('data-case-theme');
+    expect(defaultHtml).not.toContain('--case-surface');
+  });
+
+  it('renders the generic case-study theme from the shared registry', async () => {
+    const container = await AstroContainer.create();
+    const theme = CASE_STUDY_THEMES.generic;
+    const html = await container.renderToString(CaseStudyLayout, {
+      props: { title: 'Generic case study', theme },
+    });
+
+    expect(html).toContain('data-case-theme="generic"');
+    expect(html).toContain(`--case-surface:${theme.surface}`);
+    expect(html).toContain(`--case-text:${theme.text}`);
   });
 });
